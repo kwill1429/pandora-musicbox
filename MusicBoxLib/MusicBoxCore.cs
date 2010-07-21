@@ -5,22 +5,16 @@ using System.Text;
 using System.Net;
 using System.IO;
 using PandoraMusicBox.Engine.Encryption;
+using System.Xml;
 
 namespace PandoraMusicBox.Engine {
     public class MusicBoxCore {
-
-        //private const int protocolVersion = 27;
         private const string baseUrl = "http://www.pandora.com/radio/xmlrpc/v27?";
-        private const int port = 80;
 
         BlowfishCipher encrypter = new BlowfishCipher(PandoraCryptKeys.Out);
         BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
 
-        public MusicBoxCore() {
-            
-        }
-
-        public string RouteID {
+        private string RouteID {
             get { 
                 if (_routeID == null)
                     _routeID = (DateTime.UtcNow.ToFileTime() % 10000000).ToString("0000000") + "P";
@@ -29,32 +23,60 @@ namespace PandoraMusicBox.Engine {
             }
         } private string _routeID = null;
 
-        public void AuthenticateListener() {
-            string url = baseUrl + "rid=" + RouteID + "&authenticateListener";
+        public bool AuthenticateListener(string username, string password) {
+            try {
+                long time = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                XmlDocument response = ExecuteRequest(PandoraRequest.AuthenticateListener, time, username, password);
+            }
+            catch (PandoraException e) {
+                if (e.ErrorCode == ErrorCodeEnum.AUTH_INVALID_USERNAME_PASSWORD)
+                    return false;
 
+                throw;
+            }
+
+            return true;
+        }
+
+        private XmlDocument ExecuteRequest(PandoraRequest request, params object[] paramList) {
             ASCIIEncoding encoder = new ASCIIEncoding();
-            long time = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-            string postStr = String.Format(XmlRequests.AuthenticateListener, time, "your@email.adr", "password");
+
+            // build app specific info for request to pandora servers
+            string url = baseUrl + "rid=" + RouteID + request.URLSuffix;
+            string postStr = String.Format(request.XmlRpcRequest, paramList);
             byte[] postData = encoder.GetBytes(encrypter.Encrypt(postStr));
-            Console.WriteLine(postStr);
 
-            WebRequest request = WebRequest.Create(url);
-            request.ContentType = "text/xml";
-            request.ContentLength = postData.Length;
-            request.Method = "POST";
+            // configure request object
+            WebRequest webRequest = WebRequest.Create(url);
+            webRequest.ContentType = "text/xml";
+            webRequest.ContentLength = postData.Length;
+            webRequest.Method = "POST";
 
-            Stream os = request.GetRequestStream();
+            // send request to remote servers
+            Stream os = webRequest.GetRequestStream();
             os.Write(postData, 0, postData.Length);
             os.Close();
 
-            WebResponse response = request.GetResponse();
+            // parse response
+            WebResponse response = webRequest.GetResponse();
             if (request != null) {
+                // retrieve reply from servers
                 StreamReader sr = new StreamReader(response.GetResponseStream());
                 string reply = sr.ReadToEnd();
-                Console.WriteLine(reply);
+
+                // check for error response
+                PandoraException ex = PandoraException.ParseError(reply);
+                if (ex != null) throw ex;
+
+                // build return object
+                
+
             }
 
+            return null;
         }
+
+
 
 
     }
