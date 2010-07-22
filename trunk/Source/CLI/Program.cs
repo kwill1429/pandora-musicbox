@@ -1,47 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PandoraMusicBox.Engine.Encryption;
+using Engine;
+using PandoraMusicBox.CLI.Properties;
 using PandoraMusicBox.Engine;
 using PandoraMusicBox.Engine.Data;
-using Engine;
+using PandoraMusicBox.Engine.Encryption;
 
-namespace CLI {
+namespace PandoraMusicBox.CLI {
     class Program {
         PandoraUser user;
         List<PandoraStation> stations;
 
         MusicBoxCore musicBox = new MusicBoxCore();
+        BlowfishCipher crypter = new BlowfishCipher(PandoraCryptKeys.In);
+
 
         static void Main(string[] args) {
 
             Program p = new Program();
             
-            if (p.Login()) {
+            if (p.Init()) {
                 p.ChooseStation();
             }
         }
 
-        private bool Login() {
-            string username = "user@name.com";
-            string pw = "password";
-
-            user = musicBox.AuthenticateListener(username, pw);
-            if (user != null) {
-                stations = musicBox.GetStations(user);
-                return true;
+        private bool Init() {
+            // if we have no login credentials, prompt the user
+            if (Settings.Default.Username == string.Empty) {
+                if (!ManualLogin()) 
+                    return false;
             }
+
+            // otherwise try to login, and if failed prompt the user
             else {
-                Console.WriteLine("invalid username or password.");
-                
-                #if DEBUG
-                Console.ReadKey();
-                #endif
-
-                return false;
+                user = musicBox.AuthenticateListener(Settings.Default.Username, crypter.Decrypt(Settings.Default.EncryptedPassword));
+                if (user == null && !ManualLogin())
+                    return false;
             }
+
+            // load all stations
+            stations = musicBox.GetStations(user);
+
+            return true;
         }
+
+        private bool ManualLogin() {
+            bool retry = true;
+
+            while (retry) {
+                Console.Clear();
+                Console.Write("User Name: ");
+                string username = Console.ReadLine();
+
+                Console.Write("Password:  ");
+                string password = Console.ReadLine();
+
+                user = musicBox.AuthenticateListener(username, password);
+
+                if (user != null) {
+                    Properties.Settings.Default.Username = username;
+                    Properties.Settings.Default.EncryptedPassword = crypter.Encrypt(password);
+                    Properties.Settings.Default.Save();
+                    return true;
+                }
+                else {
+                    Console.Clear();
+                    Console.Write("Invalid user name or password. Retry? (y/n)");
+                    ConsoleKeyInfo keyPress = Console.ReadKey();
+                    
+                    if (keyPress.KeyChar != 'y' && keyPress.KeyChar != 'Y')
+                        retry = false;                   
+                }
+            }
+
+            return false;
+        }
+
 
         private void ChooseStation() {
             var stationLookup = new Dictionary<int, PandoraStation>();
