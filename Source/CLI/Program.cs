@@ -5,6 +5,7 @@ using System.Text;
 using PandoraMusicBox.Engine.Encryption;
 using PandoraMusicBox.Engine;
 using PandoraMusicBox.Engine.Data;
+using Engine;
 
 namespace CLI {
     class Program {
@@ -74,12 +75,20 @@ namespace CLI {
         }
 
         private void Play(PandoraStation station) {
+            DirectShowPlayer player = new DirectShowPlayer();
+            
             Console.Clear();
             Console.WriteLine("Station: {0}\n", station.Name);
 
             List<PandoraSong> songs = musicBox.GetSongs(user, station);
-            foreach (PandoraSong currSong in songs) ;
-            Console.WriteLine("Now Playing: {0}", "???");
+            
+            foreach(PandoraSong currSong in songs) {
+                Console.WriteLine("Now Playing: '{0}' by {1}", currSong.Title, currSong.Artist);
+                player.Open(currSong);
+                player.Play();
+
+                Console.ReadKey();
+            }
 
             
 
