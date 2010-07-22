@@ -57,6 +57,18 @@ namespace PandoraMusicBox.Engine {
         }
 
         /// <summary>
+        /// Creates an exception instance with the given message describing the situation.
+        /// Should only be used for unexpected errors.
+        /// </summary>
+        /// <param name="message"></param>
+        public PandoraException(string message) :
+            base(message) {
+
+            _message = message;
+            _errorCode = ErrorCodeEnum.APPLICATION_ERROR;
+        }
+
+        /// <summary>
         /// Creates an exception instance based on a supplied message describing the 
         /// situation. Should only be used for unexpected errors.
         /// </summary>
