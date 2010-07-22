@@ -25,6 +25,8 @@ namespace PandoraMusicBox.CLI {
         }
 
         private bool Init() {
+            CheckForUpgrade();
+
             // if we have no login credentials, prompt the user
             if (Settings.Default.Username == string.Empty) {
                 if (!ManualLogin()) 
@@ -42,6 +44,14 @@ namespace PandoraMusicBox.CLI {
             stations = musicBox.GetStations(user);
 
             return true;
+        }
+
+        private void CheckForUpgrade() {
+            if (Settings.Default.UpgradeRequired) {
+                Settings.Default.Upgrade();
+                Settings.Default.UpgradeRequired = false;
+                Settings.Default.Save();
+            }
         }
 
         private bool ManualLogin() {
