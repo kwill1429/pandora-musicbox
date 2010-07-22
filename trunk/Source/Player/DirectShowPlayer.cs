@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using DirectShowLib;
+using PandoraMusicBox.Engine.Data;
 
 namespace Engine { 
-    public class DirectShowPlayer: IPlayer{
+    public class DirectShowPlayer{
 
         private IGraphBuilder  graphBuilder;
         private IMediaControl  mediaControl;
@@ -16,26 +17,13 @@ namespace Engine {
         private IMediaPosition mediaPosition;
         private IBasicAudio    basicAudio;
 
-        private AudioFile currentlyLoaded;
+        private PandoraSong loadedSong;
 
         private const int MAX_VOLUME = 0;
         private const int MIN_VOLUME = -10000;
         
         private bool _IsPlaying;
         private double? PreviousVolume;
-
-
-        public string PluginName {
-            get { return "DirectShow Player Plugin"; }
-        }
-
-        public string PluginDesc {
-            get { return "Embedded audio player utilizing DirectShow for decoding and playback."; }
-        }
-
-        public string PluginVersion {
-            get { return "0.1.0.0"; }
-        }
 
         public double Volume {
             get {
@@ -70,10 +58,6 @@ namespace Engine {
             }
         } protected double _Volume;
 
-        public double Balance {
-            get { return 0.0; }
-        }
-
         public int Position {
             get {
                 double position;
@@ -83,7 +67,7 @@ namespace Engine {
                 DsError.ThrowExceptionForHR(hr);
                 
                 // psoition returned in terms of seconds so multiply by 1000
-                // for milliseconds to comply with interface
+                // for milliseconds
                 return (int) (position * 1000);
             }
             set {
@@ -101,7 +85,7 @@ namespace Engine {
             graphBuilder = null;
             _IsPlaying = false;
             PreviousVolume = null;
-            currentlyLoaded = null;
+            loadedSong = null;
         }
 
         /**
@@ -109,10 +93,9 @@ namespace Engine {
          */
         ~DirectShowPlayer() {
             Close();
-            GC.Collect();
         }
 
-        public bool Open(AudioFile file) {
+        public bool Open(PandoraSong file) {
             try {
                 Close();
 
@@ -130,14 +113,14 @@ namespace Engine {
                 //hr = graphBuilder.AddFilter(
 
                 // Have the graph builder construct its the appropriate graph automatically
-                hr = graphBuilder.RenderFile(file.Filename, null);
+                hr = graphBuilder.RenderFile(file.AudioURL, null);
                 DsError.ThrowExceptionForHR(hr);
 
                 // maintain previous volume level so it persists from track to track
                 if (PreviousVolume != null)
                     Volume = (int)PreviousVolume;
 
-                currentlyLoaded = file;
+                loadedSong = file;
                 return true;
             }
             catch (Exception) {
@@ -148,7 +131,7 @@ namespace Engine {
 
         public void Close() {
             // store current volume so it persists from track to track
-            if (currentlyLoaded != null)
+            if (loadedSong != null)
                 PreviousVolume = Volume;
 
             Stop();
@@ -163,12 +146,12 @@ namespace Engine {
                 Marshal.ReleaseComObject(this.graphBuilder);
             this.graphBuilder = null;
 
-            currentlyLoaded = null;
+            loadedSong = null;
             _IsPlaying = false;
         }
 
-        public AudioFile GetLoadedAudioFile() {
-            return currentlyLoaded;
+        public PandoraSong GetLoadedAudioFile() {
+            return loadedSong;
         }
 
         public void Play() {
