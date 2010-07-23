@@ -6,9 +6,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using DirectShowLib;
 using PandoraMusicBox.Engine.Data;
+using System.Threading;
 
 namespace Engine { 
     public class DirectShowPlayer{
+
+        public delegate void DirectShowEventHandler(EventCode eventCode);
+        public event DirectShowEventHandler PlaybackEvent;
 
         private IGraphBuilder  graphBuilder;
         private IMediaControl  mediaControl;
@@ -16,6 +20,10 @@ namespace Engine {
         private IMediaSeeking  mediaSeeking;
         private IMediaPosition mediaPosition;
         private IBasicAudio    basicAudio;
+
+        private object lockingToken = new object();
+
+        Thread eventListenerThread;
 
         private PandoraSong loadedSong;
 
@@ -110,6 +118,8 @@ namespace Engine {
 
                 int hr = 0;
 
+                StartEventLoop();
+
                 //hr = graphBuilder.AddFilter(
 
                 // Have the graph builder construct its the appropriate graph automatically
@@ -136,15 +146,17 @@ namespace Engine {
 
             Stop();
 
-            mediaEventEx = null;
-            mediaSeeking = null;
-            mediaControl = null;
-            mediaPosition = null;
-            basicAudio = null;
+            lock (lockingToken) {
+                mediaEventEx = null;
+                mediaSeeking = null;
+                mediaControl = null;
+                mediaPosition = null;
+                basicAudio = null;
 
-            if (this.graphBuilder != null)
-                Marshal.ReleaseComObject(this.graphBuilder);
-            this.graphBuilder = null;
+                if (this.graphBuilder != null)
+                    Marshal.ReleaseComObject(this.graphBuilder);
+                this.graphBuilder = null;
+            }
 
             loadedSong = null;
             _IsPlaying = false;
@@ -177,6 +189,34 @@ namespace Engine {
 
         public bool IsPlaying() {
             return _IsPlaying;
+        }
+
+        private void StartEventLoop() {
+
+            ThreadStart actions = delegate {
+                bool done = false;
+                while (mediaEventEx != null && !done) {
+                    EventCode evCode;
+                    IntPtr param1;
+                    IntPtr param2;
+
+                    lock (lockingToken)
+                        if (mediaEventEx != null)
+                            mediaEventEx.GetEvent(out evCode, out param1, out param2, 100);
+                        else return;
+                     
+                    if (evCode.GetHashCode() != 0 && PlaybackEvent != null) 
+                        PlaybackEvent(evCode);
+
+                    lock (lockingToken) if (mediaEventEx != null) mediaEventEx.FreeEventParams(evCode, param1, param2);
+                    done = (evCode == EventCode.Complete);
+                }
+            };
+
+            eventListenerThread = new Thread(actions);
+            eventListenerThread.Name = "DirectShowPlayer Event Listener";
+            eventListenerThread.IsBackground = true;
+            eventListenerThread.Start();
         }
     }
 }
