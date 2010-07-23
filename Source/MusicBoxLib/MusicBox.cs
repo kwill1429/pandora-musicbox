@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using PandoraMusicBox.Engine.Data;
 
@@ -18,8 +17,12 @@ namespace PandoraMusicBox.Engine {
         public PandoraStation CurrentStation {
             get { return _currentStation; }
             set {
-                if (AvailableStations.Contains(value))
+                if (AvailableStations.Contains(value)) {
                     _currentStation = value;
+                    PreviousSongs.Clear();
+                    playlist.Clear();
+                    LoadMoreSongs();
+                }
             }
         } protected PandoraStation _currentStation;
 
