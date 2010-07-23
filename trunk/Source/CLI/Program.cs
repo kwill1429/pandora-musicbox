@@ -14,14 +14,21 @@ namespace PandoraMusicBox.CLI {
         DirectShowPlayer player = new DirectShowPlayer();
         BlowfishCipher crypter = new BlowfishCipher(PandoraCryptKeys.In);
 
+        Dictionary<int, PandoraStation> stationLookup = new Dictionary<int, PandoraStation>();
+
         bool needStatusUpdate = false;
+        
+        bool showHelp = false;
+        bool showStations = false;
 
         static void Main(string[] args) {
-
             Program p = new Program();
 
             if (p.Init())
                 p.RunMainLoop();
+
+            Console.Clear();
+            Console.Write("Pandora MusicBox is shutting down...\n");
         }
 
         private bool Init() {
@@ -56,7 +63,7 @@ namespace PandoraMusicBox.CLI {
         public void RunMainLoop() {
             ConsoleKeyInfo choice;
 
-            while (true) {
+            do {
                 PrintStatus();
 
                 while (!Console.KeyAvailable) {
@@ -74,25 +81,88 @@ namespace PandoraMusicBox.CLI {
                     case 'q':
                         return;
                     case ' ':
-                        if (player.IsPlaying())
-                            player.Stop();
-                        else
-                            player.Play();
+                        if (player.IsPlaying()) player.Stop();
+                        else player.Play();
                         break;
                     case 'n':
                         PlayNext();
                         break;
+                    case 's':
+                        showStations = !showStations;
+                        showHelp = false;
+                        needStatusUpdate = true;
+                        break;
+                    case '?':
+                    case 'h':
+                        showHelp = !showHelp;
+                        showStations = false;
+                        needStatusUpdate = true;                        
+                        break;
                 }
-            }
+
+                if (choice.Key == ConsoleKey.Escape) {
+                    if (showHelp == true || showStations == true) {
+                        showHelp = false;
+                        showStations = false;
+                        needStatusUpdate = true;
+                    }
+                    else {
+                        return;
+                    }
+                }
+
+                int stationIndex;
+                if (int.TryParse(choice.KeyChar + "", out stationIndex)) {
+                    if (stationLookup.ContainsKey(stationIndex) && stationLookup[stationIndex] != musicBox.CurrentStation) {
+                        showStations = false;
+                        musicBox.CurrentStation = stationLookup[stationIndex];
+                        PlayNext();
+                    }
+                }
+
+            } while (true);
         }
 
         private void PrintStatus() {
             Console.Clear();
+            
             Console.WriteLine("Station: {0}\n", musicBox.CurrentStation.Name);
             Console.WriteLine("Song:    {0}", musicBox.CurrentSong.Title);
             Console.WriteLine("Artist:  {0}", musicBox.CurrentSong.Artist);
             Console.WriteLine("Album:   {0}\n", musicBox.CurrentSong.Album);
+
+            if (showStations) PrintStations();
+            if (showHelp) PrintHelp();
+
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("press '?' for help");
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(": ");
+        }
+
+        private void PrintStations() {
+            Console.WriteLine("Available Stations:");
+
+            int index = 0;
+            foreach (PandoraStation currStation in musicBox.AvailableStations) {
+                if (currStation.IsQuickMix) continue;
+
+                index++;
+                Console.WriteLine("{0}: {1}", index, currStation.Name);
+                stationLookup[index] = currStation;
+            }
+
+            Console.WriteLine();
+        }
+
+        private void PrintHelp() {
+            Console.WriteLine("Available Commands:");
+            Console.WriteLine("n     : Next Track");
+            Console.WriteLine("s     : Show Station List");
+            Console.WriteLine("SPACE : Play / Pause");
+            Console.WriteLine("ESC   : Quit");
+            Console.WriteLine();
+
         }
 
         private void CheckForUpgrade() {
@@ -138,7 +208,7 @@ namespace PandoraMusicBox.CLI {
 
         /*
         private void ChooseStation() {
-            var stationLookup = new Dictionary<int, PandoraStation>();
+            
             string choice = "";
 
 
