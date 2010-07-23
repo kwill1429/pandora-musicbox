@@ -5,23 +5,23 @@ using PandoraMusicBox.CLI.Properties;
 using PandoraMusicBox.Engine;
 using PandoraMusicBox.Engine.Data;
 using PandoraMusicBox.Engine.Encryption;
+using DirectShowLib;
+using System.Threading;
 
 namespace PandoraMusicBox.CLI {
     class Program {
-        PandoraUser user;
-        List<PandoraStation> stations;
-
-        MusicBoxCore musicBox = new MusicBoxCore();
+        MusicBox musicBox = new MusicBox();
+        DirectShowPlayer player = new DirectShowPlayer();
         BlowfishCipher crypter = new BlowfishCipher(PandoraCryptKeys.In);
 
+        bool needStatusUpdate = false;
 
         static void Main(string[] args) {
 
             Program p = new Program();
-            
-            if (p.Init()) {
-                p.ChooseStation();
-            }
+
+            if (p.Init())
+                p.RunMainLoop();
         }
 
         private bool Init() {
@@ -35,15 +35,64 @@ namespace PandoraMusicBox.CLI {
 
             // otherwise try to login, and if failed prompt the user
             else {
-                user = musicBox.AuthenticateListener(Settings.Default.Username, crypter.Decrypt(Settings.Default.EncryptedPassword));
-                if (user == null && !ManualLogin())
+                bool success = musicBox.Login(Settings.Default.Username, crypter.Decrypt(Settings.Default.EncryptedPassword));
+                if (!success && !ManualLogin())
                     return false;
             }
 
-            // load all stations
-            stations = musicBox.GetStations(user);
+            player.PlaybackEvent += new DirectShowPlayer.DirectShowEventHandler(player_PlaybackEvent);
 
+            PlayNext();
             return true;
+        }
+
+        void player_PlaybackEvent(EventCode eventCode) {
+            if (eventCode == EventCode.Complete) {
+                needStatusUpdate = true;
+                PlayNext();
+            }
+        }
+
+        public void RunMainLoop() {
+            ConsoleKeyInfo choice;
+
+            while (true) {
+                PrintStatus();
+
+                while (!Console.KeyAvailable) {
+                    if (needStatusUpdate) {
+                        PrintStatus();
+                        needStatusUpdate = false;
+                    }
+
+                    Thread.Sleep(100);
+                }
+
+                choice = Console.ReadKey();
+                switch (char.ToLower(choice.KeyChar)) {
+                    case 'x':
+                    case 'q':
+                        return;
+                    case ' ':
+                        if (player.IsPlaying())
+                            player.Stop();
+                        else
+                            player.Play();
+                        break;
+                    case 'n':
+                        PlayNext();
+                        break;
+                }
+            }
+        }
+
+        private void PrintStatus() {
+            Console.Clear();
+            Console.WriteLine("Station: {0}\n", musicBox.CurrentStation.Name);
+            Console.WriteLine("Song:    {0}", musicBox.CurrentSong.Title);
+            Console.WriteLine("Artist:  {0}", musicBox.CurrentSong.Artist);
+            Console.WriteLine("Album:   {0}\n", musicBox.CurrentSong.Album);
+            Console.Write(": ");
         }
 
         private void CheckForUpgrade() {
@@ -65,9 +114,9 @@ namespace PandoraMusicBox.CLI {
                 Console.Write("Password:  ");
                 string password = Console.ReadLine();
 
-                user = musicBox.AuthenticateListener(username, password);
+                bool success = musicBox.Login(username, password);
 
-                if (user != null) {
+                if (success) {
                     Properties.Settings.Default.Username = username;
                     Properties.Settings.Default.EncryptedPassword = crypter.Encrypt(password);
                     Properties.Settings.Default.Save();
@@ -87,6 +136,7 @@ namespace PandoraMusicBox.CLI {
         }
 
 
+        /*
         private void ChooseStation() {
             var stationLookup = new Dictionary<int, PandoraStation>();
             string choice = "";
@@ -117,26 +167,11 @@ namespace PandoraMusicBox.CLI {
                 }
             }
         }
+        */
 
-        private void Play(PandoraStation station) {
-            DirectShowPlayer player = new DirectShowPlayer();
-            
-            Console.Clear();
-            Console.WriteLine("Station: {0}\n", station.Name);
-
-            List<PandoraSong> songs = musicBox.GetSongs(user, station);
-            
-            foreach(PandoraSong currSong in songs) {
-                Console.WriteLine("Now Playing: '{0}' by {1}", currSong.Title, currSong.Artist);
-                player.Open(currSong);
-                player.Play();
-
-                Console.ReadKey();
-            }
-
-            
-
-            Console.ReadKey();
+        private void PlayNext() {
+            player.Open(musicBox.GetNextSong());
+            player.Play();
         }
     }
 }
