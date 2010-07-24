@@ -24,19 +24,24 @@ namespace PandoraMusicBox.CLI {
         static void Main(string[] args) {
             Program p = new Program();
 
-            try {
+            try {                
                 if (p.Init())
                     p.RunMainLoop();
             }
             catch (PandoraException pe) {
                 Console.Clear();
                 Console.WriteLine("Very sorry, but something has gone horribly wrong!\n");
+                Console.WriteLine("AppData: {0}", System.Windows.Forms.Application.LocalUserAppDataPath);
                 if (pe.ErrorCode != ErrorCodeEnum.UNKNOWN) Console.Write("{0}: ", pe.ErrorCode.ToString());
                 Console.WriteLine(pe.Message);
 
                 if (pe.XmlString != null) Console.WriteLine("\nXML Data:\n {0}", pe.XmlString);
 
-                Console.WriteLine("\n{0}", pe.StackTrace);
+                Console.WriteLine("\n{0}\n", pe.StackTrace);
+
+                if (pe.InnerException != null) {
+                    Console.WriteLine(pe.InnerException.ToString());
+                }
                 Console.ReadKey();
             }
             catch (Exception e) {

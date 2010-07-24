@@ -123,7 +123,7 @@ namespace PandoraMusicBox.Engine {
                 return null;
             }
             catch (Exception e) {
-                return new PandoraException("Failed to parse response XML.", e);
+                return new PandoraException("Failed to parse response XML.", e, xmInput);
             }
         }
     }
