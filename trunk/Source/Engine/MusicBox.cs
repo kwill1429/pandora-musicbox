@@ -95,5 +95,9 @@ namespace PandoraMusicBox.Engine {
             pandora.RateSong(User, CurrentStation, CurrentSong, rating);
         }
 
+        public void AddTiredSong() {
+            pandora.AddTiredSong(User, CurrentSong);
+        }
+
     }
 }

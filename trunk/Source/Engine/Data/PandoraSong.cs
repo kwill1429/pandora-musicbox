@@ -43,6 +43,11 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        public bool Tired {
+            get;
+            internal set;
+        }
+
         internal PandoraSong(Dictionary<string, string> variables) {
             this.Variables = variables;
         }
