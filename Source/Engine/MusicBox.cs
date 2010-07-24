@@ -91,5 +91,9 @@ namespace PandoraMusicBox.Engine {
                 playlist.Enqueue(currSong);
         }
 
+        public void RateSong(PandoraRating rating) {
+            pandora.RateSong(User, CurrentStation, CurrentSong, rating);
+        }
+
     }
 }

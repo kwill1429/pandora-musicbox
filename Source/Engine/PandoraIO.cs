@@ -66,6 +66,16 @@ namespace PandoraMusicBox.Engine {
 
         }
 
+        public void RateSong(PandoraUser user, PandoraStation station, PandoraSong song, PandoraRating rating) {
+            if (user == null)
+                throw new PandoraException("User must be logged in to make this request.");
+            string matchingSeed = "";
+            string userSeed = "";
+            string focusTraitId = "";
+
+            string reply = ExecuteRequest(user, PandoraRequest.RateSong, station.Id, song.MusicId,  matchingSeed, userSeed, focusTraitId, (int)rating);
+        }
+
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {
             string reply;
 
@@ -120,5 +130,11 @@ namespace PandoraMusicBox.Engine {
         }
 
 
+    }
+
+    public enum PandoraRating
+    {
+        Love = 1,
+        Hate = 0
     }
 }

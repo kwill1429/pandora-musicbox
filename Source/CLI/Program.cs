@@ -125,6 +125,14 @@ namespace PandoraMusicBox.CLI {
                         showStations = false;
                         needStatusUpdate = true;                        
                         break;
+                    case '+':
+                        musicBox.RateSong(PandoraRating.Love);
+                        break;
+                    case '-':
+                        musicBox.RateSong(PandoraRating.Hate);
+                        PlayNext();
+                        break;
+
                 }
 
                 if (choice.Key == ConsoleKey.Escape) {

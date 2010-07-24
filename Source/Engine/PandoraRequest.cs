@@ -57,6 +57,23 @@ namespace PandoraMusicBox.Engine {
 			"</params></methodCall>"
         );
 
+        public static readonly PandoraRequest RateSong = new PandoraRequest(
+            "&method=addFeedback&arg1={0}&arg2={1}&arg3={2}&arg4={3}&arg5={4}&arg6=&arg7={5}&arg8=false",
+             "<?xml version=\"1.0\"?>" + 
+            "<methodCall><methodName>station.addFeedback</methodName>" +
+					"<params><param><value><int>{0}</int></value></param>" +
+					"<param><value><string>{1}</string></value></param>" +
+					"<param><value><string>{2}</string></value></param>" +
+					"<param><value><string>{3}</string></value></param>" +
+					"<param><value><string>{4}</string></value></param>" +
+					"<param><value><string>{5}</string></value></param>" +
+					"<param><value><string>{6}</string></value></param>" +
+					"<param><value></value></param>" +
+					"<param><value><boolean>{7}</boolean></value></param>" +
+                    "<param><value><boolean>0</boolean></value></param>" +
+					"</params></methodCall>"
+            );
+
         #endregion
     }
 }
