@@ -127,12 +127,12 @@ namespace PandoraMusicBox.CLI {
                         break;
                     case '+':
                         musicBox.RateSong(PandoraRating.Love);
+                        needStatusUpdate = true;
                         break;
                     case '-':
                         musicBox.RateSong(PandoraRating.Hate);
                         PlayNext();
                         break;
-
                 }
 
                 if (choice.Key == ConsoleKey.Escape) {
@@ -160,9 +160,16 @@ namespace PandoraMusicBox.CLI {
 
         private void PrintStatus() {
             Console.Clear();
+            ConsoleColor origColor = Console.ForegroundColor;
             
             Console.WriteLine("Station: {0}\n", musicBox.CurrentStation.Name);
-            Console.WriteLine("Song:    {0}", musicBox.CurrentSong.Title);
+            Console.Write("Song:    ");
+            if (musicBox.CurrentSong.Rating == PandoraRating.Love) {
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+            Console.Write("{0}\n", musicBox.CurrentSong.Title);
+            Console.ForegroundColor = origColor;
+            
             Console.WriteLine("Artist:  {0}", musicBox.CurrentSong.Artist);
             Console.WriteLine("Album:   {0}\n", musicBox.CurrentSong.Album);
 
@@ -195,6 +202,8 @@ namespace PandoraMusicBox.CLI {
             Console.WriteLine("n     : Next Track");
             Console.WriteLine("s     : Show Station List");
             Console.WriteLine("SPACE : Play / Pause");
+            Console.WriteLine("+     : I Like This Song");
+            Console.WriteLine("-     : I Don't Like This Song");
             Console.WriteLine("ESC   : Quit");
             Console.WriteLine();
 
