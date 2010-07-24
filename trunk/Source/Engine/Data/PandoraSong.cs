@@ -8,6 +8,12 @@ namespace PandoraMusicBox.Engine.Data {
     public class PandoraSong: PandoraData {
         private static BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
 
+        public string MusicId
+        {
+            get;
+            internal set;
+        }
+
         public string Artist {
             get;
             internal set;
@@ -48,6 +54,7 @@ namespace PandoraMusicBox.Engine.Data {
                 Dictionary<string, string> variables = GetVariables(currSongNode);
                 PandoraSong song = new PandoraSong(variables);
 
+                song.MusicId = song["musicId"];
                 song.Artist = song["artistSummary"];
                 song.Album = song["albumTitle"];
                 song.Title = song["songTitle"];
