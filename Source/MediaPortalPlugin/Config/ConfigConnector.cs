@@ -26,6 +26,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 MusicBoxCore.Instance.Initialize();
                 ConfigForm config = new ConfigForm();
                 config.ShowDialog();
+                MusicBoxCore.Instance.Shutdown();
             }
             catch (Exception) {
                 MessageBox.Show("There was an unexpected error in the Pandora MusicBox Configuration screen!", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

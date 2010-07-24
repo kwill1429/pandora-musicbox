@@ -7,23 +7,26 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MediaPortal.GUI.Library;
-using PandoraMusicBox.MediaPortalPlugin.Properties;
 
 namespace PandoraMusicBox.MediaPortalPlugin.Config {
     public partial class ConfigForm : Form {
+        private MusicBoxCore Core {
+            get { return MusicBoxCore.Instance;  }
+        }
+
         public ConfigForm() {
             InitializeComponent();
         }
 
         private void ConfigForm_Load(object sender, EventArgs e) {
-            emailTextBox.Text = Settings.Default.Username;
-            passwordTextBox.Text = Settings.Default.EncryptedPassword;
+            emailTextBox.Text = Core.Settings.UserName;
+            passwordTextBox.Text = Core.Settings.EncryptedPassword;
         }
 
         private void ConfigForm_FormClosed(object sender, FormClosedEventArgs e) {
             if (DialogResult == System.Windows.Forms.DialogResult.OK) {
-                emailTextBox.Text = Settings.Default.Username;
-                passwordTextBox.Text = Settings.Default.EncryptedPassword;
+                Core.Settings.UserName = emailTextBox.Text;
+                Core.Settings.EncryptedPassword = passwordTextBox.Text;
             }
         }
 

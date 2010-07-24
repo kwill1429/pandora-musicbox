@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PandoraMusicBox.MediaPortalPlugin.Properties;
 
 namespace PandoraMusicBox.MediaPortalPlugin {
     internal class MusicBoxCore {
@@ -15,21 +14,20 @@ namespace PandoraMusicBox.MediaPortalPlugin {
             }
         } private static MusicBoxCore _instance;
 
+        public MusicBoxSettings Settings {
+            get;
+            private set;
+        }
+
         private MusicBoxCore() { }
 
         public void Initialize() {
-            CheckForUpgrade();
+            Settings = new MusicBoxSettings();
+            Settings.LoadSettings();
         }
 
         public void Shutdown() {
-        }
-
-        private void CheckForUpgrade() {
-            if (Settings.Default.UpgradeRequired) {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeRequired = false;
-                Settings.Default.Save();
-            }
+            this.Settings.SaveSettings();
         }
     }
 }
