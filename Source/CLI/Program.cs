@@ -24,8 +24,27 @@ namespace PandoraMusicBox.CLI {
         static void Main(string[] args) {
             Program p = new Program();
 
-            if (p.Init())
-                p.RunMainLoop();
+            try {
+                if (p.Init())
+                    p.RunMainLoop();
+            }
+            catch (PandoraException pe) {
+                Console.Clear();
+                Console.WriteLine("Very sorry, but something has gone horribly wrong!\n");
+                if (pe.ErrorCode != ErrorCodeEnum.UNKNOWN) Console.Write("{0}: ", pe.ErrorCode.ToString());
+                Console.WriteLine(pe.Message);
+
+                if (pe.XmlString != null) Console.WriteLine("\nXML Data:\n {0}", pe.XmlString);
+
+                Console.WriteLine("\n{0}", pe.StackTrace);
+                Console.ReadKey();
+            }
+            catch (Exception e) {
+                Console.Clear();
+                Console.WriteLine("Very sorry, but something has gone horribly wrong!\n");
+                Console.WriteLine("{0}", e.ToString());
+                Console.ReadKey();
+            }
 
             Console.Clear();
             Console.Write("Pandora MusicBox is shutting down...\n");
@@ -42,6 +61,9 @@ namespace PandoraMusicBox.CLI {
 
             // otherwise try to login, and if failed prompt the user
             else {
+                Console.Clear();
+                Console.Write("Attempting to login with saved credentials...\n");
+
                 bool success = musicBox.Login(Settings.Default.Username, crypter.Decrypt(Settings.Default.EncryptedPassword));
                 if (!success && !ManualLogin())
                     return false;
@@ -182,7 +204,10 @@ namespace PandoraMusicBox.CLI {
                 string username = Console.ReadLine();
 
                 Console.Write("Password:  ");
-                string password = Console.ReadLine();
+                string password = ReadPassword();
+
+                Console.Clear();
+                Console.Write("Attempting to login...\n");
 
                 bool success = musicBox.Login(username, password);
 
@@ -205,43 +230,30 @@ namespace PandoraMusicBox.CLI {
             return false;
         }
 
-
-        /*
-        private void ChooseStation() {
-            
-            string choice = "";
-
-
-            while (choice.ToLower() != "x") {
-                Console.Clear();
-                Console.WriteLine("\n\nAvailable Stations [{0}]:", user.Name);
-
-                int index = 0;
-                foreach (PandoraStation currStation in stations) {
-                    if (currStation.IsQuickMix) continue;
-
-                    index++;
-                    Console.WriteLine("{0:00}: {1}", index, currStation.Name);
-                    stationLookup[index] = currStation;
-
-                }
-
-                Console.WriteLine("\nx : Exit Program\n\n");
-                Console.Write(": ");
-                choice = Console.ReadLine();
-
-                int stationIndex;
-                if (int.TryParse(choice, out stationIndex)) {
-                    if (stationLookup.ContainsKey(stationIndex))
-                        Play(stationLookup[stationIndex]);                
-                }
-            }
-        }
-        */
-
         private void PlayNext() {
             player.Open(musicBox.GetNextSong());
             player.Play();
+        }
+
+        private string ReadPassword() {
+            ConsoleKeyInfo info;
+            string password = "";
+
+            info = Console.ReadKey(true);
+            while (info.Key != ConsoleKey.Enter) {
+                if (info.Key != ConsoleKey.Backspace) {
+                    password += info.KeyChar;
+                    Console.Write('·');
+                }
+                else if (info.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(password)) {
+                    password = password.Substring(0, password.Length - 1);
+                    Console.Write("\b \b");
+                }
+
+                info = Console.ReadKey(true);
+            }
+
+            return password;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace PandoraMusicBox.Engine.Data {
                     lookup.Add(currNode["name"].InnerText, currNode["value"].InnerText);                
             }
             catch (Exception e) {
-                throw new PandoraException("Failed to parse response XML.", e);
+                throw new PandoraException("Failed to parse response XML.", e, xml.OuterXml);
             }
 
             return lookup;
