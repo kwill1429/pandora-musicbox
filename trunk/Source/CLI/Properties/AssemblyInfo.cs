@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CLI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Pandora MusicBox CLI")]
+[assembly: AssemblyDescription("Command line interface for playing music from the Pandora music service.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Pandora Music Box")]
-[assembly: AssemblyProduct("Pandora Music Box")]
+[assembly: AssemblyCompany("Pandora MusicBox")]
+[assembly: AssemblyProduct("Pandora MusicBox")]
 [assembly: AssemblyCopyright("Copyright ©  2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.2")]
+[assembly: AssemblyVersion("0.2.0.0")]

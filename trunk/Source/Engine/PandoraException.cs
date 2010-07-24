@@ -27,6 +27,13 @@ namespace PandoraMusicBox.Engine {
         } protected string _message;
 
         /// <summary>
+        /// If an XML parsing error occured, contains the raw XML text.
+        /// </summary>
+        public string XmlString {
+            get { return _xmlString; }
+        } protected string _xmlString = null;
+
+        /// <summary>
         /// Create an exception from an error code and message provided by the Pandora servers.
         /// If the error code is recognized, the ErrorCode field will be populated.
         /// </summary>
@@ -53,6 +60,20 @@ namespace PandoraMusicBox.Engine {
 
             _message = message;
             _errorCode = ErrorCodeEnum.APPLICATION_ERROR;
+        }
+
+        /// <summary>
+        /// Creates an exception instance based on a supplied inner exception and a 
+        /// message describing the situation. Should only be used for unexpected errors.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="innerException"></param>
+        public PandoraException(string message, Exception innerException, string xmlStr) :
+            base(message, innerException) {
+
+            _message = message;
+            _errorCode = ErrorCodeEnum.APPLICATION_ERROR;
+            _xmlString = xmlStr;
         }
 
         /// <summary>

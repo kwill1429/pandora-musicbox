@@ -44,7 +44,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MusicBoxLib\Engine.csproj">
+    <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{04DE8D27-E013-4406-8C3B-6438C3D41D68}</Project>
       <Name>Engine</Name>
     </ProjectReference>
