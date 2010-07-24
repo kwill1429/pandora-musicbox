@@ -76,7 +76,15 @@ namespace PandoraMusicBox.Engine {
 
             string reply = ExecuteRequest(user, PandoraRequest.RateSong, station.Id, song.MusicId,  matchingSeed, userSeed, focusTraitId, apiRating);
 
-            song.Rating = PandoraRating.Love;
+            song.Rating = rating;
+        }
+
+        public void AddTiredSong(PandoraUser user, PandoraSong song) {
+            if (user == null)
+                throw new PandoraException("User must be logged in to make this request.");
+
+            string reply = ExecuteRequest(user, PandoraRequest.AddTiredSong, song.MusicId);
+            song.Tired = true;
         }
 
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {

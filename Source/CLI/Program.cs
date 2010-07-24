@@ -133,6 +133,10 @@ namespace PandoraMusicBox.CLI {
                         musicBox.RateSong(PandoraRating.Hate);
                         PlayNext();
                         break;
+                    case 't':
+                        musicBox.AddTiredSong();
+                        PlayNext();
+                        break;
                 }
 
                 if (choice.Key == ConsoleKey.Escape) {
@@ -204,6 +208,7 @@ namespace PandoraMusicBox.CLI {
             Console.WriteLine("SPACE : Play / Pause");
             Console.WriteLine("+     : I Like This Song");
             Console.WriteLine("-     : I Don't Like This Song");
+            Console.WriteLine("t     : I'm Tired Of This Song");
             Console.WriteLine("ESC   : Quit");
             Console.WriteLine();
 
