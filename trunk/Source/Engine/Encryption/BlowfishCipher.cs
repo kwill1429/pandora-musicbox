@@ -67,7 +67,7 @@ namespace PandoraMusicBox.Engine.Encryption {
 
             // decrypt the encyrpted bytes and convert them back to text
             ASCIIEncoding encoder = new ASCIIEncoding();
-            string output = encoder.GetString(Decrypt(encryptedBytes));
+            string output = encoder.GetString(Decrypt(encryptedBytes)).Trim(new char[] {'\0'});
 
             return output;
         }
