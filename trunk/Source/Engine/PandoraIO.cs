@@ -72,8 +72,11 @@ namespace PandoraMusicBox.Engine {
             string matchingSeed = "";
             string userSeed = "";
             string focusTraitId = "";
+            int apiRating = (rating == PandoraRating.Love) ? 1 : 0;
 
-            string reply = ExecuteRequest(user, PandoraRequest.RateSong, station.Id, song.MusicId,  matchingSeed, userSeed, focusTraitId, (int)rating);
+            string reply = ExecuteRequest(user, PandoraRequest.RateSong, station.Id, song.MusicId,  matchingSeed, userSeed, focusTraitId, apiRating);
+
+            song.Rating = PandoraRating.Love;
         }
 
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {
@@ -135,6 +138,7 @@ namespace PandoraMusicBox.Engine {
     public enum PandoraRating
     {
         Love = 1,
-        Hate = 0
+        Unrated = 0,
+        Hate = -1
     }
 }

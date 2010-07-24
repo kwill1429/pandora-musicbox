@@ -8,8 +8,7 @@ namespace PandoraMusicBox.Engine.Data {
     public class PandoraSong: PandoraData {
         private static BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
 
-        public string MusicId
-        {
+        public string MusicId {
             get;
             internal set;
         }
@@ -39,6 +38,11 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        public PandoraRating Rating {
+            get;
+            internal set;
+        }
+
         internal PandoraSong(Dictionary<string, string> variables) {
             this.Variables = variables;
         }
@@ -59,7 +63,9 @@ namespace PandoraMusicBox.Engine.Data {
                 song.Album = song["albumTitle"];
                 song.Title = song["songTitle"];
                 song.AudioURL = DecodeUrl(song["audioURL"]);
-                song.ArtworkURL = song["artistArtUrl"];                
+                song.ArtworkURL = song["artistArtUrl"];
+                if (song["rating"] == "1") song.Rating = PandoraRating.Love;
+                else song.Rating = PandoraRating.Unrated;
 
                 songs.Add(song);
             }
