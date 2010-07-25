@@ -133,8 +133,8 @@ namespace PandoraMusicBox.CLI {
                         musicBox.RateSong(PandoraRating.Hate);
                         PlayNext();
                         break;
-                    case 't':
-                        musicBox.AddTiredSong();
+                    case 'b':
+                        musicBox.TemporarilyBanSong();
                         PlayNext();
                         break;
                 }
@@ -203,13 +203,16 @@ namespace PandoraMusicBox.CLI {
 
         private void PrintHelp() {
             Console.WriteLine("Available Commands:");
-            Console.WriteLine("n     : Next Track");
-            Console.WriteLine("s     : Show Station List");
+            Console.WriteLine(); 
             Console.WriteLine("SPACE : Play / Pause");
+            Console.WriteLine("n     : Skip to Next Song");
+            Console.WriteLine("s     : Show Station List");
+            Console.WriteLine();
             Console.WriteLine("+     : I Like This Song");
             Console.WriteLine("-     : I Don't Like This Song");
-            Console.WriteLine("t     : I'm Tired Of This Song");
-            Console.WriteLine("ESC   : Quit");
+            Console.WriteLine("b     : Temporarily Ban This Song");
+            Console.WriteLine();
+            Console.WriteLine("ESC   : Quit / Back");
             Console.WriteLine();
 
         }
