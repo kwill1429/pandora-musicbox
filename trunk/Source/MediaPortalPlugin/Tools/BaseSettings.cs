@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace PandoraMusicBox.MediaPortalPlugin {
+namespace PandoraMusicBox.MediaPortalPlugin.Tools {
     internal class SettingAttribute : Attribute { }
 
     internal class BaseSettings {

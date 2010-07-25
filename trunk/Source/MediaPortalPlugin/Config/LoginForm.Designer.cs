@@ -1,5 +1,5 @@
 ﻿namespace PandoraMusicBox.MediaPortalPlugin.Config {
-    partial class ConfigForm {
+    partial class LoginForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -107,8 +107,8 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Pandora MusicBox";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConfigForm_FormClosed);
-            this.Load += new System.EventHandler(this.ConfigForm_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LoginForm_FormClosed);
+            this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

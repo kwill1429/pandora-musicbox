@@ -18,14 +18,14 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
         }
 
         public string Author() {
-            return "John Conrad (fforde)";
+            return "John Conrad (fforde), Travis Collins (zealotsix)";
         }
 
         public void ShowPlugin() {
             try {
                 MusicBoxCore.Instance.Initialize();
-                ConfigForm config = new ConfigForm();
-                config.ShowDialog();
+                LoginForm login = new LoginForm();
+                login.ShowDialog();
                 MusicBoxCore.Instance.Shutdown();
             }
             catch (Exception) {

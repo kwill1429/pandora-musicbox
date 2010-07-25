@@ -56,14 +56,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseSettings.cs" />
+    <Compile Include="Tools\BaseSettings.cs" />
     <Compile Include="Config\ConfigConnector.cs" />
-    <Compile Include="Config\ConfigForm.cs">
+    <Compile Include="Config\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Config\ConfigForm.Designer.cs">
-      <DependentUpon>ConfigForm.cs</DependentUpon>
+    <Compile Include="Config\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\MusicBoxGUI.cs" />
     <Compile Include="MusicBoxCore.cs" />
     <Compile Include="MusicBoxSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,8 +73,8 @@
     <Folder Include="GUI\Skins\Blue3Wide\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Config\ConfigForm.resx">
-      <DependentUpon>ConfigForm.cs</DependentUpon>
+    <EmbeddedResource Include="Config\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -82,7 +83,16 @@
       <Name>Engine</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\merge.bat" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cd $(TargetDir)
+copy "$(ProjectDir)\Resources\merge.bat" "$(TargetDir)" /Y
+copy "$(ProjectDir)..\..\External\ilmerge.exe" "$(TargetDir)" /Y
+merge.bat</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

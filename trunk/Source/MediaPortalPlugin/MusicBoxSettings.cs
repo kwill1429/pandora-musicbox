@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using PandoraMusicBox.Engine.Data;
 using System.Reflection;
+using PandoraMusicBox.MediaPortalPlugin.Tools;
 
 namespace PandoraMusicBox.MediaPortalPlugin {
 
