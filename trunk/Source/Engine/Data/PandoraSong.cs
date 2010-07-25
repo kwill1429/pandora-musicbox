@@ -81,7 +81,7 @@ namespace PandoraMusicBox.Engine.Data {
         private static string DecodeUrl(string input) {
             int encryptedLength = 48;
             string encryptedStr = input.Substring(input.Length - encryptedLength);
-            return input.Substring(0, input.Length - encryptedLength) + decrypter.Decrypt(encryptedStr);
+            return input.Substring(0, input.Length - encryptedLength) + decrypter.Decrypt(encryptedStr).Trim(new char[] {'\b'});
         }
     }
 }

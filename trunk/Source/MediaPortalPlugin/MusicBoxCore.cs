@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PandoraMusicBox.Engine;
 
 namespace PandoraMusicBox.MediaPortalPlugin {
     internal class MusicBoxCore {
@@ -13,6 +14,15 @@ namespace PandoraMusicBox.MediaPortalPlugin {
                 return _instance;
             }
         } private static MusicBoxCore _instance;
+
+        public MusicBox MusicBox {
+            get {
+                if (_musicBox == null)
+                    _musicBox = new MusicBox();
+
+                return _musicBox;
+            }
+        } private MusicBox _musicBox;
 
         public MusicBoxSettings Settings {
             get;

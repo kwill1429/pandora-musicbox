@@ -5,10 +5,13 @@ using System.Text;
 using PandoraMusicBox.Engine.Data;
 using System.Reflection;
 using PandoraMusicBox.MediaPortalPlugin.Tools;
+using PandoraMusicBox.Engine.Encryption;
 
 namespace PandoraMusicBox.MediaPortalPlugin {
 
     internal class MusicBoxSettings: BaseSettings {
+        BlowfishCipher cipher = new BlowfishCipher(PandoraCryptKeys.In);
+
         public MusicBoxSettings() {
             FileName = "musicbox.xml";
             Namespace = "PandoraMusicBox";
@@ -27,8 +30,14 @@ namespace PandoraMusicBox.MediaPortalPlugin {
         }
 
         public string Password {
-            get;
-            set;
+            get {
+                try { return cipher.Decrypt(EncryptedPassword); }
+                catch (Exception) {}
+                return "";
+            }
+            set {
+                if (value != null) EncryptedPassword = cipher.Encrypt(value);
+            }
         }
 
         [Setting]

@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MediaPortal.GUI.Library;
+using MediaPortal.Player;
+using PandoraMusicBox.Engine.Data;
 
 namespace PandoraMusicBox.MediaPortalPlugin.GUI {
     public class MusicBoxGUI: GUIWindow {
+
+        private MusicBoxCore Core {
+            get { return MusicBoxCore.Instance; }
+        }
 
         bool initialized = false;
 
@@ -19,12 +25,18 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         public override bool Init() {
             base.Init();
+            bool skinLoaded = Load(GUIGraphicsContext.Skin + @"\musicbox.xml");
 
-            initialized = true;
-            return true;
+            if (skinLoaded) {
+                Core.Initialize();
+            }
+
+            initialized = skinLoaded;
+            return skinLoaded;
         }
 
         public override void DeInit() {
+            Core.Shutdown();
 
             initialized = false;
             base.DeInit();
@@ -32,6 +44,16 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         protected override void OnPageLoad() {
             base.OnPageLoad();
+
+            // if needed, attempt to log in
+            if (Core.MusicBox.User == null)
+                Core.MusicBox.Login(Core.Settings.UserName, Core.Settings.Password);
+
+            // if nothing else is playing, play next track in our queue
+            if (!g_Player.Playing) {
+                PandoraSong song = Core.MusicBox.GetNextSong();
+                g_Player.PlayAudioStream(song.AudioURL);
+            }
         }
 
         protected override void OnPageDestroy(int newWindowId) {
