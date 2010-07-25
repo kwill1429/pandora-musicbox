@@ -29,6 +29,7 @@
             this.passwordTextBox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.statusLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -57,6 +58,7 @@
             this.emailTextBox.Name = "emailTextBox";
             this.emailTextBox.Size = new System.Drawing.Size(210, 20);
             this.emailTextBox.TabIndex = 2;
+            this.emailTextBox.TextChanged += new System.EventHandler(this.emailTextBox_TextChanged);
             // 
             // passwordTextBox
             // 
@@ -67,33 +69,47 @@
             this.passwordTextBox.Size = new System.Drawing.Size(210, 20);
             this.passwordTextBox.TabIndex = 3;
             this.passwordTextBox.UseSystemPasswordChar = true;
+            this.passwordTextBox.TextChanged += new System.EventHandler(this.passwordTextBox_TextChanged);
             // 
             // okButton
             // 
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(147, 109);
+            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.okButton.Location = new System.Drawing.Point(147, 120);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 4;
-            this.okButton.Text = "OK";
+            this.okButton.Text = "Sign In";
             this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(66, 109);
+            this.cancelButton.Location = new System.Drawing.Point(66, 120);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 5;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 
-            // ConfigForm
+            // statusLabel
+            // 
+            this.statusLabel.Location = new System.Drawing.Point(12, 100);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(210, 17);
+            this.statusLabel.TabIndex = 6;
+            this.statusLabel.Text = "Verifying login credentials...";
+            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.statusLabel.Visible = false;
+            // 
+            // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(234, 145);
+            this.ClientSize = new System.Drawing.Size(234, 156);
             this.ControlBox = false;
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.passwordTextBox);
@@ -103,7 +119,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ConfigForm";
+            this.Name = "LoginForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "Pandora MusicBox";
@@ -122,5 +138,6 @@
         private System.Windows.Forms.TextBox passwordTextBox;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Label statusLabel;
     }
 }

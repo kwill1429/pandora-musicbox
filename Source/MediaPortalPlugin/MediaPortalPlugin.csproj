@@ -69,9 +69,7 @@
     <Compile Include="MusicBoxSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GUI\Skins\Blue3Wide\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Config\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
@@ -85,6 +83,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\merge.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GUI\Skins\Blue3Wide\musicbox.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
