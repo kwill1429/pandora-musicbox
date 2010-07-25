@@ -9,11 +9,17 @@ namespace PandoraMusicBox.Engine {
         protected PandoraIO pandora = new PandoraIO();
         protected Queue<PandoraSong> playlist = new Queue<PandoraSong>();
 
+        /// <summary>
+        /// The current user that is logged in.
+        /// </summary>
         public PandoraUser User {
             get;
             protected set;
         }
 
+        /// <summary>
+        /// The current station being listened to.
+        /// </summary>
         public PandoraStation CurrentStation {
             get { return _currentStation; }
             set {
@@ -26,22 +32,34 @@ namespace PandoraMusicBox.Engine {
             }
         } protected PandoraStation _currentStation;
 
+        /// <summary>
+        /// The current song being played.
+        /// </summary>
         public PandoraSong CurrentSong {
             get;
             protected set;
         }
 
+        /// <summary>
+        /// A list of the last few songs that have been played.
+        /// </summary>
         public List<PandoraSong> PreviousSongs {
             get;
             protected set;
         }
 
+        /// <summary>
+        /// A list of all available stations for the currently logged in user.
+        /// </summary>
         public List<PandoraStation> AvailableStations {
             get;
             protected set;
         }
 
-
+        /// <summary>
+        /// Logs into Pandora with the given credentials.
+        /// </summary>
+        /// <returns>true if the user was successfully logged in.</returns>
         public bool Login(string username, string password) {
             Clear();
 
@@ -60,10 +78,17 @@ namespace PandoraMusicBox.Engine {
             return false;
         }
 
+        /// <summary>
+        /// Clears internal settings reseting the class.
+        /// </summary>
         public void Logout() {
             Clear();
         }
 
+        /// <summary>
+        /// Returns the next song and updates the CurrentSong property. 
+        /// </summary>
+        /// <returns></returns>
         public PandoraSong GetNextSong() {
             while (PreviousSongs.Count > 4) 
                 PreviousSongs.RemoveAt(0);
@@ -74,6 +99,22 @@ namespace PandoraMusicBox.Engine {
 
             CurrentSong = playlist.Dequeue();            
             return CurrentSong;
+        }
+
+        /// <summary>
+        /// Rate the current song. A positive or negative rating will influence future songs 
+        /// played from the current station.
+        /// </summary>
+        /// <param name="rating"></param>
+        public void RateSong(PandoraRating rating) {
+            pandora.RateSong(User, CurrentStation, CurrentSong, rating);
+        }
+
+        /// <summary>
+        /// Ban this song from playing on any of the users stations for one month.
+        /// </summary>
+        public void TemporarilyBanSong() {
+            pandora.AddTiredSong(User, CurrentSong);
         }
 
         protected void Clear() {
@@ -89,14 +130,6 @@ namespace PandoraMusicBox.Engine {
         protected void LoadMoreSongs() {
             foreach (PandoraSong currSong in pandora.GetSongs(User, CurrentStation))
                 playlist.Enqueue(currSong);
-        }
-
-        public void RateSong(PandoraRating rating) {
-            pandora.RateSong(User, CurrentStation, CurrentSong, rating);
-        }
-
-        public void AddTiredSong() {
-            pandora.AddTiredSong(User, CurrentSong);
         }
 
     }
