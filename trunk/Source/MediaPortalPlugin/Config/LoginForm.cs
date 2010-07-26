@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using MediaPortal.GUI.Library;
 using System.Threading;
+using PandoraMusicBox.Engine.Data;
+using System.Diagnostics;
 
 namespace PandoraMusicBox.MediaPortalPlugin.Config {
     public partial class LoginForm : Form {
@@ -31,6 +33,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
             statusLabel.ForeColor = defaultLabelColor;
             statusLabel.Text = "Verifying login credentials...";
             statusLabel.Visible = true;
+            upgradeLinkLabel.Visible = false;
 
             // disable the log in button so the user doesnt double tap it
             okButton.Enabled = false;
@@ -57,14 +60,30 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 statusLabel.Text = "Invalid username or password.";
                 statusLabel.Visible = true;
 
+                upgradeLinkLabel.Visible = false;
+
                 okButton.Text = "Sign In";
                 okButton.Enabled = true;
                 verified = false;
             }
-            else {
+            else if (Core.MusicBox.User.AccountType == AccountType.BASIC) {
+                statusLabel.ForeColor = Color.Red;
+                statusLabel.Text = "Pandora One account is required.";
+                statusLabel.Visible = true;
+
+                upgradeLinkLabel.Visible = true;
+
+                okButton.Text = "Sign In";
+                okButton.Enabled = true;
+                verified = false;
+            }
+            else
+            {
                 statusLabel.ForeColor = Color.Green;
                 statusLabel.Text = "Account successfully validated!";
                 statusLabel.Visible = true;
+
+                upgradeLinkLabel.Visible = false;
 
                 okButton.Text = "OK";
                 okButton.Enabled = true;
@@ -117,6 +136,11 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
 
         private void passwordTextBox_TextChanged(object sender, EventArgs e) {
             ClearStatus();
+        }
+
+        private void upgradeLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+            ProcessStartInfo processInfo = new ProcessStartInfo("http://www.pandora.com/pandora_one");
+            Process.Start(processInfo);
         }
 
 

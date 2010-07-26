@@ -30,6 +30,9 @@
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.statusLabel = new System.Windows.Forms.Label();
+            this.statusPanel = new System.Windows.Forms.Panel();
+            this.upgradeLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.statusPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -56,7 +59,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.emailTextBox.Location = new System.Drawing.Point(12, 29);
             this.emailTextBox.Name = "emailTextBox";
-            this.emailTextBox.Size = new System.Drawing.Size(210, 20);
+            this.emailTextBox.Size = new System.Drawing.Size(246, 20);
             this.emailTextBox.TabIndex = 2;
             this.emailTextBox.TextChanged += new System.EventHandler(this.emailTextBox_TextChanged);
             // 
@@ -66,7 +69,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.passwordTextBox.Location = new System.Drawing.Point(12, 77);
             this.passwordTextBox.Name = "passwordTextBox";
-            this.passwordTextBox.Size = new System.Drawing.Size(210, 20);
+            this.passwordTextBox.Size = new System.Drawing.Size(246, 20);
             this.passwordTextBox.TabIndex = 3;
             this.passwordTextBox.UseSystemPasswordChar = true;
             this.passwordTextBox.TextChanged += new System.EventHandler(this.passwordTextBox_TextChanged);
@@ -74,7 +77,7 @@
             // okButton
             // 
             this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.Location = new System.Drawing.Point(147, 120);
+            this.okButton.Location = new System.Drawing.Point(183, 120);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 4;
@@ -86,7 +89,7 @@
             // 
             this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(66, 120);
+            this.cancelButton.Location = new System.Drawing.Point(102, 120);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 5;
@@ -95,21 +98,46 @@
             // 
             // statusLabel
             // 
-            this.statusLabel.Location = new System.Drawing.Point(12, 100);
+            this.statusLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.statusLabel.Location = new System.Drawing.Point(-12, 0);
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(210, 17);
+            this.statusLabel.Size = new System.Drawing.Size(210, 16);
             this.statusLabel.TabIndex = 6;
             this.statusLabel.Text = "Verifying login credentials...";
             this.statusLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.statusLabel.Visible = false;
             // 
+            // statusPanel
+            // 
+            this.statusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.statusPanel.Controls.Add(this.statusLabel);
+            this.statusPanel.Controls.Add(this.upgradeLinkLabel);
+            this.statusPanel.Location = new System.Drawing.Point(12, 98);
+            this.statusPanel.Name = "statusPanel";
+            this.statusPanel.Size = new System.Drawing.Size(246, 16);
+            this.statusPanel.TabIndex = 7;
+            // 
+            // upgradeLinkLabel
+            // 
+            this.upgradeLinkLabel.AutoSize = true;
+            this.upgradeLinkLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.upgradeLinkLabel.Location = new System.Drawing.Point(198, 0);
+            this.upgradeLinkLabel.Name = "upgradeLinkLabel";
+            this.upgradeLinkLabel.Size = new System.Drawing.Size(48, 13);
+            this.upgradeLinkLabel.TabIndex = 0;
+            this.upgradeLinkLabel.TabStop = true;
+            this.upgradeLinkLabel.Text = "Upgrade";
+            this.upgradeLinkLabel.Visible = false;
+            this.upgradeLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.upgradeLinkLabel_LinkClicked);
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(234, 156);
+            this.ClientSize = new System.Drawing.Size(270, 156);
             this.ControlBox = false;
-            this.Controls.Add(this.statusLabel);
+            this.Controls.Add(this.statusPanel);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.passwordTextBox);
@@ -125,6 +153,8 @@
             this.Text = "Pandora MusicBox";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LoginForm_FormClosed);
             this.Load += new System.EventHandler(this.LoginForm_Load);
+            this.statusPanel.ResumeLayout(false);
+            this.statusPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -139,5 +169,7 @@
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.Panel statusPanel;
+        private System.Windows.Forms.LinkLabel upgradeLinkLabel;
     }
 }
