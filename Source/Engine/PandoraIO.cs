@@ -84,7 +84,7 @@ namespace PandoraMusicBox.Engine {
                 throw new PandoraException("User must be logged in to make this request.");
 
             string reply = ExecuteRequest(user, PandoraRequest.AddTiredSong, song.MusicId);
-            song.Tired = true;
+            song.TemporarilyBanned = true;
         }
 
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {

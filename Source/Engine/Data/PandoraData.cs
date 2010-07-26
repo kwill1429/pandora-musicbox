@@ -20,6 +20,10 @@ namespace PandoraMusicBox.Engine.Data {
             }
         }
 
+        public bool ContainsKey(string key) {
+            return Variables.ContainsKey(key);
+        }
+
         protected static Dictionary<string, string> GetVariables(XmlNode xml) {
             Dictionary<string, string> lookup = new Dictionary<string, string>();
             

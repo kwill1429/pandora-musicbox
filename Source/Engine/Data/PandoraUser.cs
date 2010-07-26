@@ -4,6 +4,8 @@ using System.Text;
 using System.Xml;
 
 namespace PandoraMusicBox.Engine.Data {
+    public enum AccountType { BASIC, TRIAL, PREMIUM }
+
     public class PandoraUser: PandoraData {
 
         internal PandoraUser(Dictionary<string, string> variables) {
@@ -30,6 +32,11 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        public AccountType AccountType {
+            get;
+            internal set;
+        }
+
         internal static PandoraUser Parse(string xmlStr) {
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(xmlStr);
@@ -41,6 +48,10 @@ namespace PandoraMusicBox.Engine.Data {
             user.AuthorizationToken = user["authToken"];
             user.WebAuthorizationToken = user["webAuthToken"];
             user.ListenerId = user["listenerId"];
+            
+            if (user["listenerState"] == "REGISTERED") user.AccountType = AccountType.BASIC;
+            if (user["listenerState"] == "COMPLIMENTARY") user.AccountType = AccountType.TRIAL;
+            if (user["listenerState"] == "SUBSCRIBER") user.AccountType = AccountType.PREMIUM;
 
             return user;
         }

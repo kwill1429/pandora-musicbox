@@ -43,7 +43,7 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
-        public bool Tired {
+        public bool TemporarilyBanned {
             get;
             internal set;
         }
