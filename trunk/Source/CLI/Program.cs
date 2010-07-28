@@ -20,6 +20,7 @@ namespace PandoraMusicBox.CLI {
         
         bool showHelp = false;
         bool showStations = false;
+        int newStationIndex = 0;
 
         static void Main(string[] args) {
             Program p = new Program();
@@ -116,6 +117,7 @@ namespace PandoraMusicBox.CLI {
                         break;
                     case 's':
                         showStations = !showStations;
+                        newStationIndex = 0;
                         showHelp = false;
                         needStatusUpdate = true;
                         break;
@@ -144,18 +146,28 @@ namespace PandoraMusicBox.CLI {
                         showHelp = false;
                         showStations = false;
                         needStatusUpdate = true;
+                        newStationIndex = 0;
                     }
                     else {
                         return;
                     }
                 }
 
-                int stationIndex;
-                if (int.TryParse(choice.KeyChar + "", out stationIndex)) {
-                    if (stationLookup.ContainsKey(stationIndex) && stationLookup[stationIndex] != musicBox.CurrentStation) {
+                if (showStations) {
+                    int stationInput;
+                    if (int.TryParse(choice.KeyChar + "", out stationInput)) {
+                        newStationIndex = int.Parse(newStationIndex.ToString() + stationInput.ToString());
+                    }
+                }
+
+                if (choice.Key == ConsoleKey.Enter) {
+                    if (showStations && newStationIndex > 0) {
+                        if (stationLookup.ContainsKey(newStationIndex) && stationLookup[newStationIndex] != musicBox.CurrentStation) {
+                            musicBox.CurrentStation = stationLookup[newStationIndex];
+                            PlayNext();
+                        }
                         showStations = false;
-                        musicBox.CurrentStation = stationLookup[stationIndex];
-                        PlayNext();
+                        newStationIndex = 0;
                     }
                 }
 
@@ -183,7 +195,10 @@ namespace PandoraMusicBox.CLI {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("press '?' for help");
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write(": ");
+            if (showStations)
+                Console.Write("Station: " + (newStationIndex > 0 ? newStationIndex.ToString() : ""));
+            else
+                Console.Write(": ");
         }
 
         private void PrintStations() {
