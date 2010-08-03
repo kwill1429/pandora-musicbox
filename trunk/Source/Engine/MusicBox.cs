@@ -96,6 +96,9 @@ namespace PandoraMusicBox.Engine {
                 PreviousSongs.RemoveAt(0);
             PreviousSongs.Add(CurrentSong);
 
+            if (!pandora.CanListen(User)) 
+                playlist.Clear();
+
             if (playlist.Count < 3)
                 LoadMoreSongs();
 

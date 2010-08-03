@@ -57,7 +57,7 @@ namespace PandoraMusicBox.CLI {
         }
 
         private bool Init() {
-            CheckForUpgrade();
+            CheckForSettingsUpgrade();
 
             // if we have no login credentials, prompt the user
             if (Settings.Default.Username == string.Empty) {
@@ -154,11 +154,11 @@ namespace PandoraMusicBox.CLI {
                 } 
 
                 if (choice.Key == ConsoleKey.UpArrow) {
-                    player.Volume += 0.1;
+                    player.Volume += 0.01;
                 }
 
                 if (choice.Key == ConsoleKey.DownArrow) {
-                    player.Volume -= 0.1;
+                    player.Volume -= 0.01;
                 }
 
                 if (choice.Key == ConsoleKey.RightArrow) {
@@ -248,7 +248,7 @@ namespace PandoraMusicBox.CLI {
 
         }
 
-        private void CheckForUpgrade() {
+        private void CheckForSettingsUpgrade() {
             if (Settings.Default.UpgradeRequired) {
                 Settings.Default.Upgrade();
                 Settings.Default.UpgradeRequired = false;
@@ -304,7 +304,7 @@ namespace PandoraMusicBox.CLI {
             while (info.Key != ConsoleKey.Enter) {
                 if (info.Key != ConsoleKey.Backspace) {
                     password += info.KeyChar;
-                    Console.Write('·');
+                    Console.Write('•');
                 }
                 else if (info.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(password)) {
                     password = password.Substring(0, password.Length - 1);
