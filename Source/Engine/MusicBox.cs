@@ -6,6 +6,8 @@ using PandoraMusicBox.Engine.Data;
 namespace PandoraMusicBox.Engine {
     public class MusicBox {
 
+        protected delegate void ExecuteDelegate();
+
         protected PandoraIO pandora = new PandoraIO();
         protected Queue<PandoraSong> playlist = new Queue<PandoraSong>();
 
@@ -64,7 +66,7 @@ namespace PandoraMusicBox.Engine {
             Clear();
 
             User = pandora.AuthenticateListener(username, password);
-            if (User != null) {
+            if (User != null && pandora.CanListen(User)) {
                 AvailableStations = pandora.GetStations(User);
                 if (AvailableStations.Count > 0) {
                     CurrentStation = AvailableStations[1];
@@ -107,14 +109,18 @@ namespace PandoraMusicBox.Engine {
         /// </summary>
         /// <param name="rating"></param>
         public void RateSong(PandoraRating rating) {
-            pandora.RateSong(User, CurrentStation, CurrentSong, rating);
+            VerifyAndExecute(delegate {
+                pandora.RateSong(User, CurrentStation, CurrentSong, rating);
+            });
         }
 
         /// <summary>
         /// Ban this song from playing on any of the users stations for one month.
         /// </summary>
         public void TemporarilyBanSong() {
-            pandora.AddTiredSong(User, CurrentSong);
+            VerifyAndExecute(delegate {
+                pandora.AddTiredSong(User, CurrentSong);
+            });    
         }
 
         protected void Clear() {
@@ -128,8 +134,35 @@ namespace PandoraMusicBox.Engine {
         }
 
         protected void LoadMoreSongs() {
-            foreach (PandoraSong currSong in pandora.GetSongs(User, CurrentStation))
+            List<PandoraSong> newSongs = new List<PandoraSong>();
+
+            VerifyAndExecute(delegate {
+                newSongs = pandora.GetSongs(User, CurrentStation);
+            });
+
+            // add our new songs to the playlist
+            foreach (PandoraSong currSong in newSongs)
                 playlist.Enqueue(currSong);
+        }
+
+        /// <summary>
+        /// Try to execute the supplied logic, if we get an authentication error, relogin and try again.
+        /// </summary>
+        /// <param name="logic"></param>
+        protected void VerifyAndExecute(ExecuteDelegate logic) {
+            try { logic(); }
+            catch (PandoraException ex) {
+                // if there was an error and it wasnt an expired session, just toss it up to the client
+                if (ex.ErrorCode != ErrorCodeEnum.AUTH_INVALID_TOKEN) 
+                    throw;
+
+                // our login expired, try logging in again
+                User = pandora.AuthenticateListener(User.Name, User.Password);
+                if (User == null) throw new PandoraException("Username and/or password are no longer valid!");
+
+                // and again, try the desired action
+                logic();
+            }            
         }
 
     }

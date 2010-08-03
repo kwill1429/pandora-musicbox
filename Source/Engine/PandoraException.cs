@@ -8,7 +8,8 @@ namespace PandoraMusicBox.Engine {
         UNKNOWN,
         APPLICATION_ERROR,
 
-        AUTH_INVALID_USERNAME_PASSWORD
+        AUTH_INVALID_USERNAME_PASSWORD,
+        AUTH_INVALID_TOKEN
     }
 
     public class PandoraException: Exception {

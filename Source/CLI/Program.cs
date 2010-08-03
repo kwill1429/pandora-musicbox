@@ -151,7 +151,20 @@ namespace PandoraMusicBox.CLI {
                     else {
                         return;
                     }
+                } 
+
+                if (choice.Key == ConsoleKey.UpArrow) {
+                    player.Volume += 0.1;
                 }
+
+                if (choice.Key == ConsoleKey.DownArrow) {
+                    player.Volume -= 0.1;
+                }
+
+                if (choice.Key == ConsoleKey.RightArrow) {
+                    PlayNext();
+                }
+
 
                 if (showStations) {
                     int stationInput;
@@ -220,12 +233,15 @@ namespace PandoraMusicBox.CLI {
             Console.WriteLine("Available Commands:");
             Console.WriteLine(); 
             Console.WriteLine("SPACE : Play / Pause");
-            Console.WriteLine("n     : Skip to Next Song");
+            Console.WriteLine("RIGHT : Skip to Next Song");
+            Console.WriteLine("UP    : Increase Volume");
+            Console.WriteLine("DOWN  : Decrease Volume");
+            Console.WriteLine();
             Console.WriteLine("s     : Show Station List");
             Console.WriteLine();
             Console.WriteLine("+     : I Like This Song");
             Console.WriteLine("-     : I Don't Like This Song");
-            Console.WriteLine("b     : Temporarily Ban This Song");
+            Console.WriteLine("b     : Temporarily Ban This Song (One Month)");
             Console.WriteLine();
             Console.WriteLine("ESC   : Quit / Back");
             Console.WriteLine();

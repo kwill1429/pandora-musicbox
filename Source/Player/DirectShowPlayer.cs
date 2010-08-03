@@ -33,7 +33,8 @@ namespace Engine {
         private bool _IsPlaying;
         private double? PreviousVolume;
 
-        public double Volume {
+        // absolute control over volume
+        private double RealVolume {
             get {
                 if (basicAudio != null) {
                     int dsVol;
@@ -43,7 +44,7 @@ namespace Engine {
                     DsError.ThrowExceptionForHR(hr);
 
                     // convert to 0.0 - 1.0 value
-                    _Volume = (dsVol - MIN_VOLUME) / (MAX_VOLUME - MIN_VOLUME);
+                    _Volume = ((double) dsVol - MIN_VOLUME) / (MAX_VOLUME - MIN_VOLUME);
                 }
 
                 return _Volume;
@@ -65,6 +66,24 @@ namespace Engine {
                 _Volume = value;
             }
         } protected double _Volume;
+
+        /// <summary>
+        /// Adjusts volume using smooth transitions.
+        /// </summary>
+        public double Volume {
+            set { 
+                _targetVolume = value;
+                if (_targetVolume < 0) _targetVolume = 0;
+                if (_targetVolume > 1) _targetVolume = 1;
+            }
+            get {
+                if (_targetVolume == null)
+                    return RealVolume;
+
+                return (double)_targetVolume;
+            }
+        } private double? _targetVolume = null;
+
 
         public int Position {
             get {
@@ -128,7 +147,7 @@ namespace Engine {
 
                 // maintain previous volume level so it persists from track to track
                 if (PreviousVolume != null)
-                    Volume = (int)PreviousVolume;
+                    RealVolume = (int)PreviousVolume;
 
                 loadedSong = file;
                 return true;
@@ -142,7 +161,7 @@ namespace Engine {
         public void Close() {
             // store current volume so it persists from track to track
             if (loadedSong != null)
-                PreviousVolume = Volume;
+                PreviousVolume = RealVolume;
 
             Stop();
 
@@ -191,6 +210,28 @@ namespace Engine {
             return _IsPlaying;
         }
 
+        private void StepVolume() {
+            if (_targetVolume == null)
+                return;
+
+            double currVol = RealVolume;
+            double diff = Math.Abs(currVol - (double)_targetVolume);
+
+            if (diff <= 0.01) {
+                RealVolume = (double)_targetVolume;
+                _targetVolume = null;
+                return;
+            }
+
+            if (currVol > _targetVolume) {
+                RealVolume -= 0.01;
+            }
+            else {
+                RealVolume += 0.01;
+            }
+
+        }
+
         private void StartEventLoop() {
 
             ThreadStart actions = delegate {
@@ -210,6 +251,8 @@ namespace Engine {
 
                     lock (lockingToken) if (mediaEventEx != null) mediaEventEx.FreeEventParams(evCode, param1, param2);
                     done = (evCode == EventCode.Complete);
+
+                    StepVolume();
                 }
             };
 
