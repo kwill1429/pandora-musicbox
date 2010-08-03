@@ -24,7 +24,13 @@ namespace PandoraMusicBox.Engine.Data {
             return Variables.ContainsKey(key);
         }
 
-        protected static Dictionary<string, string> GetVariables(XmlNode xml) {
+        internal static Dictionary<string, string> GetVariables(string xmlStr) {
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(xmlStr);
+            return GetVariables(xml.SelectSingleNode("//struct"));
+        }
+
+        internal static Dictionary<string, string> GetVariables(XmlNode xml) {
             Dictionary<string, string> lookup = new Dictionary<string, string>();
             
             try {

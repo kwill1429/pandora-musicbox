@@ -33,7 +33,10 @@ namespace PandoraMusicBox.Engine {
         public PandoraUser AuthenticateListener(string username, string password) {
             try {        
                 string reply = ExecuteRequest(null, PandoraRequest.AuthenticateListener, username, password);
-                return PandoraUser.Parse(reply);
+                PandoraUser user = PandoraUser.Parse(reply);
+                user.Password = password;
+
+                return user;
             }
             catch (PandoraException e) {
                 if (e.ErrorCode == ErrorCodeEnum.AUTH_INVALID_USERNAME_PASSWORD)
@@ -87,7 +90,25 @@ namespace PandoraMusicBox.Engine {
             song.TemporarilyBanned = true;
         }
 
+        public bool CanListen(PandoraUser user) {
+            if (user == null)
+                throw new PandoraException("User must be logged in to make this request.");
+
+            string reply = ExecuteRequest(user, false, PandoraRequest.CanListen, user.WebAuthorizationToken);
+            try { 
+                Dictionary<string, string> vars = PandoraData.GetVariables(reply);
+                return vars["canListen"] == "1";
+            }
+            catch {
+                throw new PandoraException("XML-RPC response missing expected value: 'canListen'");
+            }
+        }
+
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {
+            return ExecuteRequest(user, true, request, paramList);
+        }
+
+        private string ExecuteRequest(PandoraUser user, bool useAuthToken, PandoraRequest request, params object[] paramList) {
             string reply;
 
             try {
@@ -102,7 +123,7 @@ namespace PandoraMusicBox.Engine {
                 int index = 0;
                 object[] xmlParams = new object[paramList.Length + 2];
                 xmlParams[index++] = GetTime();
-                if (user != null) xmlParams[index++] = user.AuthorizationToken;
+                if (user != null && useAuthToken) xmlParams[index++] = user.AuthorizationToken;
                 foreach(object currParam in paramList)
                     xmlParams[index++] = currParam;
 
