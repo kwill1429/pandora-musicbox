@@ -19,6 +19,8 @@ namespace PandoraMusicBox.Engine {
 
         #region Predefines Server Requests
 
+        public static readonly string AdvertisementCookie = "c56976829000031||t=1279394668|et=730|cs=lztu3agk";
+
         public static readonly PandoraRequest AuthenticateListener = new PandoraRequest(
             "&authenticateListener",
 

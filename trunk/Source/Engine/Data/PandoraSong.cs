@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using PandoraMusicBox.Engine.Encryption;
 using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace PandoraMusicBox.Engine.Data {
     public class PandoraSong: PandoraData {
@@ -76,6 +77,23 @@ namespace PandoraMusicBox.Engine.Data {
             }
 
             return songs;
+        }
+
+        internal static PandoraSong ParseAdvertisement(string xmlStr) {
+            // fix broken ass xml response and parse out variables. thanks for the malformed xml doubleclick!
+            Regex pattern = new Regex("<!--.*-->");
+            string cleanReply = pattern.Replace(xmlStr, "").Replace("&", "&amp;").Trim();
+            Dictionary<string, string> variables = GetVariables(cleanReply);
+
+            PandoraSong ad = new PandoraSong(variables);
+            ad.Artist = "Advertisement";
+            ad.Album = "Advertisement";
+            ad.Title = "Advertisement";
+
+            ad.AudioURL = ad["audio"];
+            ad.ArtworkURL = "http://pandora.com" + ad["image"];
+
+            return ad;
         }
 
         private static string DecodeUrl(string input) {
