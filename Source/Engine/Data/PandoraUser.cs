@@ -55,9 +55,25 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        public int BirthYear {
+            get;
+            internal set;
+        }
+
+        public int Age {
+            get { return DateTime.Now.Year - BirthYear; }
+        }
+
+        public int ZipCode {
+            get;
+            internal set;
+        }
+
         //public int RemainingHours
 
         internal static PandoraUser Parse(string xmlStr) {
+            int tmp;
+
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(xmlStr);
 
@@ -68,6 +84,16 @@ namespace PandoraMusicBox.Engine.Data {
             user.AuthorizationToken = user["authToken"];
             user.WebAuthorizationToken = user["webAuthToken"];
             user.ListenerId = user["listenerId"];
+            
+            if (int.TryParse(user["zipcode"], out tmp))
+                user.ZipCode = tmp;
+            else
+                user.ZipCode = 0;
+
+            if (int.TryParse(user["birthYear"], out tmp))
+                user.BirthYear = tmp;
+            else
+                user.BirthYear = 0;
             
             if (user["listenerState"] == "REGISTERED") user.AccountType = AccountType.BASIC;
             if (user["listenerState"] == "COMPLIMENTARY") user.AccountType = AccountType.TRIAL;

@@ -304,7 +304,7 @@ namespace PandoraMusicBox.CLI {
             while (info.Key != ConsoleKey.Enter) {
                 if (info.Key != ConsoleKey.Backspace) {
                     password += info.KeyChar;
-                    Console.Write('•');
+                    Console.Write('·');
                 }
                 else if (info.Key == ConsoleKey.Backspace && !string.IsNullOrEmpty(password)) {
                     password = password.Substring(0, password.Length - 1);

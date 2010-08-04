@@ -104,6 +104,24 @@ namespace PandoraMusicBox.Engine {
             }
         }
 
+        public PandoraSong GetAdvertisement(PandoraUser user) {
+            string baseUrl = "http://ad.doubleclick.net/pfadx/pand.default/prod.tuner;fb=0;ag={0};gnd=1;zip={1};hours=0;comped=0;clean=0;playlist=pandora;genre=;segment=1;u=clean*0!playlist*pandora!segment*1!fb*0!ag*{2}!gnd*1!zip*{3}!hours*0!comped*0;sz=134x185;ord={4}";     
+            string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, GetTime() * 10000000);
+
+            // build request to ad server
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+            webRequest.CookieContainer = new CookieContainer();
+            webRequest.CookieContainer.Add(new Uri(url), new Cookie("id", PandoraRequest.AdvertisementCookie));
+            
+            // grab response from server
+            WebResponse response = webRequest.GetResponse();
+            StreamReader sr = new StreamReader(response.GetResponseStream());
+            string reply = sr.ReadToEnd();
+            
+            // parse results and return
+            return PandoraSong.ParseAdvertisement(reply);
+        }
+
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {
             return ExecuteRequest(user, true, request, paramList);
         }
@@ -160,7 +178,6 @@ namespace PandoraMusicBox.Engine {
         private long GetTime() {
             return (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
         }
-
 
     }
 
