@@ -107,11 +107,12 @@ namespace PandoraMusicBox.Engine {
         public PandoraSong GetAdvertisement(PandoraUser user) {
             string baseUrl = "http://ad.doubleclick.net/pfadx/pand.default/prod.tuner;fb=0;ag={0};gnd=1;zip={1};hours=0;comped=0;clean=0;playlist=pandora;genre=;segment=1;u=clean*0!playlist*pandora!segment*1!fb*0!ag*{2}!gnd*1!zip*{3}!hours*0!comped*0;sz=134x185;ord={4}";     
             string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, GetTime() * 10000000);
+            Cookie cookie = getDoubleclickIdCookie(url);
 
             // build request to ad server
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer.Add(new Uri(url), new Cookie("id", PandoraRequest.AdvertisementCookie));
+            webRequest.CookieContainer.Add(cookie);
             
             // grab response from server
             WebResponse response = webRequest.GetResponse();
@@ -120,6 +121,29 @@ namespace PandoraMusicBox.Engine {
             
             // parse results and return
             return PandoraSong.ParseAdvertisement(reply);
+        }
+
+        private Cookie getDoubleclickIdCookie(string url) {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+            webRequest.CookieContainer = new CookieContainer();
+            for (int i = 0; i < 3; i++)
+            {
+                WebResponse response = null;
+
+                response = webRequest.GetResponse();
+                System.Net.HttpWebResponse resp = ((System.Net.HttpWebResponse)response);
+                webRequest.CookieContainer = new CookieContainer();
+                foreach (Cookie c in resp.Cookies)
+                {
+                    if (c.Name == "id")
+                        return c;
+
+                    webRequest = (HttpWebRequest)WebRequest.Create(url);
+                    webRequest.CookieContainer = new CookieContainer();
+                    webRequest.CookieContainer.Add(c);
+                }
+            }
+            return null;
         }
 
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {
