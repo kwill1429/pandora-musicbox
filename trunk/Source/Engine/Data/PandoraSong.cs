@@ -91,7 +91,7 @@ namespace PandoraMusicBox.Engine.Data {
             ad.Title = "Advertisement";
 
             ad.AudioURL = ad["audio"];
-            ad.ArtworkURL = "http://pandora.com" + ad["image"];
+            ad.ArtworkURL = ad["image"];
 
             return ad;
         }
