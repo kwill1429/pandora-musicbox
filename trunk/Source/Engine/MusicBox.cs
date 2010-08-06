@@ -98,11 +98,11 @@ namespace PandoraMusicBox.Engine {
         public PandoraSong GetNextSong() {            
             // update the previous songs list
             while (PreviousSongs.Count > 4) 
-                PreviousSongs.RemoveAt(0);
+                PreviousSongs.RemoveAt(4);
 
             if (CurrentSong != null) {
                 // update playback history
-                PreviousSongs.Add(CurrentSong);
+                PreviousSongs.Insert(0, CurrentSong);
 
                 // keep track of how much listenign time has occured since our last ad
                 TimeSpan realDuration = DateTime.Now - (DateTime) timeLastSongGrabbed;

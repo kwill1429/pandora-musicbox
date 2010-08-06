@@ -17,6 +17,26 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         bool initialized = false;
         bool playingRadio = false;
 
+        #region GUI Controls
+
+        [SkinControl(2)]
+        protected GUIButtonControl btnCurrentSong = null;
+
+        [SkinControl(3)]
+        protected GUIButtonControl btnHistory1Song = null;
+
+        [SkinControl(4)]
+        protected GUIButtonControl btnHistory2Song = null;
+
+        [SkinControl(5)]
+        protected GUIButtonControl btnHistory3Song = null;
+
+        [SkinControl(6)]
+        protected GUIButtonControl btnHistory4Song = null;
+
+
+        #endregion
+
         public void LoginAndPlay() {
             // if needed, attempt to log in
             if (Core.MusicBox.User == null)
@@ -37,9 +57,46 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             PandoraSong song = Core.MusicBox.GetNextSong();
             g_Player.PlayAudioStream(song.AudioURL);
 
+            UpdateGUI();
+        }
+
+        private void UpdateGUI() {
+            var currentSong = Core.MusicBox.CurrentSong;
+
             // publish song details to the skin
-            SetProperty("#Play.Current.Title", song.Title);
-            SetProperty("#Play.Current.Artist", song.Artist);
+            SetProperty("#Play.Current.Title", currentSong.Title);
+            SetProperty("#Play.Current.Artist", currentSong.Artist);
+
+            SetProperty("#PandoraMusicBox.Current.Artist", currentSong.Artist);
+            SetProperty("#PandoraMusicBox.Current.Title", currentSong.Title);
+            SetProperty("#PandoraMusicBox.Current.Album", currentSong.Album);
+            SetProperty("#PandoraMusicBox.Current.ArtworkURL", currentSong.ArtworkURL);
+            SetProperty("#PandoraMusicBox.Current.Rating", currentSong.Rating.ToString());
+            SetProperty("#PandoraMusicBox.Current.TemporarilyBanned", currentSong.TemporarilyBanned.ToString());
+
+            for (int i = 1; i <= 4; i++)
+            {
+                SetProperty("#PandoraMusicBox.History" + i + ".Artist", "");
+                SetProperty("#PandoraMusicBox.History" + i + ".Title", "");
+                SetProperty("#PandoraMusicBox.History" + i + ".Album", "");
+                SetProperty("#PandoraMusicBox.History" + i + ".ArtworkURL", "");
+                SetProperty("#PandoraMusicBox.History" + i + ".Rating", "");
+                SetProperty("#PandoraMusicBox.History" + i + ".TemporarilyBanned", "");
+            }
+
+            int iHistory = 1;
+            foreach (var song in Core.MusicBox.PreviousSongs)
+            {
+                SetProperty("#PandoraMusicBox.History" + iHistory + ".Artist", song.Artist);
+                SetProperty("#PandoraMusicBox.History" + iHistory + ".Title", song.Title);
+                SetProperty("#PandoraMusicBox.History" + iHistory + ".Album", song.Album);
+                SetProperty("#PandoraMusicBox.History" + iHistory + ".ArtworkURL", song.ArtworkURL);
+                SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", song.Rating.ToString());
+                SetProperty("#PandoraMusicBox.History" + iHistory + ".TemporarilyBanned", song.TemporarilyBanned.ToString());
+                iHistory++;
+            }
+
+            SetProperty("#PandoraMusicBox.CurrentStation.Name", Core.MusicBox.CurrentStation.Name);
         }
 
         private void SetProperty(string property, string value) {
@@ -114,6 +171,9 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_MUSIC_PLAY:
                     if (!playingRadio)
                         PlayNextTrack();
+                    break;
+                case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
+                    PlayNextTrack();
                     break;
                 default:
                     base.OnAction(action);
