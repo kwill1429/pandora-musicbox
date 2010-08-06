@@ -83,8 +83,8 @@ namespace PandoraMusicBox.CLI {
 
         void player_PlaybackEvent(EventCode eventCode) {
             if (eventCode == EventCode.Complete) {
-                needStatusUpdate = true;
                 PlayNext();
+                needStatusUpdate = true;
             }
         }
 
