@@ -9,6 +9,11 @@ namespace PandoraMusicBox.Engine.Data {
     public class PandoraSong: PandoraData {
         private static BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
 
+        public bool IsAdvertisement {
+            get;
+            internal set;
+        }
+
         public string MusicId {
             get;
             internal set;
@@ -49,6 +54,11 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        public TimeSpan Length {
+            get;
+            internal set;
+        }
+
         internal PandoraSong(Dictionary<string, string> variables) {
             this.Variables = variables;
         }
@@ -73,6 +83,8 @@ namespace PandoraMusicBox.Engine.Data {
                 if (song["rating"] == "1") song.Rating = PandoraRating.Love;
                 else song.Rating = PandoraRating.Unrated;
 
+                song.IsAdvertisement = false;
+
                 songs.Add(song);
             }
 
@@ -91,7 +103,9 @@ namespace PandoraMusicBox.Engine.Data {
             ad.Title = "Advertisement";
 
             ad.AudioURL = ad["audio"];
-            ad.ArtworkURL = ad["image"];
+            ad.ArtworkURL = "http://pandora.com" + ad["image"];
+
+            ad.IsAdvertisement = true;
 
             return ad;
         }

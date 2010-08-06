@@ -50,6 +50,11 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        public int AdInterval {
+            get;
+            internal set;
+        }
+
         public AccountType AccountType {
             get;
             internal set;
@@ -84,6 +89,11 @@ namespace PandoraMusicBox.Engine.Data {
             user.AuthorizationToken = user["authToken"];
             user.WebAuthorizationToken = user["webAuthToken"];
             user.ListenerId = user["listenerId"];
+            
+            if (int.TryParse(user["autoplayAdInterval"], out tmp))
+                user.AdInterval = tmp;
+            else 
+                user.AdInterval = 15;
             
             if (int.TryParse(user["zipcode"], out tmp))
                 user.ZipCode = tmp;
