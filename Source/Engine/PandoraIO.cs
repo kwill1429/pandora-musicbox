@@ -61,17 +61,28 @@ namespace PandoraMusicBox.Engine {
         /// Retrieves a playlist for the given station.
         /// </summary>
         public List<PandoraSong> GetSongs(PandoraUser user, PandoraStation station) {
-            if (user == null)
-                throw new PandoraException("User must be logged in to make this request.");
+            if (user == null) throw new PandoraException("User must be logged in to make this request.");
 
+            // grab song list from server
             string reply = ExecuteRequest(user, PandoraRequest.GetFragment, station.Id, "mp3-hifi");
-            return PandoraSong.Parse(reply);
+            List<PandoraSong> songs = PandoraSong.Parse(reply);
 
+            // loop through our song list and estimate the length of each song based on file size
+            foreach (PandoraSong currSong in songs) {
+                WebRequest dummyRequest = WebRequest.Create(currSong.AudioURL);
+                using (WebResponse response = dummyRequest.GetResponse()) {
+                    long bytes = response.ContentLength;
+                    int seconds = (int)((bytes * 8) / (user.AccountType == AccountType.PREMIUM ? 192000 : 128000));
+                    currSong.Length = new TimeSpan(0, 0, seconds);
+                }
+            }
+
+            return songs;
         }
 
         public void RateSong(PandoraUser user, PandoraStation station, PandoraSong song, PandoraRating rating) {
-            if (user == null)
-                throw new PandoraException("User must be logged in to make this request.");
+            if (user == null) throw new PandoraException("User must be logged in to make this request.");
+
             string matchingSeed = "";
             string userSeed = "";
             string focusTraitId = "";
@@ -83,16 +94,14 @@ namespace PandoraMusicBox.Engine {
         }
 
         public void AddTiredSong(PandoraUser user, PandoraSong song) {
-            if (user == null)
-                throw new PandoraException("User must be logged in to make this request.");
+            if (user == null) throw new PandoraException("User must be logged in to make this request.");
 
             string reply = ExecuteRequest(user, PandoraRequest.AddTiredSong, song.MusicId);
             song.TemporarilyBanned = true;
         }
 
         public bool CanListen(PandoraUser user) {
-            if (user == null)
-                throw new PandoraException("User must be logged in to make this request.");
+            if (user == null) throw new PandoraException("User must be logged in to make this request.");
 
             string reply = ExecuteRequest(user, false, PandoraRequest.CanListen, user.WebAuthorizationToken);
             try { 
@@ -115,8 +124,7 @@ namespace PandoraMusicBox.Engine {
             webRequest.CookieContainer.Add(cookie);
             
             // grab response from server
-            using (WebResponse response = webRequest.GetResponse())
-            {
+            using (WebResponse response = webRequest.GetResponse()) {
                 StreamReader sr = new StreamReader(response.GetResponseStream());
                 string reply = sr.ReadToEnd();
 
@@ -128,23 +136,22 @@ namespace PandoraMusicBox.Engine {
         private Cookie getDoubleclickIdCookie(string url) {
             HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.CookieContainer = new CookieContainer();
-            for (int i = 0; i < 3; i++)
-            {
-                    using (WebResponse response = webRequest.GetResponse())
-                    {
-                        System.Net.HttpWebResponse resp = ((System.Net.HttpWebResponse)response);
-                        webRequest.CookieContainer = new CookieContainer();
-                        foreach (Cookie c in resp.Cookies)
-                        {
-                            if (c.Name == "id")
-                                return c;
+             
+            for (int i = 0; i < 3; i++) {
+                using (WebResponse response = webRequest.GetResponse()) {
+                    System.Net.HttpWebResponse resp = ((System.Net.HttpWebResponse)response);
+                    webRequest.CookieContainer = new CookieContainer();
+                    foreach (Cookie c in resp.Cookies) {
+                        if (c.Name == "id")
+                            return c;
 
-                            webRequest = (HttpWebRequest)WebRequest.Create(url);
-                            webRequest.CookieContainer = new CookieContainer();
-                            webRequest.CookieContainer.Add(c);
-                        }
+                        webRequest = (HttpWebRequest)WebRequest.Create(url);
+                        webRequest.CookieContainer = new CookieContainer();
+                        webRequest.CookieContainer.Add(c);
+                    }
                 }
             }
+
             return null;
         }
 
@@ -186,9 +193,10 @@ namespace PandoraMusicBox.Engine {
                 os.Close();
 
                 // retrieve reply from servers
-                WebResponse response = webRequest.GetResponse();
-                StreamReader sr = new StreamReader(response.GetResponseStream());
-                reply = sr.ReadToEnd();
+                using (WebResponse response = webRequest.GetResponse()) {
+                    StreamReader sr = new StreamReader(response.GetResponseStream());
+                    reply = sr.ReadToEnd();
+                }
             }
             catch (Exception ex) {
                 throw new PandoraException("Unexpected error communicating with server.", ex);
@@ -207,8 +215,7 @@ namespace PandoraMusicBox.Engine {
 
     }
 
-    public enum PandoraRating
-    {
+    public enum PandoraRating {
         Love = 1,
         Unrated = 0,
         Hate = -1

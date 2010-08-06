@@ -11,6 +11,10 @@ namespace PandoraMusicBox.Engine {
         protected PandoraIO pandora = new PandoraIO();
         protected Queue<PandoraSong> playlist = new Queue<PandoraSong>();
 
+        protected TimeSpan timeSinceLastAd = new TimeSpan(0);
+        protected DateTime timeLastSongGrabbed;
+        protected TimeSpan? currentAdInterval = null;
+
         /// <summary>
         /// The current user that is logged in.
         /// </summary>
@@ -91,19 +95,39 @@ namespace PandoraMusicBox.Engine {
         /// Returns the next song and updates the CurrentSong property. 
         /// </summary>
         /// <returns></returns>
-        public PandoraSong GetNextSong() {
+        public PandoraSong GetNextSong() {            
+            // update the previous songs list
             while (PreviousSongs.Count > 4) 
                 PreviousSongs.RemoveAt(0);
 
-            if (CurrentSong != null)
+            if (CurrentSong != null) {
+                // update playback history
                 PreviousSongs.Add(CurrentSong);
 
-            if (!pandora.CanListen(User)) 
-                playlist.Clear();
+                // keep track of how much listenign time has occured since our last ad
+                TimeSpan realDuration = DateTime.Now - (DateTime) timeLastSongGrabbed;
+                if (realDuration > CurrentSong.Length)
+                    timeSinceLastAd = timeSinceLastAd.Add(CurrentSong.Length);
+                else
+                    timeSinceLastAd = timeSinceLastAd.Add(realDuration);
+            }
 
-            if (playlist.Count < 3)
-                LoadMoreSongs();
+            timeLastSongGrabbed = DateTime.Now;
 
+            // if needed add more songs to our queue
+            if (playlist.Count < 3) LoadMoreSongs();
+
+            // if it is time for an ad reset the ad timer and return an ad instead of a song
+            if (currentAdInterval == null) currentAdInterval = new TimeSpan(0, User.AdInterval / 2, 0);
+            if (User.AccountType == AccountType.BASIC && timeSinceLastAd > currentAdInterval) {
+                currentAdInterval = new TimeSpan(0, User.AdInterval, 0);
+                timeSinceLastAd = new TimeSpan(0);
+
+                CurrentSong = pandora.GetAdvertisement(User);
+                return CurrentSong;
+            }
+                       
+            // no ad needed, just return the next song 
             CurrentSong = playlist.Dequeue();            
             return CurrentSong;
         }
@@ -163,6 +187,7 @@ namespace PandoraMusicBox.Engine {
 
                 // our login expired, try logging in again
                 User = pandora.AuthenticateListener(User.Name, User.Password);
+                playlist.Clear();
                 if (User == null) throw new PandoraException("Username and/or password are no longer valid!");
 
                 // and again, try the desired action
