@@ -85,6 +85,8 @@
     <None Include="Resources\merge.bat" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GUI\Skins\Blue3Wide\Media\pandoraoverlay.png" />
+    <Content Include="GUI\Skins\Blue3Wide\Media\pandora_logo.png" />
     <Content Include="GUI\Skins\Blue3Wide\musicbox.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
