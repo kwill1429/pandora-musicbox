@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <window>
   <!-- 
-  This is the main subcentral skin file and should contain all screen elements that are common
+  This is the main pandora skin file and should contain all screen elements that are common
   to all views in the GUI. Anything that belongs only in a specific view should be placed in the
   coorespodning subfile.
   -->
-  
+
   <id>82341</id>
   <defaultcontrol>1</defaultcontrol>
   <allowoverlay>no</allowoverlay>
@@ -21,6 +21,315 @@
       <height>720</height>
       <texture>background.png</texture>
     </control>
+
+    <control>
+      <description>Pandora Overlay</description>
+      <type>image</type>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>1280</width>
+      <height>50</height>
+      <texture>pandoraoverlay.png</texture>
+    </control>
+
+
+    <!-- Top Bar Controls -->
+    <control>
+      <type>image</type>
+      <posX>3</posX>
+      <posY>-10</posY>
+      <width>70</width>
+      <height>70</height>
+      <texture>hover_my radio.png</texture>
+      <animation effect="fade" time="250">WindowOpen</animation>
+      <animation effect="fade" time="250">WindowClose</animation>
+    </control>
+    <control>
+      <description>Date</description>
+      <type>label</type>
+      <posX>1244</posX>
+      <posY>7</posY>
+      <label>#date</label>
+      <align>right</align>
+      <font>font11</font>
+      <textcolor>ffa9d0f7</textcolor>
+      <animation effect="fade" time="250">WindowOpen</animation>
+      <animation effect="fade" time="250">WindowClose</animation>
+    </control>
+    <control>
+      <description>Time</description>
+      <type>label</type>
+      <posX>1244</posX>
+      <posY>26</posY>
+      <label>#time</label>
+      <align>right</align>
+      <font>font11</font>
+      <textcolor>ffa9d0f7</textcolor>
+      <animation effect="fade" time="250">WindowOpen</animation>
+      <animation effect="fade" time="250">WindowClose</animation>
+    </control>
+    <control>
+      <description>Pandora Logo</description>
+      <type>image</type>
+      <texture>pandora_logo.png</texture>
+      <posX>80</posX>
+      <posY>12</posY>
+      <width>259</width>
+      <height>31</height>
+      <animation effect="fade" time="250">WindowOpen</animation>
+      <animation effect="fade" time="250">WindowClose</animation>
+    </control>
+    <control>
+      <description>Current Station</description>
+      <type>label</type>
+      <posX>350</posX>
+      <posY>20</posY>
+      <width>900</width>
+      <font>font11</font>
+      <label>: #PandoraMusicBox.CurrentStation.Name</label>
+      <textcolor>ffa9d0f7</textcolor>
+      <animation effect="fade" time="250">WindowOpen</animation>
+      <animation effect="fade" time="250">WindowClose</animation>
+    </control>
+
+
+
+    <!-- Buttons -->
+    <control>
+      <description>History Song 4 Button</description>
+      <type>button</type>
+      <id>6</id>
+      <label></label>
+      <posX>105</posX>
+      <posY>465</posY>
+      <width>200</width>
+      <height>285</height>
+      <onleft>6</onleft>
+      <onright>5</onright>
+      <ondown>6</ondown>
+    </control>
+
+    <control>
+      <description>History Song 3 Button</description>
+      <type>button</type>
+      <id>5</id>
+      <label></label>
+      <posX>310</posX>
+      <posY>465</posY>
+      <width>200</width>
+      <height>285</height>
+      <onleft>6</onleft>
+      <onright>4</onright>
+      <ondown>5</ondown>
+    </control>
+
+    <control>
+      <description>History Song 2 Button</description>
+      <type>button</type>
+      <id>4</id>
+      <label></label>
+      <posX>515</posX>
+      <posY>465</posY>
+      <width>200</width>
+      <height>285</height>
+      <onleft>5</onleft>
+      <onright>3</onright>
+      <ondown>4</ondown>
+    </control>
+
+    <control>
+      <description>History Song 1 Button</description>
+      <type>button</type>
+      <id>3</id>
+      <label></label>
+      <posX>720</posX>
+      <posY>465</posY>
+      <width>200</width>
+      <height>285</height>
+      <onleft>4</onleft>
+      <onright>2</onright>
+      <ondown>3</ondown>
+    </control>
+
+    <control>
+      <description>Current Song Button</description>
+      <type>button</type>
+      <id>2</id>
+      <label></label>
+      <posX>950</posX>
+      <posY>350</posY>
+      <width>300</width>
+      <height>410</height>
+      <onleft>3</onleft>
+      <onright>2</onright>
+      <ondown>2</ondown>
+    </control>
+
+
+
+    <!-- Album Art -->
+    <control>
+      <description>History 4 Image</description>
+      <type>image</type>
+      <texture>#PandoraMusicBox.History4.ArtworkURL</texture>
+      <posX>115</posX>
+      <posY>525</posY>
+      <width>175</width>
+      <height>175</height>
+    </control>
+
+    <control>
+      <description>History 3 Image</description>
+      <type>image</type>
+      <texture>#PandoraMusicBox.History3.ArtworkURL</texture>
+      <posX>320</posX>
+      <posY>525</posY>
+      <width>175</width>
+      <height>175</height>
+    </control>
+
+    <control>
+      <description>History 2 Image</description>
+      <type>image</type>
+      <texture>#PandoraMusicBox.History2.ArtworkURL</texture>
+      <posX>525</posX>
+      <posY>525</posY>
+      <width>175</width>
+      <height>175</height>
+    </control>
+
+    <control>
+      <description>History 1 Image</description>
+      <type>image</type>
+      <texture>#PandoraMusicBox.History1.ArtworkURL</texture>
+      <posX>730</posX>
+      <posY>525</posY>
+      <width>175</width>
+      <height>175</height>
+    </control>
+
+    <control>
+      <description>Current Song Image</description>
+      <type>image</type>
+      <texture>#PandoraMusicBox.Current.ArtworkURL</texture>
+      <posX>965</posX>
+      <posY>425</posY>
+      <width>260</width>
+      <height>260</height>
+    </control>
+
+    <!-- Song Labels -->
+    <control>
+      <description>History 4 Title</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.History4.Title</label>
+      <posX>115</posX>
+      <posY>480</posY>
+      <width>180</width>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>History 4 Artist</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.History4.Artist</label>
+      <posX>115</posX>
+      <posY>500</posY>
+      <width>180</width>
+      <font>font10</font>
+      <textcolor>ffa9d0f7</textcolor>
+    </control>
+
+
+    <control>
+      <description>History 3 Title</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.History3.Title</label>
+      <posX>320</posX>
+      <posY>480</posY>
+      <width>180</width>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>History 3 Artist</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.History3.Artist</label>
+      <posX>320</posX>
+      <posY>500</posY>
+      <width>180</width>
+      <font>font10</font>
+      <textcolor>ffa9d0f7</textcolor>
+    </control>
+
+
+    <control>
+      <description>History 2 Title</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.History2.Title</label>
+      <posX>525</posX>
+      <posY>480</posY>
+      <width>180</width>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>History 2 Artist</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.History2.Artist</label>
+      <posX>525</posX>
+      <posY>500</posY>
+      <width>180</width>
+      <font>font10</font>
+      <textcolor>ffa9d0f7</textcolor>
+    </control>
+
+
+
+    <control>
+      <description>History 1 Title</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.History1.Title</label>
+      <posX>730</posX>
+      <posY>480</posY>
+      <width>180</width>
+      <font>font10</font>
+    </control>
+
+    <control>
+      <description>History 1 Artist</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.History1.Artist</label>
+      <posX>730</posX>
+      <posY>500</posY>
+      <width>180</width>
+      <font>font10</font>
+      <textcolor>ffa9d0f7</textcolor>
+    </control>
+
+
+    <control>
+      <description>Current Title</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.Current.Title</label>
+      <posX>965</posX>
+      <posY>370</posY>
+      <width>280</width>
+      <font>font12</font>
+    </control>
+
+    <control>
+      <description>Current Artist</description>
+      <type>label</type>
+      <label>#PandoraMusicBox.Current.Artist</label>
+      <posX>965</posX>
+      <posY>395</posY>
+      <width>280</width>
+      <font>font12</font>
+      <textcolor>ffa9d0f7</textcolor>
+    </control>
+
+
 
   </controls>
 </window>
