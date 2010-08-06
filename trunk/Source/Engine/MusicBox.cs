@@ -94,7 +94,9 @@ namespace PandoraMusicBox.Engine {
         public PandoraSong GetNextSong() {
             while (PreviousSongs.Count > 4) 
                 PreviousSongs.RemoveAt(0);
-            PreviousSongs.Add(CurrentSong);
+
+            if (CurrentSong != null)
+                PreviousSongs.Add(CurrentSong);
 
             if (!pandora.CanListen(User)) 
                 playlist.Clear();

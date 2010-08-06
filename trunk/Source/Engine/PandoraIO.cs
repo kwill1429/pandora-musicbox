@@ -115,12 +115,14 @@ namespace PandoraMusicBox.Engine {
             webRequest.CookieContainer.Add(cookie);
             
             // grab response from server
-            WebResponse response = webRequest.GetResponse();
-            StreamReader sr = new StreamReader(response.GetResponseStream());
-            string reply = sr.ReadToEnd();
-            
-            // parse results and return
-            return PandoraSong.ParseAdvertisement(reply);
+            using (WebResponse response = webRequest.GetResponse())
+            {
+                StreamReader sr = new StreamReader(response.GetResponseStream());
+                string reply = sr.ReadToEnd();
+
+                // parse results and return
+                return PandoraSong.ParseAdvertisement(reply);
+            }
         }
 
         private Cookie getDoubleclickIdCookie(string url) {
@@ -128,19 +130,19 @@ namespace PandoraMusicBox.Engine {
             webRequest.CookieContainer = new CookieContainer();
             for (int i = 0; i < 3; i++)
             {
-                WebResponse response = null;
+                    using (WebResponse response = webRequest.GetResponse())
+                    {
+                        System.Net.HttpWebResponse resp = ((System.Net.HttpWebResponse)response);
+                        webRequest.CookieContainer = new CookieContainer();
+                        foreach (Cookie c in resp.Cookies)
+                        {
+                            if (c.Name == "id")
+                                return c;
 
-                response = webRequest.GetResponse();
-                System.Net.HttpWebResponse resp = ((System.Net.HttpWebResponse)response);
-                webRequest.CookieContainer = new CookieContainer();
-                foreach (Cookie c in resp.Cookies)
-                {
-                    if (c.Name == "id")
-                        return c;
-
-                    webRequest = (HttpWebRequest)WebRequest.Create(url);
-                    webRequest.CookieContainer = new CookieContainer();
-                    webRequest.CookieContainer.Add(c);
+                            webRequest = (HttpWebRequest)WebRequest.Create(url);
+                            webRequest.CookieContainer = new CookieContainer();
+                            webRequest.CookieContainer.Add(c);
+                        }
                 }
             }
             return null;
