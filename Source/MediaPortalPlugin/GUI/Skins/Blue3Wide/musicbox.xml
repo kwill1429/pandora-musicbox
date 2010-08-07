@@ -101,12 +101,16 @@
       <id>6</id>
       <label></label>
       <posX>105</posX>
-      <posY>465</posY>
+      <posY>480</posY>
       <width>200</width>
-      <height>285</height>
+      <height>236</height>
       <onleft>6</onleft>
       <onright>5</onright>
       <ondown>6</ondown>
+      <textureNoFocus>pandora_tile.png</textureNoFocus>
+      <textureFocus>pandora_tile_focus.png</textureFocus>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">unfocus</animation>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">focus</animation>
     </control>
 
     <control>
@@ -115,12 +119,16 @@
       <id>5</id>
       <label></label>
       <posX>310</posX>
-      <posY>465</posY>
+      <posY>480</posY>
       <width>200</width>
-      <height>285</height>
+      <height>236</height>
       <onleft>6</onleft>
       <onright>4</onright>
       <ondown>5</ondown>
+      <textureNoFocus>pandora_tile.png</textureNoFocus>
+      <textureFocus>pandora_tile_focus.png</textureFocus>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">unfocus</animation>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">focus</animation>
     </control>
 
     <control>
@@ -129,12 +137,16 @@
       <id>4</id>
       <label></label>
       <posX>515</posX>
-      <posY>465</posY>
+      <posY>480</posY>
       <width>200</width>
-      <height>285</height>
+      <height>236</height>
       <onleft>5</onleft>
       <onright>3</onright>
       <ondown>4</ondown>
+      <textureNoFocus>pandora_tile.png</textureNoFocus>
+      <textureFocus>pandora_tile_focus.png</textureFocus>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">unfocus</animation>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">focus</animation>
     </control>
 
     <control>
@@ -143,12 +155,16 @@
       <id>3</id>
       <label></label>
       <posX>720</posX>
-      <posY>465</posY>
+      <posY>480</posY>
       <width>200</width>
-      <height>285</height>
+      <height>236</height>
       <onleft>4</onleft>
       <onright>2</onright>
       <ondown>3</ondown>
+      <textureNoFocus>pandora_tile.png</textureNoFocus>
+      <textureFocus>pandora_tile_focus.png</textureFocus>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">unfocus</animation>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">focus</animation>
     </control>
 
     <control>
@@ -157,15 +173,17 @@
       <id>2</id>
       <label></label>
       <posX>950</posX>
-      <posY>350</posY>
-      <width>300</width>
-      <height>410</height>
+      <posY>365</posY>
+      <width>299</width>
+      <height>354</height>
       <onleft>3</onleft>
       <onright>2</onright>
       <ondown>2</ondown>
+      <textureNoFocus>pandora_tile.png</textureNoFocus>
+      <textureFocus>pandora_tile_focus.png</textureFocus>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">unfocus</animation>
+      <animation effect="zoom" start="100,100" end="100,100" time="100">focus</animation>
     </control>
-
-
 
     <!-- Album Art -->
     <control>
@@ -314,7 +332,7 @@
       <label>#PandoraMusicBox.Current.Title</label>
       <posX>965</posX>
       <posY>370</posY>
-      <width>280</width>
+      <width>260</width>
       <font>font12</font>
     </control>
 
@@ -324,12 +342,61 @@
       <label>#PandoraMusicBox.Current.Artist</label>
       <posX>965</posX>
       <posY>395</posY>
-      <width>280</width>
+      <width>260</width>
       <font>font12</font>
       <textcolor>ffa9d0f7</textcolor>
     </control>
 
 
 
+    <control>
+      <description>History 4 Rating</description>
+      <type>image</type>
+      <texture>pandora_rating_#PandoraMusicBox.History4.Rating.png</texture>
+      <posX>255</posX>
+      <posY>485</posY>
+      <width>37</width>
+      <height>37</height>
+    </control>
+
+    <control>
+      <description>History 3 Rating</description>
+      <type>image</type>
+      <texture>pandora_rating_#PandoraMusicBox.History3.Rating.png</texture>
+      <posX>460</posX>
+      <posY>485</posY>
+      <width>37</width>
+      <height>37</height>
+    </control>
+
+    <control>
+      <description>History 2 Rating</description>
+      <type>image</type>
+      <texture>pandora_rating_#PandoraMusicBox.History2.Rating.png</texture>
+      <posX>665</posX>
+      <posY>485</posY>
+      <width>37</width>
+      <height>37</height>
+    </control>
+
+    <control>
+      <description>History 1 Rating</description>
+      <type>image</type>
+      <texture>pandora_rating_#PandoraMusicBox.History1.Rating.png</texture>
+      <posX>870</posX>
+      <posY>485</posY>
+      <width>37</width>
+      <height>37</height>
+    </control>
+
+    <control>
+      <description>Current Song Rating</description>
+      <type>image</type>
+      <texture>pandora_rating_#PandoraMusicBox.Current.Rating.png</texture>
+      <posX>1180</posX>
+      <posY>370</posY>
+      <width>51</width>
+      <height>51</height>
+    </control>
   </controls>
 </window>
