@@ -17,6 +17,8 @@ namespace PandoraMusicBox.MediaPortalPlugin {
             Namespace = "PandoraMusicBox";
         }
 
+        #region Settings
+
         [Setting]
         public string UserName {
             get;
@@ -47,8 +49,28 @@ namespace PandoraMusicBox.MediaPortalPlugin {
         }
 
         public PandoraStation LastStation {
-            get;
-            set;
+            get {
+                PandoraUser user = MusicBoxCore.Instance.MusicBox.User;
+                if (user == null) return null;
+                return GetStation(MusicBoxCore.Instance.MusicBox.AvailableStations, LastStationId);
+            }
+            set {
+                LastStationId = value.Id;
+            }
         }
+
+        #endregion
+
+        #region Helper Methods
+
+        public PandoraStation GetStation(IList<PandoraStation> stations, string stationID) {
+            foreach (PandoraStation currStation in stations)
+                if (currStation.Id == stationID)
+                    return currStation;
+
+            return null;
+        }
+
+        #endregion
     }
 }

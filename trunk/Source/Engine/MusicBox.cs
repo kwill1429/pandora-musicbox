@@ -73,10 +73,8 @@ namespace PandoraMusicBox.Engine {
             User = pandora.AuthenticateListener(username, password);
             if (User != null && pandora.CanListen(User)) {
                 AvailableStations = pandora.GetStations(User);
-                if (AvailableStations.Count > 0) {
-                    CurrentStation = AvailableStations[1];
-                    LoadMoreSongs();
-                }
+                if (AvailableStations.Count > 0) 
+                    CurrentStation = AvailableStations[0];
 
                 return true;
             }
@@ -116,7 +114,7 @@ namespace PandoraMusicBox.Engine {
             timeLastSongGrabbed = DateTime.Now;
 
             // if needed add more songs to our queue
-            if (playlist.Count < 3) LoadMoreSongs();
+            if (playlist.Count < 2) LoadMoreSongs();
 
             // if it is time for an ad reset the ad timer and return an ad instead of a song
             if (currentAdInterval == null) currentAdInterval = new TimeSpan(0, User.AdInterval / 2, 0);
