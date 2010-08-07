@@ -47,6 +47,9 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             if (Core.MusicBox.User == null) {
                 logger.Info("Attempting to log in: " + Core.Settings.UserName);
                 Core.MusicBox.Login(Core.Settings.UserName, Core.Settings.Password);
+                
+                if (Core.Settings.LastStation != null)
+                    Core.MusicBox.CurrentStation = Core.Settings.LastStation;
 
                 if (Core.MusicBox.User == null) {
                     logger.Error("Invalid username or password.");
@@ -71,6 +74,15 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             g_Player.PlayAudioStream(song.AudioURL);
 
             UpdateGUI();
+        }
+
+        public void PromptAndChangeStation() {
+            PandoraStation newStation = showStationChooser();
+            if (newStation != null && newStation != Core.MusicBox.CurrentStation) {
+                Core.MusicBox.CurrentStation = newStation;
+                Core.Settings.LastStation = newStation;
+                PlayNextTrack();
+            }
         }
 
         private void UpdateGUI() {
@@ -201,8 +213,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_PLAY:
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_MUSIC_PLAY:
                     logger.Debug("ACTION_PLAY or ACTION_MUSIC_PLAY fired.");
-                    if (!playingRadio)
-                        PlayNextTrack();
+                    if (!playingRadio) PlayNextTrack();
                     break;
                 default:
                     base.OnAction(action);
@@ -262,8 +273,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         #region Context Menu Methods
 
-        private void showMainContext()
-        {
+        private void showMainContext() {
             IDialogbox dialog = (IDialogbox)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_MENU);
             dialog.Reset();
             dialog.SetHeading("Pandora MusicBox");
@@ -284,37 +294,26 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             dialog.Add(tempBanItem);
             dialog.DoModal(GUIWindowManager.ActiveWindow);
 
-            if (dialog.SelectedId == stationsItem.ItemId)
-            {
-                PandoraStation newStation = showStationChooser();
-                if (newStation != null && newStation != Core.MusicBox.CurrentStation)
-                {
-                    Core.MusicBox.CurrentStation = newStation;
-                    PlayNextTrack();
-                }
+            if (dialog.SelectedId == stationsItem.ItemId) {
+                PromptAndChangeStation();
             }
 
-            else if (dialog.SelectedId == newStationItem.ItemId)
-            {
+            else if (dialog.SelectedId == newStationItem.ItemId) {
                 // todo: onscreen keyboard to create a new station
             }
 
-            else if (dialog.SelectedId == whySelectedItem.ItemId)
-            {
+            else if (dialog.SelectedId == whySelectedItem.ItemId) {
                 // todo: show the reason song was selected
             }
 
-            else if (dialog.SelectedId == moveSongItem.ItemId)
-            {
+            else if (dialog.SelectedId == moveSongItem.ItemId) {
                 PandoraStation newStation = showStationChooser();
-                if (newStation != null)
-                {
+                if (newStation != null) {
                     // todo: move song to new station
                 }
             }
 
-            else if (dialog.SelectedId == tempBanItem.ItemId)
-            {
+            else if (dialog.SelectedId == tempBanItem.ItemId) {
                 Core.MusicBox.TemporarilyBanSong();
                 PlayNextTrack();
             }
@@ -324,30 +323,29 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         /// Show a station picker
         /// </summary>
         /// <returns>Station chosen by the user, or null if the user canceled out of the menu</returns>
-        private PandoraStation showStationChooser()
-        {
+        private PandoraStation showStationChooser() {
             IDialogbox dialog = (IDialogbox)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_MENU);
             dialog.Reset();
             dialog.SetHeading("Choose Stations");
             int index = 0;
+
             Dictionary<int, PandoraStation> stationLookup = new Dictionary<int, PandoraStation>();
-            foreach (PandoraStation currStation in Core.MusicBox.AvailableStations)
-            {
+            foreach (PandoraStation currStation in Core.MusicBox.AvailableStations) {
                 if (currStation.IsQuickMix) continue;
 
                 index++;
                 stationLookup[index] = currStation;
             }
 
-            foreach (var station in stationLookup)
-            {
+            foreach (var station in stationLookup) {
                 GUIListItem listItem = new GUIListItem(station.Value.Name);
                 listItem.ItemId = station.Key;
                 if (station.Value == Core.MusicBox.CurrentStation)
                     listItem.Selected = true;
-                
+
                 dialog.Add(listItem);
             }
+
             dialog.DoModal(GUIWindowManager.ActiveWindow);
             if (dialog.SelectedId < 0) return null;  // user canceled out of menu
 
