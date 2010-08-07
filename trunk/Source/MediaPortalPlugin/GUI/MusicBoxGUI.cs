@@ -96,8 +96,10 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             SetProperty("#PandoraMusicBox.Current.Title", currentSong.Title);
             SetProperty("#PandoraMusicBox.Current.Album", currentSong.Album);
             SetProperty("#PandoraMusicBox.Current.ArtworkURL", currentSong.ArtworkURL);
-            SetProperty("#PandoraMusicBox.Current.Rating", currentSong.Rating.ToString());
-            SetProperty("#PandoraMusicBox.Current.TemporarilyBanned", currentSong.TemporarilyBanned.ToString());
+            if (currentSong.TemporarilyBanned)
+                SetProperty("#PandoraMusicBox.Current.Rating", "TemporarilyBanned");
+            else
+                SetProperty("#PandoraMusicBox.Current.Rating", currentSong.Rating.ToString());
 
             for (int i = 1; i <= 4; i++) {
                 SetProperty("#PandoraMusicBox.History" + i + ".Artist", "");
@@ -105,7 +107,6 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 SetProperty("#PandoraMusicBox.History" + i + ".Album", "");
                 SetProperty("#PandoraMusicBox.History" + i + ".ArtworkURL", "");
                 SetProperty("#PandoraMusicBox.History" + i + ".Rating", "");
-                SetProperty("#PandoraMusicBox.History" + i + ".TemporarilyBanned", "");
             }
 
             int iHistory = 1;
@@ -114,8 +115,10 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Title", song.Title);
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Album", song.Album);
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".ArtworkURL", song.ArtworkURL);
-                SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", song.Rating.ToString());
-                SetProperty("#PandoraMusicBox.History" + iHistory + ".TemporarilyBanned", song.TemporarilyBanned.ToString());
+                if (song.TemporarilyBanned)
+                    SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", "TemporarilyBanned");
+                else
+                    SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", song.Rating.ToString());
                 iHistory++;
             }
 
@@ -184,6 +187,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
 
             LoginAndPlay();
+            UpdateGUI();
         }
 
         protected override void OnPageDestroy(int newWindowId) {
@@ -334,10 +338,10 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             dialog.Reset();
             dialog.SetHeading("Song Options - " + song.Title);
 
-            GUIListItem thumbsUpItem = new GUIListItem("I like this song...");
+            GUIListItem thumbsUpItem = new GUIListItem("I like this song");
             dialog.Add(thumbsUpItem);
 
-            GUIListItem thumbsDownItem = new GUIListItem("I don't like this song...");
+            GUIListItem thumbsDownItem = new GUIListItem("I don't like this song");
             dialog.Add(thumbsDownItem);
 
             GUIListItem whySelectedItem = new GUIListItem("Why was this song selected?");
