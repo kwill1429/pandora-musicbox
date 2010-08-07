@@ -39,7 +39,22 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
-        public string ArtworkURL {
+        public string AlbumArtSmallURL {
+            get;
+            internal set;
+        }
+
+        public string AlbumArtLargeURL {
+            get;
+            internal set;
+        }
+
+        public string AlbumDetailsURL {
+            get;
+            internal set;
+        }
+
+        public string ArtistArtURL {
             get;
             internal set;
         }
@@ -79,7 +94,10 @@ namespace PandoraMusicBox.Engine.Data {
                 song.Album = song["albumTitle"];
                 song.Title = song["songTitle"];
                 song.AudioURL = DecodeUrl(song["audioURL"]);
-                song.ArtworkURL = song["artistArtUrl"];
+                song.AlbumArtSmallURL = song["artRadio"];
+                song.AlbumArtLargeURL = null;
+                song.AlbumDetailsURL = song["albumDetailURL"];
+                song.ArtistArtURL = song["artistArtUrl"];
                 if (song["rating"] == "1") song.Rating = PandoraRating.Love;
                 else song.Rating = PandoraRating.Unrated;
 
@@ -103,7 +121,7 @@ namespace PandoraMusicBox.Engine.Data {
             ad.Title = "Advertisement";
 
             ad.AudioURL = ad["audio"];
-            ad.ArtworkURL = "http://pandora.com" + ad["image"];
+            ad.AlbumArtSmallURL = "http://pandora.com" + ad["image"];
 
             ad.IsAdvertisement = true;
 

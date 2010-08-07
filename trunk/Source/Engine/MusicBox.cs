@@ -172,8 +172,10 @@ namespace PandoraMusicBox.Engine {
             });
 
             // add our new songs to the playlist
-            foreach (PandoraSong currSong in newSongs)
+            foreach (PandoraSong currSong in newSongs) {
+                pandora.GetLargeArtworkURL(currSong);
                 playlist.Enqueue(currSong);
+            }
         }
 
         /// <summary>

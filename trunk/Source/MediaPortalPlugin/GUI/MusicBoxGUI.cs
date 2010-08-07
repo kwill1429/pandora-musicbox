@@ -91,11 +91,12 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             // publish song details to the skin
             SetProperty("#Play.Current.Title", currentSong.Title);
             SetProperty("#Play.Current.Artist", currentSong.Artist);
+            SetProperty("#Play.Current.Thumb", currentSong.AlbumArtLargeURL);
 
             SetProperty("#PandoraMusicBox.Current.Artist", currentSong.Artist);
             SetProperty("#PandoraMusicBox.Current.Title", currentSong.Title);
             SetProperty("#PandoraMusicBox.Current.Album", currentSong.Album);
-            SetProperty("#PandoraMusicBox.Current.ArtworkURL", currentSong.ArtworkURL);
+            SetProperty("#PandoraMusicBox.Current.ArtworkURL", currentSong.AlbumArtLargeURL);
             if (currentSong.TemporarilyBanned)
                 SetProperty("#PandoraMusicBox.Current.Rating", "TemporarilyBanned");
             else
@@ -114,7 +115,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Artist", song.Artist);
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Title", song.Title);
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Album", song.Album);
-                SetProperty("#PandoraMusicBox.History" + iHistory + ".ArtworkURL", song.ArtworkURL);
+                SetProperty("#PandoraMusicBox.History" + iHistory + ".ArtworkURL", song.AlbumArtLargeURL);
                 if (song.TemporarilyBanned)
                     SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", "TemporarilyBanned");
                 else
@@ -269,7 +270,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         protected override void OnShowContextMenu() {
-            ShowMainContext();
+            PromptAndChangeStation();
             base.OnShowContextMenu();
         }
 
@@ -338,21 +339,21 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             dialog.Reset();
             dialog.SetHeading("Song Options - " + song.Title);
 
-            GUIListItem thumbsUpItem = new GUIListItem("I like this song");
+            GUIListItem thumbsUpItem = new GUIListItem("I like this song.");
             dialog.Add(thumbsUpItem);
 
-            GUIListItem thumbsDownItem = new GUIListItem("I don't like this song");
+            GUIListItem thumbsDownItem = new GUIListItem("I don't like this song.");
             dialog.Add(thumbsDownItem);
 
+            GUIListItem tempBanItem = new GUIListItem("I am tired of this song.");
+            dialog.Add(tempBanItem);
+            dialog.DoModal(GUIWindowManager.ActiveWindow);
+
             GUIListItem whySelectedItem = new GUIListItem("Why was this song selected?");
-            dialog.Add(whySelectedItem);
+            //dialog.Add(whySelectedItem);
 
             GUIListItem moveSongItem = new GUIListItem("Move Song to Another Station...");
             dialog.Add(moveSongItem);
-
-            GUIListItem tempBanItem = new GUIListItem("Temporarily Ban This Song (One Month)");
-            dialog.Add(tempBanItem);
-            dialog.DoModal(GUIWindowManager.ActiveWindow);
 
             if (dialog.SelectedId == thumbsUpItem.ItemId) {
                 Core.MusicBox.RateSong(Engine.PandoraRating.Love, song);
