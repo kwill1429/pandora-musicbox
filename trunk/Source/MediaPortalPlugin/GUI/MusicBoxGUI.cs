@@ -6,16 +6,21 @@ using MediaPortal.GUI.Library;
 using MediaPortal.Player;
 using PandoraMusicBox.Engine.Data;
 using System.Diagnostics;
+using NLog;
 
 namespace PandoraMusicBox.MediaPortalPlugin.GUI {
     public class MusicBoxGUI: GUIWindow {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         private MusicBoxCore Core {
             get { return MusicBoxCore.Instance; }
         }
 
         bool initialized = false;
+        bool globalActionListenerInitialized = false;
+
         bool playingRadio = false;
+        DateTime? lastStartTime = null;
 
         #region GUI Controls
 
@@ -39,8 +44,14 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         public void LoginAndPlay() {
             // if needed, attempt to log in
-            if (Core.MusicBox.User == null)
+            if (Core.MusicBox.User == null) {
+                logger.Info("Attempting to log in: " + Core.Settings.UserName);
                 Core.MusicBox.Login(Core.Settings.UserName, Core.Settings.Password);
+
+                if (Core.MusicBox.User == null) {
+                    logger.Error("Invalid username or password.");
+                }
+            }
 
             // if nothing else is playing, play next track in our queue
             if (!g_Player.Playing)
@@ -51,9 +62,11 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             if (!initialized)
                 return;
 
+            logger.Info("Starting Next Track");
             playingRadio = true;
 
             // grab the next song and have MediaPortal start streaming it
+            lastStartTime = DateTime.Now;
             PandoraSong song = Core.MusicBox.GetNextSong();
             g_Player.PlayAudioStream(song.AudioURL);
 
@@ -113,8 +126,12 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         public override bool Init() {
             base.Init();
-            if (!Load(GUIGraphicsContext.Skin + @"\musicbox.xml"))
+
+            logger.Info("Initializing GUI");
+            if (!Load(GUIGraphicsContext.Skin + @"\musicbox.xml")) {
+                logger.Error("Missing musicbox.xml skin file!");
                 return false;
+            }
 
             Core.Initialize();
             
@@ -127,24 +144,37 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         public override void DeInit() {
+            logger.Info("Deinitializing GUI");
             Core.Shutdown();
 
             g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
             g_Player.PlayBackStopped -= new g_Player.StoppedHandler(OnPlayBackStopped);
             g_Player.PlayBackChanged -= new g_Player.ChangedHandler(OnPlayBackChanged);
+            
+            GUIGraphicsContext.OnNewAction -= new OnActionHandler(OnActionGlobal);
 
             initialized = false;
+            globalActionListenerInitialized = false;
             base.DeInit();
         }
 
         protected override void OnPageLoad() {
             base.OnPageLoad();
 
+            logger.Info("Opening Plugin Window");
+
+            if (!globalActionListenerInitialized) {
+                globalActionListenerInitialized = true;
+                GUIGraphicsContext.OnNewAction += new OnActionHandler(OnActionGlobal);
+            }
+
             LoginAndPlay();
         }
 
         protected override void OnPageDestroy(int newWindowId) {
             base.OnPageDestroy(newWindowId);
+
+            logger.Info("Closing Plugin Window");
         }
 
         protected override void OnClicked(int controlId, GUIControl control, MediaPortal.GUI.Library.Action.ActionType actionType) {
@@ -155,6 +185,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
         }
 
+        // receives actions only when the plugin window is open
         public override void OnAction(MediaPortal.GUI.Library.Action action) {
             if (!initialized)
                 return;
@@ -169,14 +200,24 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                     break;
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_PLAY:
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_MUSIC_PLAY:
+                    logger.Debug("ACTION_PLAY or ACTION_MUSIC_PLAY fired.");
                     if (!playingRadio)
                         PlayNextTrack();
                     break;
-                case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
-                    PlayNextTrack();
-                    break;
                 default:
                     base.OnAction(action);
+                    break;
+            }
+        }
+
+        // receives actions regardless of whether plugin window is open or closed
+        private void OnActionGlobal(MediaPortal.GUI.Library.Action action) {
+            switch (action.wID) {
+                case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
+                    logger.Debug("ACTION_NEXT_ITEM fired.");
+                    if (playingRadio) {                        
+                        PlayNextTrack();                        
+                    }
                     break;
             }
         }
@@ -191,14 +232,28 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         private void OnPlayBackEnded(g_Player.MediaType type, string filename) {
+            logger.Debug("OnPlayBackEnded fired.");
+
+            // if this was triggered from a recent skip, ignore the event
+            if (lastStartTime != null && DateTime.Now - (DateTime)lastStartTime < new TimeSpan(0, 0, 2)) 
+                return;            
+
             if (playingRadio) PlayNextTrack();
         }
         
         private void OnPlayBackStopped(g_Player.MediaType type, int stoptime, string filename) {
+            logger.Debug("OnPlayBackStopped fired.");
             playingRadio = false;
         }
 
         private void OnPlayBackChanged(g_Player.MediaType type, int stoptime, string filename) {
+            logger.Debug("OnPlayBackChanged fired.");
+            
+            // if this was triggered from a recent skip, ignore the event
+            if (lastStartTime != null && DateTime.Now - (DateTime)lastStartTime < new TimeSpan(0, 0, 2))
+                return;  
+
+            // something else started playing, so remember that pandora is now "turned off"
             playingRadio = false;
         }
         

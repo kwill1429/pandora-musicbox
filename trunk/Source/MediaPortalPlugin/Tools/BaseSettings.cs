@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using NLog;
 
 namespace PandoraMusicBox.MediaPortalPlugin.Tools {
     internal class SettingAttribute : Attribute { }
 
     internal class BaseSettings {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        
         public string FileName {
             get;
             protected set;
@@ -19,6 +22,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.Tools {
         }
 
         public void LoadSettings() {
+            logger.Info("Loading Settings");
+            logger.Debug("Settings File: " + GetFileFullPath());
             try {
                 using (MediaPortal.Profile.Settings xmlreader = new MediaPortal.Profile.Settings(GetFileFullPath())) {
                     // loop through each property in the class
@@ -40,6 +45,9 @@ namespace PandoraMusicBox.MediaPortalPlugin.Tools {
         }
 
         public void SaveSettings() {
+            logger.Info("Saving Settings");
+            logger.Debug("Settings File: " + GetFileFullPath());
+
             try {
                 using (MediaPortal.Profile.Settings xmlwriter = new MediaPortal.Profile.Settings(GetFileFullPath(), false)) {
                     // loop through each property in the class

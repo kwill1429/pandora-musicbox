@@ -10,9 +10,11 @@ using MediaPortal.GUI.Library;
 using System.Threading;
 using PandoraMusicBox.Engine.Data;
 using System.Diagnostics;
+using NLog;
 
 namespace PandoraMusicBox.MediaPortalPlugin.Config {
     public partial class LoginForm : Form {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         delegate void InvokeDelegate();
 
@@ -29,6 +31,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
         }
 
         private void VerifyLogin() {
+            logger.Info("Attepting to verify user: " + emailTextBox.Text);
+
             // set the status label to inform the user of whats happening
             statusLabel.ForeColor = defaultLabelColor;
             statusLabel.Text = "Verifying login credentials...";
@@ -56,6 +60,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
             }
 
             if (Core.MusicBox.User == null) {
+                logger.Info("Invalid username or password.");
+
                 statusLabel.ForeColor = Color.Red;
                 statusLabel.Text = "Invalid username or password.";
                 statusLabel.Visible = true;
@@ -66,6 +72,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 okButton.Enabled = true;
                 verified = false;
             }
+            /*
             else if (Core.MusicBox.User.AccountType == AccountType.BASIC) {
                 statusLabel.ForeColor = Color.Red;
                 statusLabel.Text = "Pandora One account is required.";
@@ -77,8 +84,10 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 okButton.Enabled = true;
                 verified = false;
             }
-            else
-            {
+            */
+            else {
+                logger.Info("Verified credentials.");
+
                 statusLabel.ForeColor = Color.Green;
                 statusLabel.Text = "Account successfully validated!";
                 statusLabel.Visible = true;
@@ -101,7 +110,18 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
             }
         }
 
+        private void CenterDialog() {
+            Rectangle screen = Screen.GetWorkingArea(this);
+
+            this.Location = new Point(((screen.Width - this.Width) / 2) + screen.X,
+                                      ((screen.Height - this.Height) / 2) + screen.Y);
+        }
+
         private void LoginForm_Load(object sender, EventArgs e) {
+            logger.Info("Opening Login Screen");
+
+            CenterDialog();
+
             emailTextBox.Text = Core.Settings.UserName;
             passwordTextBox.Text = Core.Settings.Password;
             defaultLabelColor = statusLabel.ForeColor;
@@ -115,10 +135,18 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
         }
 
         private void LoginForm_FormClosed(object sender, FormClosedEventArgs e) {
+            string message;
+
             if (this.DialogResult == DialogResult.OK) {
+                message = "Saved new login settings.";
                 Core.Settings.UserName = emailTextBox.Text;
                 Core.Settings.Password = passwordTextBox.Text;
             }
+            else {
+                message = "Discarded new login settings.";
+            }
+
+            logger.Info("Closing Login Screen: " + message);
         }
 
         private void okButton_Click(object sender, EventArgs e) {
