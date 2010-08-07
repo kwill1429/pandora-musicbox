@@ -88,6 +88,7 @@
     <Content Include="GUI\Skins\Blue3Wide\Media\pandoraoverlay.png" />
     <Content Include="GUI\Skins\Blue3Wide\Media\pandora_logo.png" />
     <Content Include="GUI\Skins\Blue3Wide\musicbox.xml" />
+    <Content Include="Properties\AssemblyInfoTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -95,6 +96,9 @@
 copy "$(ProjectDir)\Resources\merge.bat" "$(TargetDir)" /Y
 copy "$(ProjectDir)..\..\External\ilmerge.exe" "$(TargetDir)" /Y
 merge.bat</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>"$(ProjectDir)..\..\External\REVSTAMP.EXE" http://pandora-musicbox.googlecode.com/svn "$(ProjectDir)\Properties\AssemblyInfoTemplate.txt" "$(ProjectDir)\Properties\AssemblyInfo.cs"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

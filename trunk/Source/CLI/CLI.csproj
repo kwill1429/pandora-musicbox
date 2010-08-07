@@ -71,12 +71,18 @@
     </None>
     <None Include="Resources\merge.bat" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\AssemblyInfoTemplate.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>cd $(TargetDir)
 copy "$(ProjectDir)\Resources\merge.bat" "$(TargetDir)" /Y
 copy "$(ProjectDir)..\..\External\ilmerge.exe" "$(TargetDir)" /Y
 merge.bat</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>"$(ProjectDir)..\..\External\REVSTAMP.EXE" http://pandora-musicbox.googlecode.com/svn "$(ProjectDir)\Properties\AssemblyInfoTemplate.txt" "$(ProjectDir)\Properties\AssemblyInfo.cs"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
