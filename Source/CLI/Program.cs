@@ -128,15 +128,15 @@ namespace PandoraMusicBox.CLI {
                         needStatusUpdate = true;                        
                         break;
                     case '+':
-                        musicBox.RateSong(PandoraRating.Love);
+                        musicBox.RateSong(PandoraRating.Love, musicBox.CurrentSong);
                         needStatusUpdate = true;
                         break;
                     case '-':
-                        musicBox.RateSong(PandoraRating.Hate);
+                        musicBox.RateSong(PandoraRating.Hate, musicBox.CurrentSong);
                         PlayNext();
                         break;
                     case 'b':
-                        musicBox.TemporarilyBanSong();
+                        musicBox.TemporarilyBanSong(musicBox.CurrentSong);
                         PlayNext();
                         break;
                 }
