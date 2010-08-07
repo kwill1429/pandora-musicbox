@@ -31,6 +31,7 @@ namespace PandoraMusicBox.Engine {
             set {
                 if (AvailableStations.Contains(value)) {
                     _currentStation = value;
+                    CurrentSong = null;
                     PreviousSongs.Clear();
                     playlist.Clear();
                     LoadMoreSongs();
@@ -157,6 +158,7 @@ namespace PandoraMusicBox.Engine {
             if (AvailableStations == null) AvailableStations = new List<PandoraStation>();
 
             _currentStation = null;
+            CurrentSong = null;
             PreviousSongs.Clear();
             AvailableStations.Clear();
             User = null;
