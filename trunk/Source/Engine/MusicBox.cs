@@ -132,22 +132,24 @@ namespace PandoraMusicBox.Engine {
         }
 
         /// <summary>
-        /// Rate the current song. A positive or negative rating will influence future songs 
+        /// Rate the specified song. A positive or negative rating will influence future songs 
         /// played from the current station.
         /// </summary>
         /// <param name="rating"></param>
-        public void RateSong(PandoraRating rating) {
+        /// <param name="song"></param>
+        public void RateSong(PandoraRating rating, PandoraSong song) {
             VerifyAndExecute(delegate {
-                pandora.RateSong(User, CurrentStation, CurrentSong, rating);
+                pandora.RateSong(User, CurrentStation, song, rating);
             });
         }
 
         /// <summary>
         /// Ban this song from playing on any of the users stations for one month.
         /// </summary>
-        public void TemporarilyBanSong() {
+        /// <param name="song"></param>
+        public void TemporarilyBanSong(PandoraSong song) {
             VerifyAndExecute(delegate {
-                pandora.AddTiredSong(User, CurrentSong);
+                pandora.AddTiredSong(User, song);
             });    
         }
 

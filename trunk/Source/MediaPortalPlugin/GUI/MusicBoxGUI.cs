@@ -77,7 +77,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         public void PromptAndChangeStation() {
-            PandoraStation newStation = showStationChooser();
+            PandoraStation newStation = ShowStationChooser();
             if (newStation != null && newStation != Core.MusicBox.CurrentStation) {
                 Core.MusicBox.CurrentStation = newStation;
                 Core.Settings.LastStation = newStation;
@@ -99,8 +99,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             SetProperty("#PandoraMusicBox.Current.Rating", currentSong.Rating.ToString());
             SetProperty("#PandoraMusicBox.Current.TemporarilyBanned", currentSong.TemporarilyBanned.ToString());
 
-            for (int i = 1; i <= 4; i++)
-            {
+            for (int i = 1; i <= 4; i++) {
                 SetProperty("#PandoraMusicBox.History" + i + ".Artist", "");
                 SetProperty("#PandoraMusicBox.History" + i + ".Title", "");
                 SetProperty("#PandoraMusicBox.History" + i + ".Album", "");
@@ -110,8 +109,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
 
             int iHistory = 1;
-            foreach (var song in Core.MusicBox.PreviousSongs)
-            {
+            foreach (var song in Core.MusicBox.PreviousSongs) {
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Artist", song.Artist);
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Title", song.Title);
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Album", song.Album);
@@ -122,6 +120,11 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
 
             SetProperty("#PandoraMusicBox.CurrentStation.Name", Core.MusicBox.CurrentStation.Name);
+
+            btnHistory1Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 1);
+            btnHistory2Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 2);
+            btnHistory3Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 3);
+            btnHistory4Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 4);
         }
 
         private void SetProperty(string property, string value) {
@@ -146,7 +149,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
 
             Core.Initialize();
-            
+
             g_Player.PlayBackEnded += new g_Player.EndedHandler(OnPlayBackEnded);
             g_Player.PlayBackStopped += new g_Player.StoppedHandler(OnPlayBackStopped);
             g_Player.PlayBackChanged += new g_Player.ChangedHandler(OnPlayBackChanged);
@@ -162,7 +165,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
             g_Player.PlayBackStopped -= new g_Player.StoppedHandler(OnPlayBackStopped);
             g_Player.PlayBackChanged -= new g_Player.ChangedHandler(OnPlayBackChanged);
-            
+
             GUIGraphicsContext.OnNewAction -= new OnActionHandler(OnActionGlobal);
 
             initialized = false;
@@ -194,6 +197,30 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 return;
 
             switch (controlId) {
+                // btnCurrent
+                case 2:
+                    ShowSongContext(Core.MusicBox.CurrentSong);
+                    break;
+
+                // btnHistory1
+                case 3:
+                    ShowSongContext(Core.MusicBox.PreviousSongs[0]);
+                    break;
+
+                // btnHistory2
+                case 4:
+                    ShowSongContext(Core.MusicBox.PreviousSongs[1]);
+                    break;
+
+                // btnHistory3
+                case 5:
+                    ShowSongContext(Core.MusicBox.PreviousSongs[2]);
+                    break;
+
+                // btnHistory4
+                case 6:
+                    ShowSongContext(Core.MusicBox.PreviousSongs[3]);
+                    break;
             }
         }
 
@@ -226,19 +253,19 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             switch (action.wID) {
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
                     logger.Debug("ACTION_NEXT_ITEM fired.");
-                    if (playingRadio) {                        
-                        PlayNextTrack();                        
+                    if (playingRadio) {
+                        PlayNextTrack();
                     }
                     break;
             }
         }
-        
+
         public override bool OnMessage(GUIMessage message) {
             return base.OnMessage(message);
         }
 
         protected override void OnShowContextMenu() {
-            showMainContext();
+            ShowMainContext();
             base.OnShowContextMenu();
         }
 
@@ -246,12 +273,12 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             logger.Debug("OnPlayBackEnded fired.");
 
             // if this was triggered from a recent skip, ignore the event
-            if (lastStartTime != null && DateTime.Now - (DateTime)lastStartTime < new TimeSpan(0, 0, 2)) 
-                return;            
+            if (lastStartTime != null && DateTime.Now - (DateTime)lastStartTime < new TimeSpan(0, 0, 2))
+                return;
 
             if (playingRadio) PlayNextTrack();
         }
-        
+
         private void OnPlayBackStopped(g_Player.MediaType type, int stoptime, string filename) {
             logger.Debug("OnPlayBackStopped fired.");
             playingRadio = false;
@@ -259,21 +286,21 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         private void OnPlayBackChanged(g_Player.MediaType type, int stoptime, string filename) {
             logger.Debug("OnPlayBackChanged fired.");
-            
+
             // if this was triggered from a recent skip, ignore the event
             if (lastStartTime != null && DateTime.Now - (DateTime)lastStartTime < new TimeSpan(0, 0, 2))
-                return;  
+                return;
 
             // something else started playing, so remember that pandora is now "turned off"
             playingRadio = false;
         }
-        
+
         #endregion
 
 
         #region Context Menu Methods
 
-        private void showMainContext() {
+        private void ShowMainContext() {
             IDialogbox dialog = (IDialogbox)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_MENU);
             dialog.Reset();
             dialog.SetHeading("Pandora MusicBox");
@@ -283,6 +310,35 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
             GUIListItem newStationItem = new GUIListItem("Create a New Station...");
             dialog.Add(newStationItem);
+
+            GUIListItem showSongMenuItem = new GUIListItem("Song Options...");
+            dialog.Add(showSongMenuItem);
+
+            dialog.DoModal(GUIWindowManager.ActiveWindow);
+
+            if (dialog.SelectedId == stationsItem.ItemId) {
+                PromptAndChangeStation();
+            }
+
+            else if (dialog.SelectedId == newStationItem.ItemId) {
+                // todo: onscreen keyboard to create a new station
+            }
+
+            else if (dialog.SelectedId == showSongMenuItem.ItemId) {
+                ShowSongContext(Core.MusicBox.CurrentSong);
+            }
+        }
+
+        private void ShowSongContext(PandoraSong song) {
+            IDialogbox dialog = (IDialogbox)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_MENU);
+            dialog.Reset();
+            dialog.SetHeading("Song Options - " + song.Title);
+
+            GUIListItem thumbsUpItem = new GUIListItem("I like this song...");
+            dialog.Add(thumbsUpItem);
+
+            GUIListItem thumbsDownItem = new GUIListItem("I don't like this song...");
+            dialog.Add(thumbsDownItem);
 
             GUIListItem whySelectedItem = new GUIListItem("Why was this song selected?");
             dialog.Add(whySelectedItem);
@@ -294,12 +350,16 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             dialog.Add(tempBanItem);
             dialog.DoModal(GUIWindowManager.ActiveWindow);
 
-            if (dialog.SelectedId == stationsItem.ItemId) {
-                PromptAndChangeStation();
+            if (dialog.SelectedId == thumbsUpItem.ItemId) {
+                Core.MusicBox.RateSong(Engine.PandoraRating.Love, song);
+                UpdateGUI();
             }
 
-            else if (dialog.SelectedId == newStationItem.ItemId) {
-                // todo: onscreen keyboard to create a new station
+            else if (dialog.SelectedId == thumbsDownItem.ItemId) {
+                Core.MusicBox.RateSong(Engine.PandoraRating.Hate, song);
+                if (song == Core.MusicBox.CurrentSong)
+                    PlayNextTrack();
+                UpdateGUI();
             }
 
             else if (dialog.SelectedId == whySelectedItem.ItemId) {
@@ -307,26 +367,29 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
 
             else if (dialog.SelectedId == moveSongItem.ItemId) {
-                PandoraStation newStation = showStationChooser();
+                PandoraStation newStation = ShowStationChooser();
                 if (newStation != null) {
                     // todo: move song to new station
                 }
             }
 
             else if (dialog.SelectedId == tempBanItem.ItemId) {
-                Core.MusicBox.TemporarilyBanSong();
-                PlayNextTrack();
+                Core.MusicBox.TemporarilyBanSong(song);
+                if (song == Core.MusicBox.CurrentSong)
+                    PlayNextTrack();
+                UpdateGUI();
             }
         }
+
 
         /// <summary>
         /// Show a station picker
         /// </summary>
         /// <returns>Station chosen by the user, or null if the user canceled out of the menu</returns>
-        private PandoraStation showStationChooser() {
+        private PandoraStation ShowStationChooser() {
             IDialogbox dialog = (IDialogbox)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_MENU);
             dialog.Reset();
-            dialog.SetHeading("Choose Stations");
+            dialog.SetHeading("Choose Station");
             int index = 0;
 
             Dictionary<int, PandoraStation> stationLookup = new Dictionary<int, PandoraStation>();
