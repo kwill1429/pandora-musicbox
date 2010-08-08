@@ -88,6 +88,8 @@
   <ItemGroup>
     <Content Include="GUI\Skins\Blue3Wide\Media\pandoraoverlay.png" />
     <Content Include="GUI\Skins\Blue3Wide\Media\pandora_logo.png" />
+    <Content Include="GUI\Skins\Blue3Wide\Media\pandora_progress.png" />
+    <Content Include="GUI\Skins\Blue3Wide\Media\pandora_progress_tray.png" />
     <Content Include="GUI\Skins\Blue3Wide\Media\pandora_rating_Hate.png" />
     <Content Include="GUI\Skins\Blue3Wide\Media\pandora_rating_Love.png" />
     <Content Include="GUI\Skins\Blue3Wide\Media\pandora_rating_TemporarilyBanned.png" />
