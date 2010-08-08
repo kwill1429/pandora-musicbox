@@ -122,7 +122,7 @@ namespace PandoraMusicBox.Engine.Data {
 
             ad.AudioURL = ad["audio"];
             ad.AlbumArtSmallURL = ad["image"];
-            if (!ad.AlbumArtSmallURL.ToLower().Contains("http://pandora.com"))
+            if (!ad.AlbumArtSmallURL.ToLower().StartsWith("http://"))
                 ad.AlbumArtSmallURL = "http://pandora.com" + ad.AlbumArtSmallURL;
 
             ad.AlbumArtLargeURL = ad.AlbumArtSmallURL;
