@@ -105,7 +105,7 @@
     <PostBuildEvent>cd $(TargetDir)
 copy "$(ProjectDir)\Resources\merge.bat" "$(TargetDir)" /Y
 copy "$(ProjectDir)..\..\External\ilmerge.exe" "$(TargetDir)" /Y
-merge.bat</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>"$(ProjectDir)..\..\External\REVSTAMP.EXE" http://pandora-musicbox.googlecode.com/svn "$(ProjectDir)\Properties\AssemblyInfoTemplate.txt" "$(ProjectDir)\Properties\AssemblyInfo.cs"</PreBuildEvent>
