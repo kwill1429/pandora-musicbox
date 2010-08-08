@@ -287,6 +287,17 @@
         <posY>480</posY>
         <width>180</width>
         <font>font10</font>
+        <visible>!Control.HasFocus(6)</visible>
+      </control>
+      <control>
+        <description>History 4 Title Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.History4.Title</label>
+        <posX>115</posX>
+        <posY>480</posY>
+        <width>180</width>
+        <font>font10</font>
+        <visible>Control.HasFocus(6)</visible>
       </control>
 
       <control>
@@ -298,6 +309,18 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
+        <visible>!Control.HasFocus(6)</visible>
+      </control>
+      <control>
+        <description>History 4 Artist Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.History4.Artist</label>
+        <posX>115</posX>
+        <posY>500</posY>
+        <width>180</width>
+        <font>font10</font>
+        <textcolor>ffa9d0f7</textcolor>
+        <visible>Control.HasFocus(6)</visible>
       </control>
 
 
@@ -309,6 +332,17 @@
         <posY>480</posY>
         <width>180</width>
         <font>font10</font>
+        <visible>!Control.HasFocus(5)</visible>
+      </control>
+      <control>
+        <description>History 3 Title Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.History3.Title</label>
+        <posX>320</posX>
+        <posY>480</posY>
+        <width>180</width>
+        <font>font10</font>
+        <visible>Control.HasFocus(5)</visible>
       </control>
 
       <control>
@@ -320,6 +354,18 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
+        <visible>!Control.HasFocus(5)</visible>
+      </control>
+      <control>
+        <description>History 3 Artist Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.History3.Artist</label>
+        <posX>320</posX>
+        <posY>500</posY>
+        <width>180</width>
+        <font>font10</font>
+        <textcolor>ffa9d0f7</textcolor>
+        <visible>Control.HasFocus(5)</visible>
       </control>
 
 
@@ -331,6 +377,17 @@
         <posY>480</posY>
         <width>180</width>
         <font>font10</font>
+        <visible>!Control.HasFocus(4)</visible>
+      </control>
+      <control>
+        <description>History 2 Title Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.History2.Title</label>
+        <posX>525</posX>
+        <posY>480</posY>
+        <width>180</width>
+        <font>font10</font>
+        <visible>Control.HasFocus(4)</visible>
       </control>
 
       <control>
@@ -342,6 +399,18 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
+        <visible>!Control.HasFocus(4)</visible>
+      </control>
+      <control>
+        <description>History 2 Artist Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.History2.Artist</label>
+        <posX>525</posX>
+        <posY>500</posY>
+        <width>180</width>
+        <font>font10</font>
+        <textcolor>ffa9d0f7</textcolor>
+        <visible>Control.HasFocus(4)</visible>
       </control>
 
 
@@ -354,6 +423,17 @@
         <posY>480</posY>
         <width>180</width>
         <font>font10</font>
+        <visible>!Control.HasFocus(3)</visible>
+      </control>
+      <control>
+        <description>History 1 Title Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.History1.Title</label>
+        <posX>730</posX>
+        <posY>480</posY>
+        <width>180</width>
+        <font>font10</font>
+        <visible>Control.HasFocus(3)</visible>
       </control>
 
       <control>
@@ -365,8 +445,19 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
+        <visible>!Control.HasFocus(3)</visible>
       </control>
-
+      <control>
+        <description>History 1 Artist Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.History1.Artist</label>
+        <posX>730</posX>
+        <posY>500</posY>
+        <width>180</width>
+        <font>font10</font>
+        <textcolor>ffa9d0f7</textcolor>
+        <visible>Control.HasFocus(3)</visible>
+      </control>
 
       <control>
         <description>Current Title</description>
@@ -376,6 +467,17 @@
         <posY>370</posY>
         <width>260</width>
         <font>font12</font>
+        <visible>!Control.HasFocus(2)</visible>
+      </control>
+      <control>
+        <description>Current Title Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.Current.Title</label>
+        <posX>965</posX>
+        <posY>370</posY>
+        <width>260</width>
+        <font>font12</font>
+        <visible>Control.HasFocus(2)</visible>
       </control>
 
       <control>
@@ -387,6 +489,18 @@
         <width>260</width>
         <font>font12</font>
         <textcolor>ffa9d0f7</textcolor>
+        <visible>!Control.HasFocus(2)</visible>
+      </control>
+      <control>
+        <description>Current Artist Scrolling</description>
+        <type>fadelabel</type>
+        <label>#PandoraMusicBox.Current.Artist</label>
+        <posX>965</posX>
+        <posY>395</posY>
+        <width>260</width>
+        <font>font12</font>
+        <textcolor>ffa9d0f7</textcolor>
+        <visible>Control.HasFocus(2)</visible>
       </control>
 
 
