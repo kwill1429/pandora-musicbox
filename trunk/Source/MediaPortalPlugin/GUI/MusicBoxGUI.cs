@@ -258,7 +258,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             switch (action.wID) {
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
                     logger.Debug("ACTION_NEXT_ITEM fired.");
-                    if (playingRadio) {
+                    if (playingRadio && !Core.MusicBox.CurrentSong.IsAdvertisement) {
                         PlayNextTrack();
                     }
                     break;
@@ -296,7 +296,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             if (lastStartTime != null && DateTime.Now - (DateTime)lastStartTime < new TimeSpan(0, 0, 2))
                 return;
 
-            // something else started playing, so remember that pandora is now "turned off"
+            logger.Debug("Something else started playing, so remember that pandora is now \"turned off\".");
             playingRadio = false;
         }
 
@@ -335,6 +335,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         private void ShowSongContext(PandoraSong song) {
+            if (song.IsAdvertisement) return;
+
             IDialogbox dialog = (IDialogbox)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_MENU);
             dialog.Reset();
             dialog.SetHeading("Song Options - " + song.Title);

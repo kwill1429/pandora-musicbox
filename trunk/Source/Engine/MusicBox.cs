@@ -105,7 +105,7 @@ namespace PandoraMusicBox.Engine {
 
                 // keep track of how much listenign time has occured since our last ad
                 TimeSpan realDuration = DateTime.Now - (DateTime) timeLastSongGrabbed;
-                if (realDuration > CurrentSong.Length)
+                if (realDuration < CurrentSong.Length)
                     timeSinceLastAd = timeSinceLastAd.Add(CurrentSong.Length);
                 else
                     timeSinceLastAd = timeSinceLastAd.Add(realDuration);
