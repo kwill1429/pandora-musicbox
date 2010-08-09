@@ -16,10 +16,14 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             get { return MusicBoxCore.Instance; }
         }
 
+        private bool PlayingRadio {
+            get {
+                return g_Player.CurrentFile == Core.MusicBox.CurrentSong.AudioURL;
+            }
+        }
+
         bool initialized = false;
         bool globalActionListenerInitialized = false;
-
-        bool playingRadio = false;
         DateTime? lastStartTime = null;
 
         #region GUI Controls
@@ -66,7 +70,6 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 return;
 
             logger.Info("Starting Next Track");
-            playingRadio = true;
 
             // grab the next song and have MediaPortal start streaming it
             lastStartTime = DateTime.Now;
@@ -155,9 +158,6 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             Core.Initialize();
 
             g_Player.PlayBackEnded += new g_Player.EndedHandler(OnPlayBackEnded);
-            g_Player.PlayBackStopped += new g_Player.StoppedHandler(OnPlayBackStopped);
-            g_Player.PlayBackChanged += new g_Player.ChangedHandler(OnPlayBackChanged);
-
             initialized = true;
             return true;
         }
@@ -167,9 +167,6 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             Core.Shutdown();
 
             g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
-            g_Player.PlayBackStopped -= new g_Player.StoppedHandler(OnPlayBackStopped);
-            g_Player.PlayBackChanged -= new g_Player.ChangedHandler(OnPlayBackChanged);
-
             GUIGraphicsContext.OnNewAction -= new OnActionHandler(OnActionGlobal);
 
             initialized = false;
@@ -245,7 +242,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_PLAY:
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_MUSIC_PLAY:
                     logger.Debug("ACTION_PLAY or ACTION_MUSIC_PLAY fired.");
-                    if (!playingRadio) PlayNextTrack();
+                    if (!PlayingRadio) PlayNextTrack();
                     break;
                 default:
                     base.OnAction(action);
@@ -258,7 +255,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             switch (action.wID) {
                 case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
                     logger.Debug("ACTION_NEXT_ITEM fired.");
-                    if (playingRadio && !Core.MusicBox.CurrentSong.IsAdvertisement) {
+                    if (PlayingRadio && !Core.MusicBox.CurrentSong.IsAdvertisement) {
                         PlayNextTrack();
                     }
                     break;
@@ -275,29 +272,9 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         private void OnPlayBackEnded(g_Player.MediaType type, string filename) {
-            logger.Debug("OnPlayBackEnded fired.");
+            logger.Debug("OnPlayBackEnded fired: " + filename);
 
-            // if this was triggered from a recent skip, ignore the event
-            if (lastStartTime != null && DateTime.Now - (DateTime)lastStartTime < new TimeSpan(0, 0, 2))
-                return;
-
-            if (playingRadio) PlayNextTrack();
-        }
-
-        private void OnPlayBackStopped(g_Player.MediaType type, int stoptime, string filename) {
-            logger.Debug("OnPlayBackStopped fired.");
-            playingRadio = false;
-        }
-
-        private void OnPlayBackChanged(g_Player.MediaType type, int stoptime, string filename) {
-            logger.Debug("OnPlayBackChanged fired.");
-
-            // if this was triggered from a recent skip, ignore the event
-            if (lastStartTime != null && DateTime.Now - (DateTime)lastStartTime < new TimeSpan(0, 0, 2))
-                return;
-
-            logger.Debug("Something else started playing, so remember that pandora is now \"turned off\".");
-            playingRadio = false;
+            if (filename == Core.MusicBox.CurrentSong.AudioURL) PlayNextTrack();
         }
 
         #endregion
