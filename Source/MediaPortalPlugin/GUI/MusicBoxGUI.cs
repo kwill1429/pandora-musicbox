@@ -43,12 +43,15 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         [SkinControl(6)]
         protected GUIButtonControl btnHistory4Song = null;
 
+        [SkinControl(13)]
+        protected GUILabelControl workingLabel = null;
 
         #endregion
 
         public void LoginAndPlay() {
             // if needed, attempt to log in
             if (Core.MusicBox.User == null) {
+                setWorkingAnimationStatus(true);
                 logger.Info("Attempting to log in: " + Core.Settings.UserName);
                 Core.MusicBox.Login(Core.Settings.UserName, Core.Settings.Password);
                 
@@ -63,12 +66,15 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             // if nothing else is playing, play next track in our queue
             if (!g_Player.Playing)
                 PlayNextTrack();
+
+            setWorkingAnimationStatus(false);
         }
 
         public void PlayNextTrack() {
             if (!initialized)
                 return;
 
+            setWorkingAnimationStatus(true);
             logger.Info("Starting Next Track");
 
             // grab the next song and have MediaPortal start streaming it
@@ -77,14 +83,18 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             g_Player.PlayAudioStream(song.AudioURL);
 
             UpdateGUI();
+            setWorkingAnimationStatus(false);
         }
 
         public void PromptAndChangeStation() {
             PandoraStation newStation = ShowStationChooser();
             if (newStation != null && newStation != Core.MusicBox.CurrentStation) {
+                setWorkingAnimationStatus(true);
+
                 Core.MusicBox.CurrentStation = newStation;
                 Core.Settings.LastStation = newStation;
                 PlayNextTrack();
+                setWorkingAnimationStatus(false);
             }
         }
 
@@ -100,6 +110,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             SetProperty("#PandoraMusicBox.Current.Title", currentSong.Title);
             SetProperty("#PandoraMusicBox.Current.Album", currentSong.Album);
             SetProperty("#PandoraMusicBox.Current.ArtworkURL", currentSong.AlbumArtLargeURL);
+            SetProperty("#PandoraMusicBox.Current.IsAdvertisement", currentSong.IsAdvertisement.ToString());
             if (currentSong.TemporarilyBanned)
                 SetProperty("#PandoraMusicBox.Current.Rating", "TemporarilyBanned");
             else
@@ -110,6 +121,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 SetProperty("#PandoraMusicBox.History" + i + ".Title", "");
                 SetProperty("#PandoraMusicBox.History" + i + ".Album", "");
                 SetProperty("#PandoraMusicBox.History" + i + ".ArtworkURL", "");
+                SetProperty("#PandoraMusicBox.History" + i + ".IsAdvertisement", "");
                 SetProperty("#PandoraMusicBox.History" + i + ".Rating", "");
             }
 
@@ -119,6 +131,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Title", song.Title);
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".Album", song.Album);
                 SetProperty("#PandoraMusicBox.History" + iHistory + ".ArtworkURL", song.AlbumArtLargeURL);
+                SetProperty("#PandoraMusicBox.History" + iHistory + ".IsAdvertisement", song.IsAdvertisement.ToString());
                 if (song.TemporarilyBanned)
                     SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", "TemporarilyBanned");
                 else
@@ -136,6 +149,12 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         private void SetProperty(string property, string value) {
             GUIPropertyManager.SetProperty(property, String.IsNullOrEmpty(value) ? " " : value);
+        }
+
+        private void setWorkingAnimationStatus(bool visible) {
+            if (workingLabel != null) {
+                workingLabel.Visible = visible;
+            }
         }
 
         #region GUIWindow Methods
@@ -186,6 +205,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
             LoginAndPlay();
             UpdateGUI();
+            setWorkingAnimationStatus(false);
         }
 
         protected override void OnPageDestroy(int newWindowId) {
@@ -273,8 +293,11 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         private void OnPlayBackEnded(g_Player.MediaType type, string filename) {
             logger.Debug("OnPlayBackEnded fired: " + filename);
-
-            if (filename == Core.MusicBox.CurrentSong.AudioURL) PlayNextTrack();
+            if (filename == Core.MusicBox.CurrentSong.AudioURL) {
+                setWorkingAnimationStatus(true);
+                PlayNextTrack();
+                setWorkingAnimationStatus(false);
+            }
         }
 
         #endregion

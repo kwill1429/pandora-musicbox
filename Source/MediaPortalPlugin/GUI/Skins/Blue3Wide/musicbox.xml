@@ -21,6 +21,7 @@
       <height>720</height>
       <texture>background.png</texture>
     </control>
+    <import>mymusic.autofanart.xml</import>
 
 
 
@@ -236,6 +237,19 @@
         <posY>525</posY>
         <width>175</width>
         <height>175</height>
+        <visible>!String.Equals(#PandoraMusicBox.History4.IsAdvertisement,True)</visible>
+      </control>
+      <control>
+        <description>History 4 Image - Advertisement</description>
+        <type>image</type>
+        <texture>#PandoraMusicBox.History4.ArtworkURL</texture>
+        <posX>115</posX>
+        <posY>525</posY>
+        <width>175</width>
+        <height>175</height>
+        <keepaspectratio>yes</keepaspectratio>
+        <centered>yes</centered>
+        <visible>String.Equals(#PandoraMusicBox.History4.IsAdvertisement,True)</visible>
       </control>
 
       <control>
@@ -246,6 +260,19 @@
         <posY>525</posY>
         <width>175</width>
         <height>175</height>
+        <visible>!String.Equals(#PandoraMusicBox.History3.IsAdvertisement,True)</visible>
+      </control>
+      <control>
+        <description>History 3 Image - Advertisement</description>
+        <type>image</type>
+        <texture>#PandoraMusicBox.History3.ArtworkURL</texture>
+        <posX>320</posX>
+        <posY>525</posY>
+        <width>175</width>
+        <height>175</height>
+        <keepaspectratio>yes</keepaspectratio>
+        <centered>yes</centered>
+        <visible>String.Equals(#PandoraMusicBox.History3.IsAdvertisement,True)</visible>
       </control>
 
       <control>
@@ -256,6 +283,19 @@
         <posY>525</posY>
         <width>175</width>
         <height>175</height>
+        <visible>!String.Equals(#PandoraMusicBox.History2.IsAdvertisement,True)</visible>
+      </control>
+      <control>
+        <description>History 2 Image - Advertisement</description>
+        <type>image</type>
+        <texture>#PandoraMusicBox.History2.ArtworkURL</texture>
+        <posX>525</posX>
+        <posY>525</posY>
+        <width>175</width>
+        <height>175</height>
+        <keepaspectratio>yes</keepaspectratio>
+        <centered>yes</centered>
+        <visible>String.Equals(#PandoraMusicBox.History2.IsAdvertisement,True)</visible>
       </control>
 
       <control>
@@ -266,6 +306,19 @@
         <posY>525</posY>
         <width>175</width>
         <height>175</height>
+        <visible>!String.Equals(#PandoraMusicBox.History1.IsAdvertisement,True)</visible>
+      </control>
+      <control>
+        <description>History 1 Image - Advertisement</description>
+        <type>image</type>
+        <texture>#PandoraMusicBox.History1.ArtworkURL</texture>
+        <posX>730</posX>
+        <posY>525</posY>
+        <width>175</width>
+        <height>175</height>
+        <keepaspectratio>yes</keepaspectratio>
+        <centered>yes</centered>
+        <visible>String.Equals(#PandoraMusicBox.History1.IsAdvertisement,True)</visible>
       </control>
 
       <control>
@@ -276,6 +329,19 @@
         <posY>425</posY>
         <width>260</width>
         <height>260</height>
+        <visible>!String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)</visible>
+      </control>
+      <control>
+        <description>Current Song Image - Advertisement</description>
+        <type>image</type>
+        <texture>#PandoraMusicBox.Current.ArtworkURL</texture>
+        <posX>965</posX>
+        <posY>425</posY>
+        <width>260</width>
+        <height>260</height>
+        <keepaspectratio>yes</keepaspectratio>
+        <centered>yes</centered>
+        <visible>String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)</visible>
       </control>
 
       <!-- Song Labels -->
@@ -309,7 +375,7 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>!Control.HasFocus(6)</visible>
+        <visible>!Control.HasFocus(6)+!String.Equals(#PandoraMusicBox.History4.IsAdvertisement,True)</visible>
       </control>
       <control>
         <description>History 4 Artist Scrolling</description>
@@ -320,7 +386,7 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>Control.HasFocus(6)</visible>
+        <visible>Control.HasFocus(6)+!String.Equals(#PandoraMusicBox.History4.IsAdvertisement,True)</visible>
       </control>
 
 
@@ -354,7 +420,7 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>!Control.HasFocus(5)</visible>
+        <visible>!Control.HasFocus(5)+!String.Equals(#PandoraMusicBox.History3.IsAdvertisement,True)</visible>
       </control>
       <control>
         <description>History 3 Artist Scrolling</description>
@@ -365,7 +431,7 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>Control.HasFocus(5)</visible>
+        <visible>Control.HasFocus(5)+!String.Equals(#PandoraMusicBox.History3.IsAdvertisement,True)</visible>
       </control>
 
 
@@ -399,7 +465,7 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>!Control.HasFocus(4)</visible>
+        <visible>!Control.HasFocus(4)+!String.Equals(#PandoraMusicBox.History2.IsAdvertisement,True)</visible>
       </control>
       <control>
         <description>History 2 Artist Scrolling</description>
@@ -410,7 +476,7 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>Control.HasFocus(4)</visible>
+        <visible>Control.HasFocus(4)+!String.Equals(#PandoraMusicBox.History2.IsAdvertisement,True)</visible>
       </control>
 
 
@@ -445,7 +511,7 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>!Control.HasFocus(3)</visible>
+        <visible>!Control.HasFocus(3)+!String.Equals(#PandoraMusicBox.History1.IsAdvertisement,True)</visible>
       </control>
       <control>
         <description>History 1 Artist Scrolling</description>
@@ -456,7 +522,7 @@
         <width>180</width>
         <font>font10</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>Control.HasFocus(3)</visible>
+        <visible>Control.HasFocus(3)+!String.Equals(#PandoraMusicBox.History1.IsAdvertisement,True)</visible>
       </control>
 
       <control>
@@ -489,7 +555,7 @@
         <width>260</width>
         <font>font12</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>!Control.HasFocus(2)</visible>
+        <visible>!Control.HasFocus(2)+!String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)</visible>
       </control>
       <control>
         <description>Current Artist Scrolling</description>
@@ -500,7 +566,7 @@
         <width>260</width>
         <font>font12</font>
         <textcolor>ffa9d0f7</textcolor>
-        <visible>Control.HasFocus(2)</visible>
+        <visible>Control.HasFocus(2)+!String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)</visible>
       </control>
 
 
@@ -565,6 +631,25 @@
         <height>39</height>
         <visible>player.paused</visible>
       </control>
+    </control>
+
+    <control>
+      <description>Dummy Working Label</description>
+      <type>label</type>
+      <id>13</id>
+      <label></label>
+    </control>
+    <control>
+      <description>Working Animation</description>
+      <type>animation</type>
+      <posX>550</posX>
+      <posY>80</posY>
+      <width>96</width>
+      <height>96</height>
+      <textures>common.waiting.1.png;common.waiting.2.png;common.waiting.3.png;common.waiting.4.png;common.waiting.5.png;common.waiting.6.png;common.waiting.7.png;common.waiting.8.png</textures>
+      <Duration>0:0:01.5</Duration>
+      <keepaspectratio>yes</keepaspectratio>
+      <visible>Control.IsVisible(13)</visible>
     </control>
 
   </controls>
