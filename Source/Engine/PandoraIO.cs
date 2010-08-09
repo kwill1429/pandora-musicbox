@@ -68,16 +68,6 @@ namespace PandoraMusicBox.Engine {
             string reply = ExecuteRequest(user, PandoraRequest.GetFragment, station.Id, "mp3-hifi");
             List<PandoraSong> songs = PandoraSong.Parse(reply);
 
-            // loop through our song list and estimate the length of each song based on file size
-            foreach (PandoraSong currSong in songs) {
-                WebRequest dummyRequest = WebRequest.Create(currSong.AudioURL);
-                using (WebResponse response = dummyRequest.GetResponse()) {
-                    long bytes = response.ContentLength;
-                    int seconds = (int)((bytes * 8) / (user.AccountType == AccountType.PREMIUM ? 192000 : 128000));
-                    currSong.Length = new TimeSpan(0, 0, seconds);
-                }
-            }
-
             return songs;
         }
 
@@ -173,6 +163,18 @@ namespace PandoraMusicBox.Engine {
             catch (Exception e) {
                 throw new PandoraException("Unexpected Error Grabbing Large Artwork URL.", e);
             }
+        }
+
+        // estimate the length of each song based on file size
+        public void GetSongLength(PandoraUser user, PandoraSong song) {
+
+            WebRequest dummyRequest = WebRequest.Create(song.AudioURL);
+            using (WebResponse response = dummyRequest.GetResponse()) {
+                long bytes = response.ContentLength;
+                int seconds = (int)((bytes * 8) / (user.AccountType == AccountType.PREMIUM ? 192000 : 128000));
+                song.Length = new TimeSpan(0, 0, seconds);
+            }
+
         }
 
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {

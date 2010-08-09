@@ -127,7 +127,8 @@ namespace PandoraMusicBox.Engine {
             }
                        
             // no ad needed, just return the next song 
-            CurrentSong = playlist.Dequeue();            
+            CurrentSong = playlist.Dequeue();
+            pandora.GetSongLength(User, CurrentSong);
             return CurrentSong;
         }
 
