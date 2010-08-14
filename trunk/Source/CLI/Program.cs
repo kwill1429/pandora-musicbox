@@ -292,7 +292,7 @@ namespace PandoraMusicBox.CLI {
         }
 
         private void PlayNext() {
-            player.Open(musicBox.GetNextSong());
+            player.Open(musicBox.GetNextSong(false));
             player.Play();
         }
 

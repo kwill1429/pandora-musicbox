@@ -36,6 +36,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\External\MediaPortal\Core.dll</HintPath>
     </Reference>
+    <Reference Include="Dialogs">
+      <HintPath>..\..\External\MediaPortal\Dialogs.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\External\NLog.dll</HintPath>
     </Reference>

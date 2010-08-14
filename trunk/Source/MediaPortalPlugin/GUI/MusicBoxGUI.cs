@@ -7,6 +7,7 @@ using MediaPortal.Player;
 using PandoraMusicBox.Engine.Data;
 using System.Diagnostics;
 using NLog;
+using MediaPortal.Dialogs;
 
 namespace PandoraMusicBox.MediaPortalPlugin.GUI {
     public class MusicBoxGUI: GUIWindow {
@@ -18,7 +19,9 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         private bool PlayingRadio {
             get {
-                return g_Player.CurrentFile == Core.MusicBox.CurrentSong.AudioURL;
+                return g_Player.Playing && 
+                       Core.MusicBox.CurrentSong != null && 
+                       g_Player.CurrentFile == Core.MusicBox.CurrentSong.AudioURL;
             }
         }
 
@@ -71,16 +74,38 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         public void PlayNextTrack() {
+            PlayNextTrack(false);
+        }
+
+        private  void PlayNextTrack(bool ignoreSkip) {
             if (!initialized)
                 return;
 
             setWorkingAnimationStatus(true);
-            logger.Info("Starting Next Track");
+            
+            // if this is a skip event, check if it is allowed and notify the user if it is not
+            bool isSkip = PlayingRadio && !ignoreSkip;
+            if (isSkip && !Core.MusicBox.CanSkip()) {
+                logger.Info("User is not currently allowed to skip tracks.");
+
+                ShowMessage("Pandora",
+                    "Unfortunately our music licenses force",
+                    "us to limit the number of songs you may",
+                    "skip. If want to hear something else,",
+                    "try switching to another station.");
+                
+                return;
+            }
+
+            if (isSkip) logger.Info("Skipping Current Track");
+            logger.Debug("Attempting to Start Next Track");
 
             // grab the next song and have MediaPortal start streaming it
             lastStartTime = DateTime.Now;
-            PandoraSong song = Core.MusicBox.GetNextSong();
+            PandoraSong song = Core.MusicBox.GetNextSong(isSkip);
             g_Player.PlayAudioStream(song.AudioURL);
+
+            logger.Info("Started: '" + song.Title + "' by " + song.Artist);
 
             UpdateGUI();
             setWorkingAnimationStatus(false);
@@ -93,8 +118,10 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
                 Core.MusicBox.CurrentStation = newStation;
                 Core.Settings.LastStation = newStation;
-                PlayNextTrack();
+                PlayNextTrack(true);
                 setWorkingAnimationStatus(false);
+
+                logger.Info("Switched Station: " + newStation.Name);
             }
         }
 
@@ -298,6 +325,17 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 PlayNextTrack();
                 setWorkingAnimationStatus(false);
             }
+        }
+
+        public void ShowMessage(string heading, string line1, string line2, string line3, string line4) {
+            GUIDialogOK dialog = (GUIDialogOK)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_OK);
+            dialog.Reset();
+            dialog.SetHeading(heading);
+            if (line1 != null) dialog.SetLine(1, line1);
+            if (line2 != null) dialog.SetLine(2, line2);
+            if (line3 != null) dialog.SetLine(3, line3);
+            if (line4 != null) dialog.SetLine(4, line4);
+            dialog.DoModal(GetID);
         }
 
         #endregion
