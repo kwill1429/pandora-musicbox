@@ -56,6 +56,7 @@
     <Compile Include="PandoraIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PandoraRequest.cs" />
+    <Compile Include="SkipHistory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AssemblyInfoTemplate.txt" />

@@ -64,6 +64,15 @@ namespace PandoraMusicBox.Engine {
         }
 
         /// <summary>
+        /// Keeps track of when the user has skipped tracks on various stations and if
+        /// they are allowed to skip at the moment.
+        /// </summary>
+        public SkipHistory SkipHistory {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Logs into Pandora with the given credentials.
         /// </summary>
         /// <returns>true if the user was successfully logged in.</returns>
@@ -72,6 +81,8 @@ namespace PandoraMusicBox.Engine {
 
             User = pandora.AuthenticateListener(username, password);
             if (User != null && pandora.CanListen(User)) {
+                SkipHistory = new SkipHistory(User);
+                
                 AvailableStations = pandora.GetStations(User);
                 if (AvailableStations.Count > 0) 
                     CurrentStation = AvailableStations[0];
@@ -91,20 +102,32 @@ namespace PandoraMusicBox.Engine {
         }
 
         /// <summary>
-        /// Returns the next song and updates the CurrentSong property. 
+        /// Returns true if the user is allowed to skip the current track on the current station
         /// </summary>
         /// <returns></returns>
-        public PandoraSong GetNextSong() {            
+        public bool CanSkip() {
+            return SkipHistory.CanSkip(CurrentStation);
+        }
+
+        /// <summary>
+        /// Returns the next song and updates the CurrentSong property. Will throw a PandoraException if
+        /// skipping and the user is nto allowed to skip at this point in time. Call CanSkip() first as needed.
+        /// </summary>
+        /// <returns></returns>
+        public PandoraSong GetNextSong(bool isSkip) {            
             // update the previous songs list
             while (PreviousSongs.Count > 4) 
                 PreviousSongs.RemoveAt(4);
+
+            // if necessary log a skip event. this will throw an exception if a skip is not allowed
+            if (isSkip) SkipHistory.Skip(CurrentStation);            
 
             if (CurrentSong != null) {
                 // update playback history
                 PreviousSongs.Insert(0, CurrentSong);
 
-                // keep track of how much listenign time has occured since our last ad
-                TimeSpan realDuration = DateTime.Now - (DateTime) timeLastSongGrabbed;
+                // keep track of how much listening time has occured since our last ad
+                TimeSpan realDuration = DateTime.Now - (DateTime)timeLastSongGrabbed;
                 if (realDuration > CurrentSong.Length)
                     timeSinceLastAd = timeSinceLastAd.Add(CurrentSong.Length);
                 else
@@ -162,6 +185,7 @@ namespace PandoraMusicBox.Engine {
             CurrentSong = null;
             PreviousSongs.Clear();
             AvailableStations.Clear();
+            SkipHistory = null;
             User = null;
         }
 
