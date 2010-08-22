@@ -275,37 +275,47 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         // receives actions only when the plugin window is open
         public override void OnAction(MediaPortal.GUI.Library.Action action) {
-            if (!initialized)
-                return;
+            try {
+                if (!initialized)
+                    return;
 
-            switch (action.wID) {
-                case MediaPortal.GUI.Library.Action.ActionType.ACTION_PARENT_DIR:
-                case MediaPortal.GUI.Library.Action.ActionType.ACTION_HOME:
-                    GUIWindowManager.ShowPreviousWindow();
-                    break;
-                case MediaPortal.GUI.Library.Action.ActionType.ACTION_PREVIOUS_MENU:
-                    GUIWindowManager.ShowPreviousWindow();
-                    break;
-                case MediaPortal.GUI.Library.Action.ActionType.ACTION_PLAY:
-                case MediaPortal.GUI.Library.Action.ActionType.ACTION_MUSIC_PLAY:
-                    logger.Debug("ACTION_PLAY or ACTION_MUSIC_PLAY fired.");
-                    if (!PlayingRadio) PlayNextTrack();
-                    break;
-                default:
-                    base.OnAction(action);
-                    break;
+                switch (action.wID) {
+                    case MediaPortal.GUI.Library.Action.ActionType.ACTION_PARENT_DIR:
+                    case MediaPortal.GUI.Library.Action.ActionType.ACTION_HOME:
+                        GUIWindowManager.ShowPreviousWindow();
+                        break;
+                    case MediaPortal.GUI.Library.Action.ActionType.ACTION_PREVIOUS_MENU:
+                        GUIWindowManager.ShowPreviousWindow();
+                        break;
+                    case MediaPortal.GUI.Library.Action.ActionType.ACTION_PLAY:
+                    case MediaPortal.GUI.Library.Action.ActionType.ACTION_MUSIC_PLAY:
+                        logger.Debug("ACTION_PLAY or ACTION_MUSIC_PLAY fired.");
+                        if (!PlayingRadio) PlayNextTrack();
+                        break;
+                    default:
+                        base.OnAction(action);
+                        break;
+                }
+            }
+            catch (Exception ex) {
+                logger.ErrorException("", ex);
             }
         }
 
         // receives actions regardless of whether plugin window is open or closed
         private void OnActionGlobal(MediaPortal.GUI.Library.Action action) {
-            switch (action.wID) {
-                case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
-                    logger.Debug("ACTION_NEXT_ITEM fired.");
-                    if (PlayingRadio && !Core.MusicBox.CurrentSong.IsAdvertisement) {
-                        PlayNextTrack();
-                    }
-                    break;
+            try {
+                switch (action.wID) {
+                    case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
+                        logger.Debug("ACTION_NEXT_ITEM fired.");
+                        if (PlayingRadio && !Core.MusicBox.CurrentSong.IsAdvertisement) {
+                            PlayNextTrack();
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex) {
+                logger.ErrorException("", ex);
             }
         }
 
@@ -319,11 +329,16 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         private void OnPlayBackEnded(g_Player.MediaType type, string filename) {
-            logger.Debug("OnPlayBackEnded fired: " + filename);
-            if (filename == Core.MusicBox.CurrentSong.AudioURL) {
-                setWorkingAnimationStatus(true);
-                PlayNextTrack();
-                setWorkingAnimationStatus(false);
+            try {
+                logger.Debug("OnPlayBackEnded fired: " + filename);
+                if (Core.MusicBox.CurrentSong != null && filename == Core.MusicBox.CurrentSong.AudioURL) {
+                    setWorkingAnimationStatus(true);
+                    PlayNextTrack();
+                    setWorkingAnimationStatus(false);
+                }
+            }
+            catch (Exception ex) {
+                logger.ErrorException("", ex);
             }
         }
 
