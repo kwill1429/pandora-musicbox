@@ -196,8 +196,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             base.Init();
 
             logger.Info("Initializing GUI");
-            if (!Load(GUIGraphicsContext.Skin + @"\musicbox.xml")) {
-                logger.Error("Missing musicbox.xml skin file!");
+            if (!Load(GUIGraphicsContext.Skin + @"\PandoraMusicBox.xml")) {
+                logger.Error("Missing PandoraMusicBox.xml skin file!");
                 return false;
             }
 
