@@ -31,7 +31,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.statusLabel = new System.Windows.Forms.Label();
             this.statusPanel = new System.Windows.Forms.Panel();
-            this.upgradeLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.moreInfoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.statusPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -99,7 +99,7 @@
             // statusLabel
             // 
             this.statusLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.statusLabel.Location = new System.Drawing.Point(-12, 0);
+            this.statusLabel.Location = new System.Drawing.Point(-16, 0);
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size(210, 16);
             this.statusLabel.TabIndex = 6;
@@ -112,24 +112,24 @@
             this.statusPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.statusPanel.Controls.Add(this.statusLabel);
-            this.statusPanel.Controls.Add(this.upgradeLinkLabel);
+            this.statusPanel.Controls.Add(this.moreInfoLinkLabel);
             this.statusPanel.Location = new System.Drawing.Point(12, 98);
             this.statusPanel.Name = "statusPanel";
             this.statusPanel.Size = new System.Drawing.Size(246, 16);
             this.statusPanel.TabIndex = 7;
             // 
-            // upgradeLinkLabel
+            // moreInfoLinkLabel
             // 
-            this.upgradeLinkLabel.AutoSize = true;
-            this.upgradeLinkLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.upgradeLinkLabel.Location = new System.Drawing.Point(198, 0);
-            this.upgradeLinkLabel.Name = "upgradeLinkLabel";
-            this.upgradeLinkLabel.Size = new System.Drawing.Size(48, 13);
-            this.upgradeLinkLabel.TabIndex = 0;
-            this.upgradeLinkLabel.TabStop = true;
-            this.upgradeLinkLabel.Text = "Upgrade";
-            this.upgradeLinkLabel.Visible = false;
-            this.upgradeLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.upgradeLinkLabel_LinkClicked);
+            this.moreInfoLinkLabel.AutoSize = true;
+            this.moreInfoLinkLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.moreInfoLinkLabel.Location = new System.Drawing.Point(194, 0);
+            this.moreInfoLinkLabel.Name = "moreInfoLinkLabel";
+            this.moreInfoLinkLabel.Size = new System.Drawing.Size(52, 13);
+            this.moreInfoLinkLabel.TabIndex = 0;
+            this.moreInfoLinkLabel.TabStop = true;
+            this.moreInfoLinkLabel.Text = "More Info";
+            this.moreInfoLinkLabel.Visible = false;
+            this.moreInfoLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.upgradeLinkLabel_LinkClicked);
             // 
             // LoginForm
             // 
@@ -170,6 +170,6 @@
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Label statusLabel;
         private System.Windows.Forms.Panel statusPanel;
-        private System.Windows.Forms.LinkLabel upgradeLinkLabel;
+        private System.Windows.Forms.LinkLabel moreInfoLinkLabel;
     }
 }

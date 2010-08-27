@@ -87,7 +87,10 @@ namespace PandoraMusicBox.Engine {
 
                 // try to grab the first station in the list that is not the quickmix station
                 foreach (PandoraStation currStation in AvailableStations)
-                    if (!currStation.IsQuickMix) CurrentStation = currStation;
+                    if (!currStation.IsQuickMix) {
+                        CurrentStation = currStation;
+                        break;
+                    }
 
                 return true;
             }
