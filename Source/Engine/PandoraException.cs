@@ -9,7 +9,8 @@ namespace PandoraMusicBox.Engine {
         APPLICATION_ERROR,
 
         AUTH_INVALID_USERNAME_PASSWORD,
-        AUTH_INVALID_TOKEN
+        AUTH_INVALID_TOKEN,
+        LICENSE_RESTRICTION
     }
 
     public class PandoraException: Exception {
@@ -115,8 +116,19 @@ namespace PandoraMusicBox.Engine {
                 xml.LoadXml(xmInput);
                 foreach (XmlNode currNode in xml.SelectNodes("/methodResponse/fault/value/struct/member")) {
                     if (currNode["name"].InnerText == "faultString") {
-                        string errorCode = currNode["value"].InnerText.Split('|')[2];
-                        string errorMsg = currNode["value"].InnerText.Split('|')[3];
+                        string errorCode = "";
+                        string errorMsg = "";
+
+                        if (currNode["value"].InnerText.Contains("|")) {
+                            errorCode = currNode["value"].InnerText.Split('|')[2];
+                            errorMsg = currNode["value"].InnerText.Split('|')[3];
+                        }
+                        else if (currNode["value"].InnerText.Contains(":")) {
+                            errorMsg = currNode["value"].InnerText.Split(':')[1].Trim();
+                            if (errorMsg.Contains("licensing restrictions"))
+                                errorCode = "LICENSE_RESTRICTION";
+                        }
+
                         return new PandoraException(errorCode, errorMsg);
                     }
                 }

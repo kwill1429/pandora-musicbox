@@ -28,8 +28,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 login.ShowDialog();
                 MusicBoxCore.Instance.Shutdown();
             }
-            catch (Exception) {
-                MessageBox.Show("There was an unexpected error in the Pandora MusicBox Configuration screen!", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            catch (Exception ex) {
+                MessageBox.Show("There was an unexpected error in the Pandora MusicBox Configuration screen!\n\n" + ex.Message, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
         }

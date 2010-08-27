@@ -11,16 +11,22 @@ using System.Threading;
 using PandoraMusicBox.Engine.Data;
 using System.Diagnostics;
 using NLog;
+using PandoraMusicBox.Engine;
 
 namespace PandoraMusicBox.MediaPortalPlugin.Config {
     public partial class LoginForm : Form {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         delegate void InvokeDelegate();
+        delegate void InvokeDelegateEx(PandoraException ex);
 
         private Thread verifyLoginThread;
         private Color defaultLabelColor;
         private bool verified = false;
+
+        private readonly string UPGRADE = "http://www.pandora.com/pandora_one";
+        private readonly string LICENSE = "http://www.pandora.com/restricted";
+        private string link;
 
         private MusicBoxCore Core {
             get { return MusicBoxCore.Instance;  }
@@ -37,13 +43,18 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
             statusLabel.ForeColor = defaultLabelColor;
             statusLabel.Text = "Verifying login credentials...";
             statusLabel.Visible = true;
-            upgradeLinkLabel.Visible = false;
+            moreInfoLinkLabel.Visible = false;
 
             // disable the log in button so the user doesnt double tap it
             okButton.Enabled = false;
 
             ThreadStart actions = delegate {
-                Core.MusicBox.Login(emailTextBox.Text, passwordTextBox.Text);
+                try { Core.MusicBox.Login(emailTextBox.Text, passwordTextBox.Text); }
+                catch (PandoraException ex) { 
+                    LoginFailed(ex);
+                    return;
+                }
+
                 LoginDone();
             };
 
@@ -66,7 +77,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 statusLabel.Text = "Invalid username or password.";
                 statusLabel.Visible = true;
 
-                upgradeLinkLabel.Visible = false;
+                moreInfoLinkLabel.Visible = false;
 
                 okButton.Text = "Sign In";
                 okButton.Enabled = true;
@@ -79,6 +90,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 statusLabel.Visible = true;
 
                 upgradeLinkLabel.Visible = true;
+                link = UPGRADE;
 
                 okButton.Text = "Sign In";
                 okButton.Enabled = true;
@@ -92,12 +104,39 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 statusLabel.Text = "Account successfully validated!";
                 statusLabel.Visible = true;
 
-                upgradeLinkLabel.Visible = false;
+                moreInfoLinkLabel.Visible = false;
 
                 okButton.Text = "OK";
                 okButton.Enabled = true;
                 verified = true;
             }
+        }
+
+        private void LoginFailed(PandoraException ex) {
+            if (InvokeRequired) {
+                Invoke(new InvokeDelegateEx(LoginFailed), new object[] { ex });
+                return;
+            }
+
+            okButton.Text = "Sign In";
+            okButton.Enabled = true;
+            verified = false;
+
+            if (ex.ErrorCode == ErrorCodeEnum.LICENSE_RESTRICTION) {
+                MessageBox.Show("We are deeply, deeply sorry to say that due to licensing constraints, we can no longer allow access to Pandora for listeners located outside of the U.S. We will continue to work diligently to realize the vision of a truly global Pandora, but for the time being we are required to restrict it's use. We are very sad to have to do this, but there is no other alternative.");
+                logger.Error(ex.Message);
+
+                statusLabel.ForeColor = Color.Red;
+                statusLabel.Text = "Invalid Region.";
+
+                moreInfoLinkLabel.Visible = true;
+                link = LICENSE;
+                return;
+            }
+
+            statusLabel.ForeColor = Color.Red;
+            statusLabel.Text = "Unexpected Error.";
+            logger.ErrorException("Unexpected Error!", ex);
         }
 
         private void ClearStatus() {
@@ -167,7 +206,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
         }
 
         private void upgradeLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            ProcessStartInfo processInfo = new ProcessStartInfo("http://www.pandora.com/pandora_one");
+            ProcessStartInfo processInfo = new ProcessStartInfo(link);
             Process.Start(processInfo);
         }
 
