@@ -59,6 +59,11 @@ namespace PandoraMusicBox.MediaPortalPlugin {
             }
         }
 
+        public string SadTrombone {
+            get;
+            internal set;
+        }
+
         #endregion
 
         #region Helper Methods

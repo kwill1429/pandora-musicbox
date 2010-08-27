@@ -9,10 +9,12 @@ using NLog.Config;
 using NLog.Targets;
 using MediaPortal.Services;
 using System.Reflection;
+using PandoraMusicBox.MediaPortalPlugin.Properties;
 
 namespace PandoraMusicBox.MediaPortalPlugin {
     internal class MusicBoxCore {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static bool loggerInitialized = false;
 
         public static MusicBoxCore Instance {
             get {
@@ -57,6 +59,8 @@ namespace PandoraMusicBox.MediaPortalPlugin {
 
             Settings = new MusicBoxSettings();
             Settings.LoadSettings();
+
+            ExtractResources();
         }
 
         public void Shutdown() {
@@ -65,10 +69,12 @@ namespace PandoraMusicBox.MediaPortalPlugin {
             logger.Info("Plugin Shutdown");
         }
 
-        private static void InitLogger() {
+        private void InitLogger() {
+            if (loggerInitialized) return;
+            loggerInitialized = true;
+
             string logFileName = "musicbox.log";
-            string oldLogFileName = "musicBox.old.log";
-                
+            string oldLogFileName = "musicBox.old.log";                
 
             // backup the current log file and clear for the new one
             try {
@@ -126,6 +132,26 @@ namespace PandoraMusicBox.MediaPortalPlugin {
 
             // force NLog to reload the configuration data
             LogManager.Configuration = LogManager.Configuration;
+        }
+
+        private void ExtractResources() {
+            // define the location for and create the temp folder to contain our resources
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            string dirName = Path.Combine(Path.GetTempPath(), "PandorMusicBox");
+            if (!Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
+
+            // define the full paths to our files
+            Settings.SadTrombone = Path.Combine(dirName, "sad-trombone.mp3");
+
+            // Copy the resources to the temporary file
+            try {
+                if (!File.Exists(Settings.SadTrombone))
+                    using (Stream outFile = File.Create(Settings.SadTrombone))
+                        outFile.Write(Resources.SadTrombone, 0, Resources.SadTrombone.Length);
+            }
+            catch (Exception e) {
+                logger.Warn("Failed saving the sad trombone: " + e.Message);
+            }
         }
     }
 }
