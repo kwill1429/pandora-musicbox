@@ -8,6 +8,7 @@ using PandoraMusicBox.Engine.Data;
 using System.Diagnostics;
 using NLog;
 using MediaPortal.Dialogs;
+using PandoraMusicBox.Engine;
 
 namespace PandoraMusicBox.MediaPortalPlugin.GUI {
     public class MusicBoxGUI: GUIWindow {
@@ -52,126 +53,168 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         #endregion
 
         public void LoginAndPlay() {
-            // if needed, attempt to log in
-            if (Core.MusicBox.User == null) {
-                setWorkingAnimationStatus(true);
-                logger.Info("Attempting to log in: " + Core.Settings.UserName);
-                Core.MusicBox.Login(Core.Settings.UserName, Core.Settings.Password);
-                
-                if (Core.Settings.LastStation != null)
-                    Core.MusicBox.CurrentStation = Core.Settings.LastStation;
+            if (!initialized) return;
 
+            try {
+                // if needed, attempt to log in
                 if (Core.MusicBox.User == null) {
-                    logger.Error("Invalid username or password.");
+                    setWorkingAnimationStatus(true);
+                    logger.Info("Attempting to log in: " + Core.Settings.UserName);
+
+                    Core.MusicBox.Login(Core.Settings.UserName, Core.Settings.Password);
+
+                    // if a previous station is stored in our settings, attempt to load it
+                    if (Core.Settings.LastStation != null)
+                        Core.MusicBox.CurrentStation = Core.Settings.LastStation;
+
+
+                    if (Core.MusicBox.User == null) {
+                        logger.Error("Invalid username or password.");
+                    }
                 }
+
+                // if nothing else is playing, play next track in our queue
+                if (!g_Player.Playing)
+                    PlayNextTrack();
+
+                setWorkingAnimationStatus(false);
             }
-
-            // if nothing else is playing, play next track in our queue
-            if (!g_Player.Playing)
-                PlayNextTrack();
-
-            setWorkingAnimationStatus(false);
+            catch (Exception ex) { GracefullyFail(ex); }
         }
 
         public void PlayNextTrack() {
+            if (!initialized) return;
+
             PlayNextTrack(false);
         }
 
-        private  void PlayNextTrack(bool ignoreSkip) {
-            if (!initialized)
-                return;
+        private void PlayNextTrack(bool ignoreSkip) {
+            if (!initialized) return;
 
-            setWorkingAnimationStatus(true);
-            
-            // if this is a skip event, check if it is allowed and notify the user if it is not
-            bool isSkip = PlayingRadio && !ignoreSkip;
-            if (isSkip && !Core.MusicBox.CanSkip()) {
-                logger.Info("User is not currently allowed to skip tracks.");
+            try {
+                setWorkingAnimationStatus(true);
 
-                ShowMessage("Pandora",
-                    "Unfortunately our music licenses force",
-                    "us to limit the number of songs you may",
-                    "skip. If want to hear something else,",
-                    "try switching to another station.");
-                
-                return;
+                // if this is a skip event, check if it is allowed and notify the user if it is not
+                bool isSkip = PlayingRadio && !ignoreSkip;
+                if (isSkip && !Core.MusicBox.CanSkip()) {
+                    logger.Info("User is not currently allowed to skip tracks.");
+
+                    ShowMessage("Pandora",
+                        "Unfortunately our music licenses force",
+                        "us to limit the number of songs you may",
+                        "skip. If want to hear something else,",
+                        "try switching to another station.");
+
+                    return;
+                }
+
+                if (isSkip) logger.Info("Skipping Current Track");
+                logger.Debug("Attempting to Start Next Track");
+
+                // grab the next song and have MediaPortal start streaming it
+                lastStartTime = DateTime.Now;
+                PandoraSong song = Core.MusicBox.GetNextSong(isSkip);
+                g_Player.PlayAudioStream(song.AudioURL);
+
+                logger.Info("Started: '" + song.Title + "' by " + song.Artist);
+
+                UpdateGUI();
+                setWorkingAnimationStatus(false);
             }
-
-            if (isSkip) logger.Info("Skipping Current Track");
-            logger.Debug("Attempting to Start Next Track");
-
-            // grab the next song and have MediaPortal start streaming it
-            lastStartTime = DateTime.Now;
-            PandoraSong song = Core.MusicBox.GetNextSong(isSkip);
-            g_Player.PlayAudioStream(song.AudioURL);
-
-            logger.Info("Started: '" + song.Title + "' by " + song.Artist);
-
-            UpdateGUI();
-            setWorkingAnimationStatus(false);
+            catch (Exception ex) { GracefullyFail(ex); }
         }
 
         public void PromptAndChangeStation() {
-            PandoraStation newStation = ShowStationChooser();
-            if (newStation != null && newStation != Core.MusicBox.CurrentStation) {
-                setWorkingAnimationStatus(true);
+            if (!initialized) return;
 
-                Core.MusicBox.CurrentStation = newStation;
-                Core.Settings.LastStation = newStation;
-                PlayNextTrack(true);
-                setWorkingAnimationStatus(false);
+            try {
+                PandoraStation newStation = ShowStationChooser();
+                if (newStation != null && newStation != Core.MusicBox.CurrentStation) {
+                    setWorkingAnimationStatus(true);
 
-                logger.Info("Switched Station: " + newStation.Name);
+                    Core.MusicBox.CurrentStation = newStation;
+                    Core.Settings.LastStation = newStation;
+                    PlayNextTrack(true);
+                    setWorkingAnimationStatus(false);
+
+                    logger.Info("Switched Station: " + newStation.Name);
+                }
             }
+            catch (Exception ex) { GracefullyFail(ex); }
+        }
+
+        private void GracefullyFail(Exception ex) {
+            try {
+                logger.ErrorException("Unexpected error!", ex);
+
+                g_Player.Play(Core.Settings.SadTrombone);
+                GUIWindowManager.ShowPreviousWindow();
+                DeInit();
+            } 
+            catch (Exception ex2) {
+                logger.ErrorException("Failed cleaning up after an error!", ex2);
+            }
+
+            ShowMessage("Oops!",
+                "Pandora MusicBox has encountered an",
+                "unexpected error! Please pardon our",
+                "growing pains!",
+                 ex == null ? null : ex.Message);
         }
 
         private void UpdateGUI() {
-            var currentSong = Core.MusicBox.CurrentSong;
+            if (!initialized) return;
 
-            // publish song details to the skin
-            SetProperty("#Play.Current.Title", currentSong.Title);
-            SetProperty("#Play.Current.Artist", currentSong.Artist);
-            SetProperty("#Play.Current.Thumb", currentSong.AlbumArtLargeURL);
+            try {
+                var currentSong = Core.MusicBox.CurrentSong;
+                if (currentSong == null) return;
 
-            SetProperty("#PandoraMusicBox.Current.Artist", currentSong.Artist);
-            SetProperty("#PandoraMusicBox.Current.Title", currentSong.Title);
-            SetProperty("#PandoraMusicBox.Current.Album", currentSong.Album);
-            SetProperty("#PandoraMusicBox.Current.ArtworkURL", currentSong.AlbumArtLargeURL);
-            SetProperty("#PandoraMusicBox.Current.IsAdvertisement", currentSong.IsAdvertisement.ToString());
-            if (currentSong.TemporarilyBanned)
-                SetProperty("#PandoraMusicBox.Current.Rating", "TemporarilyBanned");
-            else
-                SetProperty("#PandoraMusicBox.Current.Rating", currentSong.Rating.ToString());
+                // publish song details to the skin
+                SetProperty("#Play.Current.Title", currentSong.Title);
+                SetProperty("#Play.Current.Artist", currentSong.Artist);
+                SetProperty("#Play.Current.Thumb", currentSong.AlbumArtLargeURL);
 
-            for (int i = 1; i <= 4; i++) {
-                SetProperty("#PandoraMusicBox.History" + i + ".Artist", "");
-                SetProperty("#PandoraMusicBox.History" + i + ".Title", "");
-                SetProperty("#PandoraMusicBox.History" + i + ".Album", "");
-                SetProperty("#PandoraMusicBox.History" + i + ".ArtworkURL", "");
-                SetProperty("#PandoraMusicBox.History" + i + ".IsAdvertisement", "");
-                SetProperty("#PandoraMusicBox.History" + i + ".Rating", "");
-            }
-
-            int iHistory = 1;
-            foreach (var song in Core.MusicBox.PreviousSongs) {
-                SetProperty("#PandoraMusicBox.History" + iHistory + ".Artist", song.Artist);
-                SetProperty("#PandoraMusicBox.History" + iHistory + ".Title", song.Title);
-                SetProperty("#PandoraMusicBox.History" + iHistory + ".Album", song.Album);
-                SetProperty("#PandoraMusicBox.History" + iHistory + ".ArtworkURL", song.AlbumArtLargeURL);
-                SetProperty("#PandoraMusicBox.History" + iHistory + ".IsAdvertisement", song.IsAdvertisement.ToString());
-                if (song.TemporarilyBanned)
-                    SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", "TemporarilyBanned");
+                SetProperty("#PandoraMusicBox.Current.Artist", currentSong.Artist);
+                SetProperty("#PandoraMusicBox.Current.Title", currentSong.Title);
+                SetProperty("#PandoraMusicBox.Current.Album", currentSong.Album);
+                SetProperty("#PandoraMusicBox.Current.ArtworkURL", currentSong.AlbumArtLargeURL);
+                SetProperty("#PandoraMusicBox.Current.IsAdvertisement", currentSong.IsAdvertisement.ToString());
+                if (currentSong.TemporarilyBanned)
+                    SetProperty("#PandoraMusicBox.Current.Rating", "TemporarilyBanned");
                 else
-                    SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", song.Rating.ToString());
-                iHistory++;
+                    SetProperty("#PandoraMusicBox.Current.Rating", currentSong.Rating.ToString());
+
+                for (int i = 1; i <= 4; i++) {
+                    SetProperty("#PandoraMusicBox.History" + i + ".Artist", "");
+                    SetProperty("#PandoraMusicBox.History" + i + ".Title", "");
+                    SetProperty("#PandoraMusicBox.History" + i + ".Album", "");
+                    SetProperty("#PandoraMusicBox.History" + i + ".ArtworkURL", "");
+                    SetProperty("#PandoraMusicBox.History" + i + ".IsAdvertisement", "");
+                    SetProperty("#PandoraMusicBox.History" + i + ".Rating", "");
+                }
+
+                int iHistory = 1;
+                foreach (var song in Core.MusicBox.PreviousSongs) {
+                    SetProperty("#PandoraMusicBox.History" + iHistory + ".Artist", song.Artist);
+                    SetProperty("#PandoraMusicBox.History" + iHistory + ".Title", song.Title);
+                    SetProperty("#PandoraMusicBox.History" + iHistory + ".Album", song.Album);
+                    SetProperty("#PandoraMusicBox.History" + iHistory + ".ArtworkURL", song.AlbumArtLargeURL);
+                    SetProperty("#PandoraMusicBox.History" + iHistory + ".IsAdvertisement", song.IsAdvertisement.ToString());
+                    if (song.TemporarilyBanned)
+                        SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", "TemporarilyBanned");
+                    else
+                        SetProperty("#PandoraMusicBox.History" + iHistory + ".Rating", song.Rating.ToString());
+                    iHistory++;
+                }
+
+                SetProperty("#PandoraMusicBox.CurrentStation.Name", Core.MusicBox.CurrentStation.Name);
+
+                btnHistory1Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 1);
+                btnHistory2Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 2);
+                btnHistory3Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 3);
+                btnHistory4Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 4);
             }
-
-            SetProperty("#PandoraMusicBox.CurrentStation.Name", Core.MusicBox.CurrentStation.Name);
-
-            btnHistory1Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 1);
-            btnHistory2Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 2);
-            btnHistory3Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 3);
-            btnHistory4Song.Visible = (Core.MusicBox.PreviousSongs.Count >= 4);
+            catch (Exception ex) { GracefullyFail(ex); }
         }
 
         private void SetProperty(string property, string value) {
@@ -201,27 +244,44 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 return false;
             }
 
-            Core.Initialize();
+            try {
+                Core.Initialize();
 
-            g_Player.PlayBackEnded += new g_Player.EndedHandler(OnPlayBackEnded);
-            initialized = true;
-            return true;
+                g_Player.PlayBackEnded += new g_Player.EndedHandler(OnPlayBackEnded);
+                initialized = true;
+                return true;
+            }
+            catch (Exception ex) { 
+                GracefullyFail(ex);
+                return false;
+            }
+
         }
 
         public override void DeInit() {
-            logger.Info("Deinitializing GUI");
-            Core.Shutdown();
+            if (!initialized) return;
 
-            g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
-            GUIGraphicsContext.OnNewAction -= new OnActionHandler(OnActionGlobal);
+            try {
+                logger.Info("Deinitializing GUI");
+                Core.Shutdown();
 
-            initialized = false;
-            globalActionListenerInitialized = false;
-            base.DeInit();
+                g_Player.PlayBackEnded -= new g_Player.EndedHandler(OnPlayBackEnded);
+                GUIGraphicsContext.OnNewAction -= new OnActionHandler(OnActionGlobal);
+
+                initialized = false;
+                globalActionListenerInitialized = false;
+                base.DeInit();
+            }
+            catch (Exception ex) { logger.ErrorException("Failed deinitializing plugin.", ex); }
         }
 
         protected override void OnPageLoad() {
             base.OnPageLoad();
+
+            if (!initialized) {
+                logger.Warn("Attempting to load window before plugin is initialized.");
+                Init();
+            }
 
             logger.Info("Opening Plugin Window");
 
@@ -242,42 +302,43 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         protected override void OnClicked(int controlId, GUIControl control, MediaPortal.GUI.Library.Action.ActionType actionType) {
-            if (!initialized)
-                return;
+            if (!initialized) return;
 
-            switch (controlId) {
-                // btnCurrent
-                case 2:
-                    ShowSongContext(Core.MusicBox.CurrentSong);
-                    break;
+            try {
+                switch (controlId) {
+                    // btnCurrent
+                    case 2:
+                        ShowSongContext(Core.MusicBox.CurrentSong);
+                        break;
 
-                // btnHistory1
-                case 3:
-                    ShowSongContext(Core.MusicBox.PreviousSongs[0]);
-                    break;
+                    // btnHistory1
+                    case 3:
+                        ShowSongContext(Core.MusicBox.PreviousSongs[0]);
+                        break;
 
-                // btnHistory2
-                case 4:
-                    ShowSongContext(Core.MusicBox.PreviousSongs[1]);
-                    break;
+                    // btnHistory2
+                    case 4:
+                        ShowSongContext(Core.MusicBox.PreviousSongs[1]);
+                        break;
 
-                // btnHistory3
-                case 5:
-                    ShowSongContext(Core.MusicBox.PreviousSongs[2]);
-                    break;
+                    // btnHistory3
+                    case 5:
+                        ShowSongContext(Core.MusicBox.PreviousSongs[2]);
+                        break;
 
-                // btnHistory4
-                case 6:
-                    ShowSongContext(Core.MusicBox.PreviousSongs[3]);
-                    break;
+                    // btnHistory4
+                    case 6:
+                        ShowSongContext(Core.MusicBox.PreviousSongs[3]);
+                        break;
+                }
             }
+            catch (Exception ex) { GracefullyFail(ex); }
         }
 
         // receives actions only when the plugin window is open
         public override void OnAction(MediaPortal.GUI.Library.Action action) {
             try {
-                if (!initialized)
-                    return;
+                if (!initialized) return;
 
                 switch (action.wID) {
                     case MediaPortal.GUI.Library.Action.ActionType.ACTION_PARENT_DIR:
@@ -298,13 +359,15 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 }
             }
             catch (Exception ex) {
-                logger.ErrorException("", ex);
+                GracefullyFail(ex);
             }
         }
 
         // receives actions regardless of whether plugin window is open or closed
         private void OnActionGlobal(MediaPortal.GUI.Library.Action action) {
             try {
+                if (!initialized) return;
+
                 switch (action.wID) {
                     case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
                         logger.Debug("ACTION_NEXT_ITEM fired.");
@@ -315,7 +378,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 }
             }
             catch (Exception ex) {
-                logger.ErrorException("", ex);
+                GracefullyFail(ex);
             }
         }
 
@@ -330,6 +393,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         private void OnPlayBackEnded(g_Player.MediaType type, string filename) {
             try {
+                if (!initialized) return;
+
                 logger.Debug("OnPlayBackEnded fired: " + filename);
                 if (Core.MusicBox.CurrentSong != null && filename == Core.MusicBox.CurrentSong.AudioURL) {
                     setWorkingAnimationStatus(true);
@@ -338,7 +403,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 }
             }
             catch (Exception ex) {
-                logger.ErrorException("", ex);
+                GracefullyFail(ex);
             }
         }
 

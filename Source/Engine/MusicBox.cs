@@ -84,8 +84,10 @@ namespace PandoraMusicBox.Engine {
                 SkipHistory = new SkipHistory(User);
                 
                 AvailableStations = pandora.GetStations(User);
-                if (AvailableStations.Count > 0) 
-                    CurrentStation = AvailableStations[0];
+
+                // try to grab the first station in the list that is not the quickmix station
+                foreach (PandoraStation currStation in AvailableStations)
+                    if (!currStation.IsQuickMix) CurrentStation = currStation;
 
                 return true;
             }
