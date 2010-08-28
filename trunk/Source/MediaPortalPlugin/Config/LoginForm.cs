@@ -210,6 +210,13 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
             Process.Start(processInfo);
         }
 
+        private void textBox_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == 13) {
+                e.Handled = true;
+                okButton_Click(null, null);
+            }
+        }
+
 
     }
 }

@@ -111,6 +111,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Properties\AssemblyInfoTemplate.txt" />
+    <EmbeddedResource Include="Resources\Images\icon_faded.png" />
+    <EmbeddedResource Include="Resources\Images\icon_normal.png" />
     <None Include="Resources\sad-trombone.mp3" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using MediaPortal.GUI.Library;
 using System.Windows.Forms;
+using MediaPortal.Configuration;
 
 namespace PandoraMusicBox.MediaPortalPlugin.Config {
+    [PluginIcons("PandoraMusicBox.MediaPortalPlugin.Resources.Images.icon_normal.png",
+                 "PandoraMusicBox.MediaPortalPlugin.Resources.Images.icon_faded.png")]
     public class ConfigConnector: ISetupForm {
         #region ISetupForm Members
 
