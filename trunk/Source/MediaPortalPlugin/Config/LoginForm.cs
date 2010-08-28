@@ -24,7 +24,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
         private Color defaultLabelColor;
         private bool verified = false;
 
-        private readonly string UPGRADE = "http://www.pandora.com/pandora_one";
+        //private readonly string UPGRADE = "http://www.pandora.com/pandora_one";
         private readonly string LICENSE = "http://www.pandora.com/restricted";
         private string link;
 
