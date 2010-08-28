@@ -305,32 +305,20 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             if (!initialized) return;
 
             try {
-                switch (controlId) {
-                    // btnCurrent
-                    case 2:
-                        ShowSongContext(Core.MusicBox.CurrentSong);
-                        break;
+                if (controlId == btnCurrentSong.GetID)
+                    ShowSongContext(Core.MusicBox.CurrentSong);
 
-                    // btnHistory1
-                    case 3:
-                        ShowSongContext(Core.MusicBox.PreviousSongs[0]);
-                        break;
+                else if (controlId == btnHistory1Song.GetID)
+                    ShowSongContext(Core.MusicBox.PreviousSongs[0]);
 
-                    // btnHistory2
-                    case 4:
-                        ShowSongContext(Core.MusicBox.PreviousSongs[1]);
-                        break;
+                else if (controlId == btnHistory2Song.GetID)
+                    ShowSongContext(Core.MusicBox.PreviousSongs[1]);
 
-                    // btnHistory3
-                    case 5:
-                        ShowSongContext(Core.MusicBox.PreviousSongs[2]);
-                        break;
+                else if (controlId == btnHistory3Song.GetID)
+                    ShowSongContext(Core.MusicBox.PreviousSongs[2]);
 
-                    // btnHistory4
-                    case 6:
-                        ShowSongContext(Core.MusicBox.PreviousSongs[3]);
-                        break;
-                }
+                else if (controlId == btnHistory4Song.GetID)
+                    ShowSongContext(Core.MusicBox.PreviousSongs[3]);
             }
             catch (Exception ex) { GracefullyFail(ex); }
         }
