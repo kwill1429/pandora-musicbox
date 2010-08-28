@@ -209,14 +209,5 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
             ProcessStartInfo processInfo = new ProcessStartInfo(link);
             Process.Start(processInfo);
         }
-
-        private void textBox_KeyPress(object sender, KeyPressEventArgs e) {
-            if (e.KeyChar == 13) {
-                e.Handled = true;
-                okButton_Click(null, null);
-            }
-        }
-
-
     }
 }
