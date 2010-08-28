@@ -10,7 +10,8 @@ namespace PandoraMusicBox.Engine {
 
         AUTH_INVALID_USERNAME_PASSWORD,
         AUTH_INVALID_TOKEN,
-        LICENSE_RESTRICTION
+        LICENSE_RESTRICTION,
+        READONLY_MODE
     }
 
     public class PandoraException: Exception {

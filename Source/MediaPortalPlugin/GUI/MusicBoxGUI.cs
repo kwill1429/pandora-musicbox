@@ -59,18 +59,29 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 // if needed, attempt to log in
                 if (Core.MusicBox.User == null) {
                     setWorkingAnimationStatus(true);
-                    logger.Info("Attempting to log in: " + Core.Settings.UserName);
 
+                    logger.Info("Attempting to log in: " + Core.Settings.UserName);
                     Core.MusicBox.Login(Core.Settings.UserName, Core.Settings.Password);
+
+                    // if login failed, log the message, notify the user, and exit
+                    if (Core.MusicBox.User == null) {
+                        logger.Error("Invalid username or password.");
+
+                        GUIWindowManager.ShowPreviousWindow();
+                        DeInit();
+
+                        ShowMessage("Pandora",
+                            "Invalid username or password. Please",
+                            "first login and verify your account",
+                            "via the configuration screen.",
+                            null);
+
+                        return;
+                    }
 
                     // if a previous station is stored in our settings, attempt to load it
                     if (Core.Settings.LastStation != null)
                         Core.MusicBox.CurrentStation = Core.Settings.LastStation;
-
-
-                    if (Core.MusicBox.User == null) {
-                        logger.Error("Invalid username or password.");
-                    }
                 }
 
                 // if nothing else is playing, play next track in our queue
@@ -80,6 +91,32 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 setWorkingAnimationStatus(false);
             }
             catch (Exception ex) { GracefullyFail(ex); }
+        }
+
+        public void RateSong(PandoraSong song, PandoraRating rating) {
+            try {
+                Core.MusicBox.RateSong(song, rating);
+                if (rating == PandoraRating.Hate && song == Core.MusicBox.CurrentSong)
+                    PlayNextTrack();
+
+                UpdateGUI();
+            }
+            catch (Exception ex) {
+                GracefullyFail(ex);
+            }
+        }
+
+        public void TemporarilyBanSong(PandoraSong song) {
+            try {
+                Core.MusicBox.TemporarilyBanSong(song);
+                if (song == Core.MusicBox.CurrentSong)
+                    PlayNextTrack();
+
+                UpdateGUI();
+            }
+            catch (Exception ex) {
+                GracefullyFail(ex);
+            }
         }
 
         public void PlayNextTrack() {
@@ -144,6 +181,23 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         }
 
         private void GracefullyFail(Exception ex) {
+            // if this was a known error then we can provide more specific feedback
+            if (ex != null && ex is PandoraException) {
+                switch ((ex as PandoraException).ErrorCode) {
+                    case ErrorCodeEnum.READONLY_MODE:
+                        ShowMessage("Pandora",
+                            "Pandora is currently running maintenance",
+                            "and this action is currently unavailable.",
+                            "Sorry for the inconvienience!",
+                            null);
+
+                        // not a fatal error so we can just exit
+                        return;
+                }
+            }
+
+            // unknown error
+
             try {
                 logger.ErrorException("Unexpected error!", ex);
 
@@ -464,15 +518,11 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             dialog.Add(moveSongItem);
 
             if (dialog.SelectedId == thumbsUpItem.ItemId) {
-                Core.MusicBox.RateSong(Engine.PandoraRating.Love, song);
-                UpdateGUI();
+                RateSong(song, PandoraRating.Love);
             }
 
             else if (dialog.SelectedId == thumbsDownItem.ItemId) {
-                Core.MusicBox.RateSong(Engine.PandoraRating.Hate, song);
-                if (song == Core.MusicBox.CurrentSong)
-                    PlayNextTrack();
-                UpdateGUI();
+                RateSong(song, PandoraRating.Hate);
             }
 
             else if (dialog.SelectedId == whySelectedItem.ItemId) {
@@ -487,10 +537,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
 
             else if (dialog.SelectedId == tempBanItem.ItemId) {
-                Core.MusicBox.TemporarilyBanSong(song);
-                if (song == Core.MusicBox.CurrentSong)
-                    PlayNextTrack();
-                UpdateGUI();
+                TemporarilyBanSong(song);
             }
         }
 

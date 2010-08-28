@@ -166,7 +166,7 @@ namespace PandoraMusicBox.Engine {
         /// </summary>
         /// <param name="rating"></param>
         /// <param name="song"></param>
-        public void RateSong(PandoraRating rating, PandoraSong song) {
+        public void RateSong(PandoraSong song, PandoraRating rating) {
             VerifyAndExecute(delegate {
                 pandora.RateSong(User, CurrentStation, song, rating);
             });
