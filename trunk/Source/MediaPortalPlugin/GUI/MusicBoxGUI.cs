@@ -156,9 +156,11 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 logger.Info("Started: '" + song.Title + "' by " + song.Artist);
 
                 UpdateGUI();
-                setWorkingAnimationStatus(false);
             }
             catch (Exception ex) { GracefullyFail(ex); }
+            finally {
+                setWorkingAnimationStatus(false);
+            }
         }
 
         public void PromptAndChangeStation() {
