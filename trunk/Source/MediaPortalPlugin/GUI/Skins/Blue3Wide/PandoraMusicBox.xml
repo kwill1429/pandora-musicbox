@@ -621,7 +621,7 @@
         <description>History 4 Rating</description>
         <type>image</type>
         <texture>pandora_rating_#PandoraMusicBox.History4.Rating.png</texture>
-        <posX>250</posX>
+        <posX>280</posX>
         <posY>484</posY>
         <width>37</width>
         <height>37</height>
