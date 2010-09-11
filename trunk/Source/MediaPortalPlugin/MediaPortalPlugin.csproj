@@ -107,9 +107,7 @@
     <Content Include="GUI\Skins\Blue3Wide\Media\pandora_rating_TemporarilyBanned.png" />
     <Content Include="GUI\Skins\Blue3Wide\Media\pandora_tile.png" />
     <Content Include="GUI\Skins\Blue3Wide\Media\pandora_tile_focus.png" />
-    <Content Include="GUI\Skins\Blue3Wide\musicbox.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="GUI\Skins\Blue3Wide\PandoraMusicBox.xml" />
     <Content Include="Properties\AssemblyInfoTemplate.txt" />
     <EmbeddedResource Include="Resources\Images\icon_faded.png" />
     <EmbeddedResource Include="Resources\Images\icon_normal.png" />

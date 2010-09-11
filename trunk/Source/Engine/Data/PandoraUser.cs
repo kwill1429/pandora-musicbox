@@ -74,7 +74,14 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
-        //public int RemainingHours
+        public TimeSpan TimeoutInterval {
+            get {
+                if (this.AccountType == AccountType.BASIC)
+                    return new TimeSpan(1, 0, 0);
+                else
+                    return new TimeSpan(5, 0, 0);
+            }
+        }
 
         internal static PandoraUser Parse(string xmlStr) {
             int tmp;

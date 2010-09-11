@@ -28,7 +28,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         bool initialized = false;
         bool globalActionListenerInitialized = false;
-        DateTime? lastStartTime = null;
+        bool handlingEvent = false;
+        DateTime lastButtonPress = DateTime.Now;
 
         #region GUI Controls
 
@@ -119,6 +120,29 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
         }
 
+        public bool IsStillListening() {
+            logger.Debug("Idle Time: " + (DateTime.Now - lastButtonPress) + " / " + Core.MusicBox.User.TimeoutInterval);
+            if (DateTime.Now - lastButtonPress < Core.MusicBox.User.TimeoutInterval)
+                return true;
+
+            GUIDialogYesNo dialog = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_YES_NO);
+            dialog.Reset();
+            dialog.SetHeading("Pandora");
+            dialog.SetLine(1, "We pay for each song we play so we try");
+            dialog.SetLine(2, "not to play to an empty room.");
+            dialog.SetLine(3, " ");
+            dialog.SetLine(4, "Are you still listening?");
+            dialog.SetDefaultToYes(true);
+            dialog.DoModal(GetID);
+
+            if (dialog.IsConfirmed) {
+                lastButtonPress = DateTime.Now;
+                return true;
+            }
+
+            return false;
+        }
+
         public void PlayNextTrack() {
             if (!initialized) return;
 
@@ -129,6 +153,9 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             if (!initialized) return;
 
             try {
+                if (!IsStillListening())
+                    return;                
+                
                 setWorkingAnimationStatus(true);
 
                 // if this is a skip event, check if it is allowed and notify the user if it is not
@@ -149,7 +176,6 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 logger.Debug("Attempting to Start Next Track");
 
                 // grab the next song and have MediaPortal start streaming it
-                lastStartTime = DateTime.Now;
                 PandoraSong song = Core.MusicBox.GetNextSong(isSkip);
                 g_Player.PlayAudioStream(song.AudioURL);
 
@@ -301,7 +327,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
 
             try {
-                Core.Initialize();
+                Core.Initialize();                
 
                 g_Player.PlayBackEnded += new g_Player.EndedHandler(OnPlayBackEnded);
                 initialized = true;
@@ -346,6 +372,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
                 GUIGraphicsContext.OnNewAction += new OnActionHandler(OnActionGlobal);
             }
 
+            lastButtonPress = DateTime.Now;
             LoginAndPlay();
             UpdateGUI();
             setWorkingAnimationStatus(false);
@@ -411,6 +438,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         private void OnActionGlobal(MediaPortal.GUI.Library.Action action) {
             try {
                 if (!initialized) return;
+                lastButtonPress = DateTime.Now;
 
                 switch (action.wID) {
                     case MediaPortal.GUI.Library.Action.ActionType.ACTION_NEXT_ITEM:
@@ -437,10 +465,11 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
         private void OnPlayBackEnded(g_Player.MediaType type, string filename) {
             try {
-                if (!initialized) return;
-
-                logger.Debug("OnPlayBackEnded fired: " + filename);
+                if (!initialized || handlingEvent) return;
+                handlingEvent = true;
+                
                 if (Core.MusicBox.CurrentSong != null && filename == Core.MusicBox.CurrentSong.AudioURL) {
+                    logger.Debug("Playback ended for current Pandora song.");
                     setWorkingAnimationStatus(true);
                     PlayNextTrack();
                     setWorkingAnimationStatus(false);
@@ -448,6 +477,9 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }
             catch (Exception ex) {
                 GracefullyFail(ex);
+            }
+            finally {
+                handlingEvent = false;
             }
         }
 
