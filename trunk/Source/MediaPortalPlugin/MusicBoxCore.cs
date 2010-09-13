@@ -73,8 +73,8 @@ namespace PandoraMusicBox.MediaPortalPlugin {
             if (loggerInitialized) return;
             loggerInitialized = true;
 
-            string logFileName = "musicbox.log";
-            string oldLogFileName = "musicBox.old.log";                
+            string logFileName = "pandoramusicbox.log";
+            string oldLogFileName = "pandoramusicBox.old.log";                
 
             // backup the current log file and clear for the new one
             try {
