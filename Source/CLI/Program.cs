@@ -77,6 +77,16 @@ namespace PandoraMusicBox.CLI {
 
             player.PlaybackEvent += new DirectShowPlayer.DirectShowEventHandler(player_PlaybackEvent);
 
+            if (Settings.Default.LastStationId != "") {
+                foreach (PandoraStation station in musicBox.AvailableStations) {
+                    if (station.IsQuickMix) continue;
+
+                    if (station.Id == Settings.Default.LastStationId) {
+                        musicBox.CurrentStation = station;
+                    }
+                }
+            }
+
             PlayNext();
             return true;
         }
@@ -177,6 +187,8 @@ namespace PandoraMusicBox.CLI {
                     if (showStations && newStationIndex > 0) {
                         if (stationLookup.ContainsKey(newStationIndex) && stationLookup[newStationIndex] != musicBox.CurrentStation) {
                             musicBox.CurrentStation = stationLookup[newStationIndex];
+                            Settings.Default.LastStationId = musicBox.CurrentStation.Id;
+                            Settings.Default.Save();
                             PlayNext();
                         }
                         showStations = false;
