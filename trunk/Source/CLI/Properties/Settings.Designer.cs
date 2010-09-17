@@ -58,5 +58,17 @@ namespace PandoraMusicBox.CLI.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastStationId {
+            get {
+                return ((string)(this["LastStationId"]));
+            }
+            set {
+                this["LastStationId"] = value;
+            }
+        }
     }
 }
