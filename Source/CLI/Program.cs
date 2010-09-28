@@ -13,24 +13,23 @@ namespace PandoraMusicBox.CLI {
         MusicBox musicBox = new MusicBox();
         DirectShowPlayer player = new DirectShowPlayer();
         BlowfishCipher crypter = new BlowfishCipher(PandoraCryptKeys.In);
+        const ConsoleColor DEFAULT_BACKGROUND_COLOR = ConsoleColor.Black;
 
-        Dictionary<int, PandoraStation> stationLookup = new Dictionary<int, PandoraStation>();
-
-        bool needStatusUpdate = false;
-        
+        bool needUIUpdate = false;
+        bool modalWindowDisplayed = false;
         bool showHelp = false;
-        bool showStations = false;
-        int newStationIndex = 0;
 
         static void Main(string[] args) {
             Program p = new Program();
 
-            try {                
+            try {
                 if (p.Init())
                     p.RunMainLoop();
             }
             catch (PandoraException pe) {
                 Console.Clear();
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("Very sorry, but something has gone horribly wrong!\n");
                 Console.WriteLine("AppData: {0}", System.Windows.Forms.Application.LocalUserAppDataPath);
                 if (pe.ErrorCode != ErrorCodeEnum.UNKNOWN) Console.Write("{0}: ", pe.ErrorCode.ToString());
@@ -47,6 +46,8 @@ namespace PandoraMusicBox.CLI {
             }
             catch (Exception e) {
                 Console.Clear();
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("Very sorry, but something has gone horribly wrong!\n");
                 Console.WriteLine("{0}", e.ToString());
                 Console.ReadKey();
@@ -57,11 +58,21 @@ namespace PandoraMusicBox.CLI {
         }
 
         private bool Init() {
+            Console.CursorVisible = false;
+            Console.BufferWidth = 80;
+            Console.BufferHeight = 25;
+            Console.WindowWidth = 80;
+            Console.WindowHeight = 25;
+            Console.WindowLeft = 0;
+            Console.WindowTop = 0;
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
+
             CheckForSettingsUpgrade();
 
             // if we have no login credentials, prompt the user
             if (Settings.Default.Username == string.Empty) {
-                if (!ManualLogin()) 
+                if (!ManualLogin())
                     return false;
             }
 
@@ -94,26 +105,25 @@ namespace PandoraMusicBox.CLI {
         void player_PlaybackEvent(EventCode eventCode) {
             if (eventCode == EventCode.Complete) {
                 PlayNext();
-                needStatusUpdate = true;
             }
         }
 
         public void RunMainLoop() {
             ConsoleKeyInfo choice;
+            PrintUI();
 
             do {
-                PrintStatus();
 
                 while (!Console.KeyAvailable) {
-                    if (needStatusUpdate) {
-                        PrintStatus();
-                        needStatusUpdate = false;
+                    if (needUIUpdate) {
+                        PrintUI();
+                        needUIUpdate = false;
                     }
-
+                    PrintSongPosition();
                     Thread.Sleep(100);
                 }
 
-                choice = Console.ReadKey();
+                choice = Console.ReadKey(true);
                 switch (char.ToLower(choice.KeyChar)) {
                     case 'x':
                     case 'q':
@@ -126,20 +136,23 @@ namespace PandoraMusicBox.CLI {
                         PlayNext();
                         break;
                     case 's':
-                        showStations = !showStations;
-                        newStationIndex = 0;
-                        showHelp = false;
-                        needStatusUpdate = true;
+                        PandoraStation newStation = ShowStationChooser();
+                        if (newStation != null && newStation != musicBox.CurrentStation) {
+                            musicBox.CurrentStation = newStation;
+                            Settings.Default.LastStationId = musicBox.CurrentStation.Id;
+                            Settings.Default.Save();
+                            PlayNext();
+                        }
                         break;
                     case '?':
                     case 'h':
                         showHelp = !showHelp;
-                        showStations = false;
-                        needStatusUpdate = true;                        
+                        modalWindowDisplayed = showHelp;
+                        needUIUpdate = true;
                         break;
                     case '+':
                         musicBox.RateSong(musicBox.CurrentSong, PandoraRating.Love);
-                        needStatusUpdate = true;
+                        needUIUpdate = true;
                         break;
                     case '-':
                         musicBox.RateSong(musicBox.CurrentSong, PandoraRating.Hate);
@@ -152,112 +165,254 @@ namespace PandoraMusicBox.CLI {
                 }
 
                 if (choice.Key == ConsoleKey.Escape) {
-                    if (showHelp == true || showStations == true) {
+                    if (showHelp) {
                         showHelp = false;
-                        showStations = false;
-                        needStatusUpdate = true;
-                        newStationIndex = 0;
+                        modalWindowDisplayed = false;
+                        needUIUpdate = true;
                     }
                     else {
                         return;
                     }
-                } 
+                }
 
                 if (choice.Key == ConsoleKey.UpArrow) {
                     player.Volume += 0.01;
+                    PrintVolume();
                 }
 
                 if (choice.Key == ConsoleKey.DownArrow) {
                     player.Volume -= 0.01;
+                    PrintVolume();
                 }
 
                 if (choice.Key == ConsoleKey.RightArrow) {
                     PlayNext();
                 }
 
-
-                if (showStations) {
-                    int stationInput;
-                    if (int.TryParse(choice.KeyChar + "", out stationInput)) {
-                        newStationIndex = int.Parse(newStationIndex.ToString() + stationInput.ToString());
-                    }
-                }
-
-                if (choice.Key == ConsoleKey.Enter) {
-                    if (showStations && newStationIndex > 0) {
-                        if (stationLookup.ContainsKey(newStationIndex) && stationLookup[newStationIndex] != musicBox.CurrentStation) {
-                            musicBox.CurrentStation = stationLookup[newStationIndex];
-                            Settings.Default.LastStationId = musicBox.CurrentStation.Id;
-                            Settings.Default.Save();
-                            PlayNext();
-                        }
-                        showStations = false;
-                        newStationIndex = 0;
-                    }
-                }
-
             } while (true);
         }
 
-        private void PrintStatus() {
-            Console.Clear();
-            ConsoleColor origColor = Console.ForegroundColor;
-            
-            Console.WriteLine("Station: {0}\n", musicBox.CurrentStation.Name);
-            Console.Write("Song:    ");
-            if (musicBox.CurrentSong.Rating == PandoraRating.Love) {
-                Console.ForegroundColor = ConsoleColor.Green;
+
+        private void PrintUI() {
+            if (!modalWindowDisplayed) {
+                PrintSongDetails();
+                PrintVolume();
             }
-            Console.Write("{0}\n", musicBox.CurrentSong.Title);
-            Console.ForegroundColor = origColor;
-            
-            Console.WriteLine("Artist:  {0}", musicBox.CurrentSong.Artist);
-            Console.WriteLine("Album:   {0}\n", musicBox.CurrentSong.Album);
-
-            if (showStations) PrintStations();
             if (showHelp) PrintHelp();
-
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("press '?' for help");
-            Console.ForegroundColor = ConsoleColor.Gray;
-            if (showStations)
-                Console.Write("Station: " + (newStationIndex > 0 ? newStationIndex.ToString() : ""));
-            else
-                Console.Write(": ");
         }
 
-        private void PrintStations() {
-            Console.WriteLine("Available Stations:");
 
-            int index = 0;
-            foreach (PandoraStation currStation in musicBox.AvailableStations) {
-                if (currStation.IsQuickMix) continue;
+        private void PrintSongDetails() {
+            Console.Clear();
+            Console.SetCursorPosition(30, 0);
+            PrintText("Pandora MusicBox CLI", 30, 0, ConsoleColor.White);
+            PrintText("Station: ", 0, 1, ConsoleColor.DarkGray);
+            PrintText("Song:    ", 0, 3, ConsoleColor.DarkGray);
+            PrintText("Artist:  ", 0, 4, ConsoleColor.DarkGray);
+            PrintText("Album:   ", 0, 5, ConsoleColor.DarkGray);
 
-                index++;
-                Console.WriteLine("{0}: {1}", index, currStation.Name);
-                stationLookup[index] = currStation;
+
+            PrintText(musicBox.CurrentStation.Name, 9, 1);
+            ConsoleColor songColor;
+            if (musicBox.CurrentSong.Rating == PandoraRating.Love)
+                songColor = ConsoleColor.Green;
+            else
+                songColor = ConsoleColor.Gray;
+
+            PrintText(musicBox.CurrentSong.Title, 9, 3, songColor);
+            PrintText(musicBox.CurrentSong.Artist, 9, 4);
+            PrintText(musicBox.CurrentSong.Album, 9, 5);
+
+            PrintText("press 'h' for help", 0, Console.WindowHeight - 1, ConsoleColor.DarkGray);
+        }
+
+        private void PrintSongPosition() {
+            if (modalWindowDisplayed) return;
+            TimeSpan position = new TimeSpan();
+            TimeSpan length = new TimeSpan();
+
+            try {
+                position = TimeSpan.FromMilliseconds(player.Position);
+                length = player.GetLoadedAudioFile().Length;
             }
+            catch (NullReferenceException) {
+                // player doesn't have an audio file yet.
+                // default time values should be are fine
+            }
+            string time =
+                String.Format("{0:00}:{1:00} / {2:00}:{3:00}"
+                    , position.Minutes, position.Seconds
+                    , length.Minutes, length.Seconds
+                    );
 
-            Console.WriteLine();
+            if (!player.IsPlaying())
+                time += " (paused)";
+
+            PrintText(time.PadRight(Console.WindowWidth), 0, 7);
+        }
+
+        private void PrintVolume() {
+            if (modalWindowDisplayed) return;
+
+            PrintText("Vol:", Console.WindowWidth - 8, 0, ConsoleColor.DarkGray);
+            string volume = ((int)(player.Volume * 100)).ToString().PadLeft(3);
+            PrintText(volume, Console.WindowWidth - 3, 0);
+        }
+
+        private PandoraStation ShowStationChooser() {
+            int childWidth = 54;
+            int innerWidth = childWidth - 4;
+            int childHeight = Console.WindowHeight - 5;
+            int childX = (Console.WindowWidth - childWidth) / 2;
+            int childY = 2;
+            int selectedIndex = 1;
+            int index = 0;
+            bool needStationMenuUpdate = true;
+
+            modalWindowDisplayed = true;
+            try {
+                List<PandoraStation> stations = new List<PandoraStation>();
+                foreach (PandoraStation station in musicBox.AvailableStations) {
+                    if (station.IsQuickMix) continue;
+                    stations.Add(station);
+
+                    index++;
+                    if (station == musicBox.CurrentStation)
+                        selectedIndex = index;
+                }
+
+                ConsoleKeyInfo key;
+
+                do {
+                    if (needStationMenuUpdate) {
+                        // print window border
+                        PrintWindowBorder(childX, childY, childWidth, childHeight, ConsoleColor.DarkCyan, "Available Stations");
+
+                        string hint = string.Format(" {0}/{1} ", selectedIndex, stations.Count);
+                        PrintText(hint, childX + 2, childY + childHeight, ConsoleColor.DarkCyan);
+
+                        // right align
+                        PrintText("Select a new station, or [ESC]", childX + childWidth - 32, childY + childHeight - 1, ConsoleColor.DarkGray);
+
+
+                        // print menu items
+                        index = 0;
+                        foreach (PandoraStation currStation in stations) {
+                            index++;
+                            string printLine = String.Format("{0}: {1}", index, currStation.Name);
+                            if (printLine.Length > innerWidth)
+                                printLine = printLine.Substring(0, innerWidth);
+
+                            ConsoleColor backgroundColor = ConsoleColor.Black;
+                            if (index == selectedIndex)
+                                backgroundColor = ConsoleColor.DarkCyan;
+
+                            PrintText(printLine.PadRight(innerWidth), childX + 2, childY + 1 + index, ConsoleColor.Gray, backgroundColor);
+                        }
+                        needStationMenuUpdate = false;
+                    }
+
+                    key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.Escape) {
+                        modalWindowDisplayed = false;
+                        needUIUpdate = true;
+                        return null;
+                    }
+
+                    if (key.Key == ConsoleKey.DownArrow) {
+                        selectedIndex++;
+                        if (selectedIndex > stations.Count)
+                            selectedIndex = stations.Count;
+                        else
+                            needStationMenuUpdate = true;
+                    }
+
+                    if (key.Key == ConsoleKey.UpArrow) {
+                        selectedIndex--;
+                        if (selectedIndex < 1)
+                            selectedIndex = 1;
+                        else
+                            needStationMenuUpdate = true;
+                    }
+
+                } while (key.Key != ConsoleKey.Enter);
+
+                return stations[selectedIndex - 1];
+            }
+            finally {
+                modalWindowDisplayed = false;
+            }
         }
 
         private void PrintHelp() {
-            Console.WriteLine("Available Commands:");
-            Console.WriteLine(); 
-            Console.WriteLine("SPACE : Play / Pause");
-            Console.WriteLine("RIGHT : Skip to Next Song");
-            Console.WriteLine("UP    : Increase Volume");
-            Console.WriteLine("DOWN  : Decrease Volume");
-            Console.WriteLine();
-            Console.WriteLine("s     : Show Station List");
-            Console.WriteLine();
-            Console.WriteLine("+     : I Like This Song");
-            Console.WriteLine("-     : I Don't Like This Song");
-            Console.WriteLine("b     : Temporarily Ban This Song (One Month)");
-            Console.WriteLine();
-            Console.WriteLine("ESC   : Quit / Back");
-            Console.WriteLine();
+            int childWidth = 54;
+            int innerWidth = childWidth - 4;
+            int childHeight = Console.WindowHeight - 5;
+            int childX = (Console.WindowWidth - childWidth) / 2;
+            int childY = 2;
 
+
+            string helpWindow = "";
+            helpWindow += "Available Commands:\n";
+            helpWindow += "\n";
+            helpWindow += "SPACE : Play / Pause\n";
+            helpWindow += "RIGHT : Skip to Next Song\n";
+            helpWindow += "UP    : Increase Volume\n";
+            helpWindow += "DOWN  : Decrease Volume\n";
+            helpWindow += "\n";
+            helpWindow += "s     : Show Station List\n";
+            helpWindow += "\n";
+            helpWindow += "+     : I Like This Song\n";
+            helpWindow += "-     : I Don't Like This Song\n";
+            helpWindow += "b     : Temporarily Ban This Song (One Month)\n";
+            helpWindow += "\n";
+            helpWindow += "ESC   : Quit / Back\n";
+
+            string[] lines = helpWindow.Split('\n');
+
+            // print window border
+            PrintWindowBorder(childX, childY, childWidth, childHeight, ConsoleColor.DarkCyan, "Help");
+
+            // print text
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
+            int index = 0;
+            foreach (string line in lines) {
+                index++;
+                string printLine = line;
+                if (printLine.Length > innerWidth)
+                    printLine = printLine.Substring(0, innerWidth);
+                PrintText(printLine, childX + 2, childY + 1 + index);
+            }
+
+            // right aligned
+            PrintText("[ESC] to close help", childX + childWidth - 21, childY + childHeight - 1, ConsoleColor.DarkGray);
+        }
+
+        private void PrintWindowBorder(int x, int y, int width, int height, ConsoleColor foregroundColor, string title) {
+            string textBuffer;
+
+            // top border
+            textBuffer = string.Format("╔═ {0} {1}╗", title, new String('═', width - title.Length - 5));
+            PrintText(textBuffer, x, y, foregroundColor);
+
+            // sides
+            textBuffer = string.Format("║{0}║", new string(' ', width - 2));
+            for (int i = 1; i < height; i++) {
+                PrintText(textBuffer, x, y + i, foregroundColor);
+            }
+
+            // bottom border
+            textBuffer = string.Format("╚{0}╝", new String('═', width - 2));
+            PrintText(textBuffer, x, y + height, foregroundColor);
+        }
+
+        private void PrintText(string text, int x, int y, ConsoleColor foregroundColor = ConsoleColor.Gray, ConsoleColor backgroundColor = DEFAULT_BACKGROUND_COLOR) {
+            Console.BackgroundColor = backgroundColor;
+            Console.ForegroundColor = foregroundColor;
+            Console.SetCursorPosition(x, y);
+            Console.Write(text);
+            Console.BackgroundColor = DEFAULT_BACKGROUND_COLOR;
         }
 
         private void CheckForSettingsUpgrade() {
@@ -294,9 +449,9 @@ namespace PandoraMusicBox.CLI {
                     Console.Clear();
                     Console.Write("Invalid user name or password. Retry? (y/n)");
                     ConsoleKeyInfo keyPress = Console.ReadKey();
-                    
+
                     if (keyPress.KeyChar != 'y' && keyPress.KeyChar != 'Y')
-                        retry = false;                   
+                        retry = false;
                 }
             }
 
@@ -304,8 +459,33 @@ namespace PandoraMusicBox.CLI {
         }
 
         private void PlayNext() {
+            Thread waitIconThread;
+
+            // show wait icon
+            ThreadStart actions = delegate {
+                int i = 0;
+                while (true) {
+                    char[] chars = new char[] { '\\', '|', '/', '-' };
+                    i++;
+                    if (i > chars.Length - 1)
+                        i = 0;
+                    PrintText(chars[i].ToString(), Console.WindowWidth - 10, 0, ConsoleColor.Yellow);
+                    Thread.Sleep(100);
+                }
+            };
+
+            waitIconThread = new Thread(actions);
+            waitIconThread.Start();
+
             player.Open(musicBox.GetNextSong(false));
             player.Play();
+            PrintUI();
+
+            waitIconThread.Abort();
+
+            // erase wait icon
+            PrintText(" ", Console.WindowWidth - 10, 0, ConsoleColor.Yellow);
+            needUIUpdate = true;
         }
 
         private string ReadPassword() {
