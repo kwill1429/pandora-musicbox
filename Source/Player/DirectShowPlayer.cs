@@ -64,6 +64,7 @@ namespace Engine {
                 }
 
                 _Volume = value;
+                PreviousVolume = value;
             }
         } protected double _Volume;
 
