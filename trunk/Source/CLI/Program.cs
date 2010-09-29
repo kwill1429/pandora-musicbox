@@ -18,6 +18,7 @@ namespace PandoraMusicBox.CLI {
         bool needUIUpdate = false;
         bool modalWindowDisplayed = false;
         bool showHelp = false;
+        Thread waitIconThread;
 
         static void Main(string[] args) {
             Program p = new Program();
@@ -85,6 +86,7 @@ namespace PandoraMusicBox.CLI {
                 if (!success && !ManualLogin())
                     return false;
             }
+            ShowWaitIcon(true);
 
             player.PlaybackEvent += new DirectShowPlayer.DirectShowEventHandler(player_PlaybackEvent);
 
@@ -99,6 +101,7 @@ namespace PandoraMusicBox.CLI {
             }
 
             PlayNext();
+            ShowWaitIcon(false);
             return true;
         }
 
@@ -138,10 +141,12 @@ namespace PandoraMusicBox.CLI {
                     case 's':
                         PandoraStation newStation = ShowStationChooser();
                         if (newStation != null && newStation != musicBox.CurrentStation) {
+                            ShowWaitIcon(true);
                             musicBox.CurrentStation = newStation;
                             Settings.Default.LastStationId = musicBox.CurrentStation.Id;
                             Settings.Default.Save();
                             PlayNext();
+                            ShowWaitIcon(false);
                         }
                         break;
                     case '?':
@@ -265,8 +270,9 @@ namespace PandoraMusicBox.CLI {
             int childHeight = Console.WindowHeight - 5;
             int childX = (Console.WindowWidth - childWidth) / 2;
             int childY = 2;
-            int selectedIndex = 1;
-            int index = 0;
+            int selectedIndex = 0;
+            int scrollTop = 0;
+            int lineCount = childHeight - 4;
             bool needStationMenuUpdate = true;
 
             modalWindowDisplayed = true;
@@ -276,9 +282,8 @@ namespace PandoraMusicBox.CLI {
                     if (station.IsQuickMix) continue;
                     stations.Add(station);
 
-                    index++;
                     if (station == musicBox.CurrentStation)
-                        selectedIndex = index;
+                        selectedIndex = stations.Count - 1;
                 }
 
                 ConsoleKeyInfo key;
@@ -288,26 +293,35 @@ namespace PandoraMusicBox.CLI {
                         // print window border
                         PrintWindowBorder(childX, childY, childWidth, childHeight, ConsoleColor.DarkCyan, "Available Stations");
 
-                        string hint = string.Format(" {0}/{1} ", selectedIndex, stations.Count);
+                        string hint = string.Format(" {0}/{1} ", selectedIndex + 1, stations.Count);
                         PrintText(hint, childX + 2, childY + childHeight, ConsoleColor.DarkCyan);
 
                         // right align
                         PrintText("Select a new station, or [ESC]", childX + childWidth - 32, childY + childHeight - 1, ConsoleColor.DarkGray);
 
+                        // determine if the selected item is visible
+                        if (selectedIndex < scrollTop)
+                            scrollTop = selectedIndex;
+
+                        while (selectedIndex >= scrollTop + lineCount) {
+                            scrollTop++;
+                        }
 
                         // print menu items
-                        index = 0;
-                        foreach (PandoraStation currStation in stations) {
-                            index++;
-                            string printLine = String.Format("{0}: {1}", index, currStation.Name);
+                        for (int line = 0; line < lineCount; line++) {
+                            if (line + scrollTop >= stations.Count) break;
+                            PandoraStation currStation = stations[line + scrollTop];
+                            int songNumber = line + scrollTop + 1;
+                            string printLine = String.Format("{0}: {1}", songNumber.ToString().PadLeft(2), currStation.Name);
                             if (printLine.Length > innerWidth)
                                 printLine = printLine.Substring(0, innerWidth);
 
                             ConsoleColor backgroundColor = ConsoleColor.Black;
-                            if (index == selectedIndex)
+                            if (line + scrollTop == selectedIndex)
                                 backgroundColor = ConsoleColor.DarkCyan;
 
-                            PrintText(printLine.PadRight(innerWidth), childX + 2, childY + 1 + index, ConsoleColor.Gray, backgroundColor);
+                            PrintText(printLine.PadRight(innerWidth), childX + 2, childY + 2 + line, ConsoleColor.Gray, backgroundColor);
+
                         }
                         needStationMenuUpdate = false;
                     }
@@ -321,23 +335,23 @@ namespace PandoraMusicBox.CLI {
 
                     if (key.Key == ConsoleKey.DownArrow) {
                         selectedIndex++;
-                        if (selectedIndex > stations.Count)
-                            selectedIndex = stations.Count;
+                        if (selectedIndex > stations.Count - 1)
+                            selectedIndex = stations.Count - 1;
                         else
                             needStationMenuUpdate = true;
                     }
 
                     if (key.Key == ConsoleKey.UpArrow) {
                         selectedIndex--;
-                        if (selectedIndex < 1)
-                            selectedIndex = 1;
+                        if (selectedIndex < 0)
+                            selectedIndex = 0;
                         else
                             needStationMenuUpdate = true;
                     }
 
                 } while (key.Key != ConsoleKey.Enter);
 
-                return stations[selectedIndex - 1];
+                return stations[selectedIndex];
             }
             finally {
                 modalWindowDisplayed = false;
@@ -459,33 +473,43 @@ namespace PandoraMusicBox.CLI {
         }
 
         private void PlayNext() {
-            Thread waitIconThread;
 
-            // show wait icon
-            ThreadStart actions = delegate {
-                int i = 0;
-                while (true) {
-                    char[] chars = new char[] { '\\', '|', '/', '-' };
-                    i++;
-                    if (i > chars.Length - 1)
-                        i = 0;
-                    PrintText(chars[i].ToString(), Console.WindowWidth - 10, 0, ConsoleColor.Yellow);
-                    Thread.Sleep(100);
-                }
-            };
-
-            waitIconThread = new Thread(actions);
-            waitIconThread.Start();
+            ShowWaitIcon(true);
 
             player.Open(musicBox.GetNextSong(false));
             player.Play();
             PrintUI();
 
-            waitIconThread.Abort();
-
-            // erase wait icon
-            PrintText(" ", Console.WindowWidth - 10, 0, ConsoleColor.Yellow);
+            ShowWaitIcon(false);
             needUIUpdate = true;
+        }
+
+        private void ShowWaitIcon(bool display) {
+            if (display) {
+			    // do we need some type of a lock here?
+                if (waitIconThread == null || !waitIconThread.IsAlive) {
+                    // show wait icon
+                    ThreadStart actions = delegate {
+                        int i = 0;
+                        while (true) {
+                            char[] chars = new char[] { '\\', '|', '/', '-' };
+                            i++;
+                            if (i > chars.Length - 1)
+                                i = 0;
+                            PrintText(chars[i].ToString(), Console.WindowWidth - 10, 0, ConsoleColor.Yellow);
+                            Thread.Sleep(100);
+                        }
+                    };
+                    waitIconThread = new Thread(actions);
+                    waitIconThread.IsBackground = true;
+                    waitIconThread.Start();
+                }
+            }
+            else {
+                if (waitIconThread != null)
+                    waitIconThread.Abort();
+                PrintText(" ", Console.WindowWidth - 10, 0, ConsoleColor.Yellow);
+            }
         }
 
         private string ReadPassword() {
