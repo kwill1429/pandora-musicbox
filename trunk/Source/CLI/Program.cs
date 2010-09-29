@@ -100,6 +100,7 @@ namespace PandoraMusicBox.CLI {
                 }
             }
 
+            player.Volume = Settings.Default.Volume;
             PlayNext();
             ShowWaitIcon(false);
             return true;
@@ -183,11 +184,15 @@ namespace PandoraMusicBox.CLI {
                 if (choice.Key == ConsoleKey.UpArrow) {
                     player.Volume += 0.01;
                     PrintVolume();
+                    Settings.Default.Volume = player.Volume;
+                    Settings.Default.Save();
                 }
 
                 if (choice.Key == ConsoleKey.DownArrow) {
                     player.Volume -= 0.01;
                     PrintVolume();
+                    Settings.Default.Volume = player.Volume;
+                    Settings.Default.Save();
                 }
 
                 if (choice.Key == ConsoleKey.RightArrow) {
