@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using PandoraMusicBox.Engine.Data;
-using System.Net;
 
 namespace PandoraMusicBox.Engine {
     public class MusicBox {
@@ -157,40 +156,8 @@ namespace PandoraMusicBox.Engine {
                        
             // no ad needed, just return the next song 
             CurrentSong = playlist.Dequeue();
-            CheckURLAvailability();
-
             pandora.GetSongLength(User, CurrentSong);
             return CurrentSong;
-        }
-
-
-        /// <summary>
-        /// Checks to see if we are able to retrieve the song file
-        /// If a 403 is detected, this will empty the queue and repopulate it with new songs
-        /// </summary>
-        private void CheckURLAvailability() {
-            try {
-                WebRequest dummyRequest = WebRequest.Create(CurrentSong.AudioURL);
-                using (WebResponse response = dummyRequest.GetResponse()) {
-                    long bytes = response.ContentLength;
-                }
-            }
-            catch (WebException ex) {
-                if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null) {
-                    var resp = (HttpWebResponse)ex.Response;
-                    if (resp.StatusCode == HttpStatusCode.Forbidden) {
-                        // API responded with a 403
-                        // this typically means the song URL has expired
-                        // probably because the player has been paused for a long time
-                        PreviousSongs.Clear();
-                        playlist.Clear();
-                        LoadMoreSongs();
-                        CurrentSong = playlist.Dequeue();
-                        return;
-                    }
-                }
-                throw ex;
-            }
         }
 
         /// <summary>
