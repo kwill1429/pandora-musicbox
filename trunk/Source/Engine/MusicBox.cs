@@ -141,9 +141,6 @@ namespace PandoraMusicBox.Engine {
 
             timeLastSongGrabbed = DateTime.Now;
 
-            // if needed add more songs to our queue
-            if (playlist.Count < 2) LoadMoreSongs();
-
             // if it is time for an ad reset the ad timer and return an ad instead of a song
             if (currentAdInterval == null) currentAdInterval = new TimeSpan(0, User.AdInterval / 2, 0);
             if (User.AccountType == AccountType.BASIC && timeSinceLastAd > currentAdInterval) {
@@ -153,9 +150,15 @@ namespace PandoraMusicBox.Engine {
                 CurrentSong = pandora.GetAdvertisement(User);
                 return CurrentSong;
             }
-                       
-            // no ad needed, just return the next song 
-            CurrentSong = playlist.Dequeue();
+
+
+            // grab the next song in our queue. songs become invalid after an 
+            // unspecified number of hours.
+            do {
+                if (playlist.Count < 2) LoadMoreSongs();
+                CurrentSong = playlist.Dequeue();
+            } while (!pandora.IsValid(CurrentSong));
+
             pandora.GetSongLength(User, CurrentSong);
             return CurrentSong;
         }
