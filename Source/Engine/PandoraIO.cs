@@ -167,14 +167,35 @@ namespace PandoraMusicBox.Engine {
 
         // estimate the length of each song based on file size
         public void GetSongLength(PandoraUser user, PandoraSong song) {
-
+            if (!IsValid(song)) {
+                throw new PandoraException("Attempting to get song length for an expired song.");
+            }
+            
             WebRequest dummyRequest = WebRequest.Create(song.AudioURL);
             using (WebResponse response = dummyRequest.GetResponse()) {
                 long bytes = response.ContentLength;
                 int seconds = (int)((bytes * 8) / (user.AccountType == AccountType.PREMIUM ? 192000 : 128000));
                 song.Length = new TimeSpan(0, 0, seconds);
             }
+        }
 
+
+        /// <summary>
+        /// Returns true if the given PandoraSong is still valid. Links will expire after an unspecified
+        /// number of hours.
+        /// </summary>
+        public bool IsValid(PandoraSong song) {
+            try {
+                WebRequest dummyRequest = WebRequest.Create(song.AudioURL);
+                using (WebResponse response = dummyRequest.GetResponse()) {
+                    long bytes = response.ContentLength;
+                }
+
+                return true;
+            }
+            catch (WebException) {
+                return false;
+            }
         }
 
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, params object[] paramList) {
