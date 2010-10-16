@@ -81,10 +81,15 @@ namespace PandoraMusicBox.CLI {
             else {
                 Console.Clear();
                 Console.Write("Attempting to login with saved credentials...\n");
-
-                bool success = musicBox.Login(Settings.Default.Username, crypter.Decrypt(Settings.Default.EncryptedPassword));
-                if (!success && !ManualLogin())
-                    return false;
+                try {
+                    bool success = musicBox.Login(Settings.Default.Username, crypter.Decrypt(Settings.Default.EncryptedPassword));
+                    if (!success && !ManualLogin())
+                        return false;
+                }
+                catch (PandoraException) {
+                    if (!ManualLogin())
+                        return false;
+                }
             }
             ShowWaitIcon(true);
 
@@ -101,14 +106,14 @@ namespace PandoraMusicBox.CLI {
             }
 
             player.Volume = Settings.Default.Volume;
-            PlayNext();
+            PlayNext(false);
             ShowWaitIcon(false);
             return true;
         }
 
         void player_PlaybackEvent(EventCode eventCode) {
             if (eventCode == EventCode.Complete) {
-                PlayNext();
+                PlayNext(false);
             }
         }
 
@@ -137,7 +142,7 @@ namespace PandoraMusicBox.CLI {
                         else player.Play();
                         break;
                     case 'n':
-                        PlayNext();
+                        PlayNext(true);
                         break;
                     case 's':
                         PandoraStation newStation = ShowStationChooser();
@@ -146,7 +151,7 @@ namespace PandoraMusicBox.CLI {
                             musicBox.CurrentStation = newStation;
                             Settings.Default.LastStationId = musicBox.CurrentStation.Id;
                             Settings.Default.Save();
-                            PlayNext();
+                            PlayNext(false);
                             ShowWaitIcon(false);
                         }
                         break;
@@ -162,11 +167,11 @@ namespace PandoraMusicBox.CLI {
                         break;
                     case '-':
                         musicBox.RateSong(musicBox.CurrentSong, PandoraRating.Hate);
-                        PlayNext();
+                        PlayNext(true);
                         break;
                     case 'b':
                         musicBox.TemporarilyBanSong(musicBox.CurrentSong);
-                        PlayNext();
+                        PlayNext(true);
                         break;
                 }
 
@@ -196,7 +201,7 @@ namespace PandoraMusicBox.CLI {
                 }
 
                 if (choice.Key == ConsoleKey.RightArrow) {
-                    PlayNext();
+                    PlayNext(true);
                 }
 
             } while (true);
@@ -477,11 +482,13 @@ namespace PandoraMusicBox.CLI {
             return false;
         }
 
-        private void PlayNext() {
+        private void PlayNext(bool isSkip) {
+            if (isSkip && !musicBox.CanSkip())
+                return;
 
             ShowWaitIcon(true);
 
-            player.Open(musicBox.GetNextSong(false));
+            player.Open(musicBox.GetNextSong(isSkip));
             player.Play();
             PrintUI();
 
