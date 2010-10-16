@@ -225,6 +225,7 @@ namespace PandoraMusicBox.Engine {
                 byte[] postData = encoder.GetBytes(encrypter.Encrypt(postStr));
 
                 // configure request object
+                ServicePointManager.Expect100Continue = false;
                 WebRequest webRequest = WebRequest.Create(url);
                 webRequest.ContentType = "text/xml";
                 webRequest.ContentLength = postData.Length;
