@@ -173,6 +173,11 @@ namespace PandoraMusicBox.CLI {
                         musicBox.TemporarilyBanSong(musicBox.CurrentSong);
                         PlayNext(true);
                         break;
+                    case 'p':
+                        PrintText("                         ", 0, 7);
+                        Settings.Default.DisplayPosition = !Settings.Default.DisplayPosition;
+                        Settings.Default.Save();
+                        break;
                 }
 
                 if (choice.Key == ConsoleKey.Escape) {
@@ -243,6 +248,8 @@ namespace PandoraMusicBox.CLI {
 
         private void PrintSongPosition() {
             if (modalWindowDisplayed) return;
+            if (!Settings.Default.DisplayPosition) return;
+
             TimeSpan position = new TimeSpan();
             TimeSpan length = new TimeSpan();
 
@@ -389,6 +396,8 @@ namespace PandoraMusicBox.CLI {
             helpWindow += "+     : I Like This Song\n";
             helpWindow += "-     : I Don't Like This Song\n";
             helpWindow += "b     : Temporarily Ban This Song (One Month)\n";
+            helpWindow += "\n";
+            helpWindow += "p     : Toggle Song Progress\n";
             helpWindow += "\n";
             helpWindow += "ESC   : Quit / Back\n";
 
