@@ -82,5 +82,17 @@ namespace PandoraMusicBox.CLI.Properties {
                 this["Volume"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DisplayPosition {
+            get {
+                return ((bool)(this["DisplayPosition"]));
+            }
+            set {
+                this["DisplayPosition"] = value;
+            }
+        }
     }
 }
