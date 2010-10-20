@@ -397,7 +397,7 @@ namespace PandoraMusicBox.CLI {
             helpWindow += "-     : I Don't Like This Song\n";
             helpWindow += "b     : Temporarily Ban This Song (One Month)\n";
             helpWindow += "\n";
-            helpWindow += "p     : Toggle Song Progress\n";
+            helpWindow += "p     : Toggle Progress Indicators\n";
             helpWindow += "\n";
             helpWindow += "ESC   : Quit / Back\n";
 
@@ -506,7 +506,8 @@ namespace PandoraMusicBox.CLI {
         }
 
         private void ShowWaitIcon(bool display) {
-            if (display) {
+            if (display && Settings.Default.DisplayPosition)
+            {
 			    // do we need some type of a lock here?
                 if (waitIconThread == null || !waitIconThread.IsAlive) {
                     // show wait icon
