@@ -39,17 +39,17 @@
         <DevelopmentStatus>Beta</DevelopmentStatus>
         <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.0.3-setup.mpe1</OnlineLocation>
         <ReleaseDate>2010-11-06T15:55:15.9877614-05:00</ReleaseDate>
-        <Tags />
+        <Tags>music, radio</Tags>
         <Location>.\pandora-musicbox-mpp-[Version]-setup.mpe1</Location>
         <Params>
           <Items>
             <SectionParam Name="Icon">
-              <Value>C:\Users\JConrad\Docs\Personal Projects\Pandora MusicBox\Source\MediaPortalPlugin\Resources\Images\icon_normal.png</Value>
+              <Value />
               <ValueType>File</ValueType>
               <Description>The icon file of the package (jpg,png,bmp)</Description>
             </SectionParam>
             <SectionParam Name="Online Icon">
-              <Value />
+              <Value>http://pandora-musicbox.googlecode.com/svn/trunk/Source/MediaPortalPlugin/Resources/Images/icon_normal.png</Value>
               <ValueType>String</ValueType>
               <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
             </SectionParam>
