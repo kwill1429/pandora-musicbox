@@ -241,12 +241,12 @@
     <Params>
       <Items>
         <SectionParam Name="Icon">
-          <Value>..\Resources\Images\icon_normal.png</Value>
+          <Value />
           <ValueType>File</ValueType>
           <Description>The icon file of the package (jpg,png,bmp)</Description>
         </SectionParam>
         <SectionParam Name="Online Icon">
-          <Value />
+          <Value>http://pandora-musicbox.googlecode.com/svn/trunk/Source/MediaPortalPlugin/Resources/Images/icon_normal.png</Value>
           <ValueType>String</ValueType>
           <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
         </SectionParam>
@@ -355,13 +355,6 @@
         <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_tile_focus.png</LocalFileName>
         <ZipFileName>Installer{CopyFile}\{9261deb5-6d69-4322-87f7-2cc7dbec4e21}-pandora_tile_focus.png</ZipFileName>
         <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_tile_focus.png</DestinationFilename>
-      </FileItem>
-      <FileItem InstallType="CopyFile" SystemFile="true" Modified="true">
-        <Param1 />
-        <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\Resources\Images\icon_normal.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{7aeff93c-d274-4eb0-8cec-92c4bd6d099f}-icon_normal.png</ZipFileName>
-        <DestinationFilename />
       </FileItem>
     </Items>
   </UniqueFileList>
