@@ -44,14 +44,17 @@ namespace Engine {
                     DsError.ThrowExceptionForHR(hr);
 
                     // convert to 0.0 - 1.0 value
-                    _Volume = ((double) dsVol - MIN_VOLUME) / (MAX_VOLUME - MIN_VOLUME);
+                    _Volume = Math.Pow(((double) dsVol - MIN_VOLUME) / (MAX_VOLUME - MIN_VOLUME),3);
                 }
 
                 return _Volume;
             }
 
             set {
-                int dsVol = (int) (MIN_VOLUME + (MAX_VOLUME - MIN_VOLUME) * value);
+                if (value > 1) value = 1;
+                if (value < 0) value = 0;
+
+                int dsVol = (int) (MIN_VOLUME + (MAX_VOLUME - MIN_VOLUME) *  Math.Pow(value, (1.0/3.0)));
 
                 // make sure we don't go outside our bounds
                 if (dsVol < MIN_VOLUME) dsVol = MIN_VOLUME;
