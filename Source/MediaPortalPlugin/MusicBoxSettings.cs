@@ -10,7 +10,7 @@ using PandoraMusicBox.Engine.Encryption;
 namespace PandoraMusicBox.MediaPortalPlugin {
 
     internal class MusicBoxSettings: BaseSettings {
-        BlowfishCipher cipher = new BlowfishCipher(PandoraCryptKeys.In);
+        BlowfishCipher cipher = new BlowfishCipher(PandoraCryptKeys.PW);
 
         public MusicBoxSettings() {
             FileName = "musicbox.xml";

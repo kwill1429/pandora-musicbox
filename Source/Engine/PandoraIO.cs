@@ -13,7 +13,7 @@ namespace PandoraMusicBox.Engine {
     /// Low level class providing direct access to the Pandora API. 
     /// </summary>
     public class PandoraIO {
-        private const string baseUrl = "http://www.pandora.com/radio/xmlrpc/v28?";
+        private const string baseUrl = "http://www.pandora.com/radio/xmlrpc/v29?";
 
         BlowfishCipher encrypter = new BlowfishCipher(PandoraCryptKeys.Out);
 

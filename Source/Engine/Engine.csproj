@@ -51,6 +51,9 @@
     <Compile Include="Encryption\PandoraCryptKeys.out.key.cs">
       <DependentUpon>PandoraCryptKeys.cs</DependentUpon>
     </Compile>
+    <Compile Include="Encryption\PandoraCryptKeys.password.key.cs">
+      <DependentUpon>PandoraCryptKeys.cs</DependentUpon>
+    </Compile>
     <Compile Include="MusicBox.cs" />
     <Compile Include="PandoraException.cs" />
     <Compile Include="PandoraIO.cs" />
