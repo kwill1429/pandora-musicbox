@@ -19,6 +19,7 @@ namespace PandoraMusicBox.CLI {
         bool modalWindowDisplayed = false;
         bool showHelp = false;
         Thread waitIconThread;
+        object printTextLock = new object();
 
         static void Main(string[] args) {
             Program p = new Program();
@@ -441,11 +442,13 @@ namespace PandoraMusicBox.CLI {
         }
 
         private void PrintText(string text, int x, int y, ConsoleColor foregroundColor = ConsoleColor.Gray, ConsoleColor backgroundColor = DEFAULT_BACKGROUND_COLOR) {
-            Console.BackgroundColor = backgroundColor;
-            Console.ForegroundColor = foregroundColor;
-            Console.SetCursorPosition(x, y);
-            Console.Write(text);
-            Console.BackgroundColor = DEFAULT_BACKGROUND_COLOR;
+            lock (printTextLock) {
+                Console.BackgroundColor = backgroundColor;
+                Console.ForegroundColor = foregroundColor;
+                Console.SetCursorPosition(x, y);
+                Console.Write(text);
+                Console.BackgroundColor = DEFAULT_BACKGROUND_COLOR;
+            }
         }
 
         private void CheckForSettingsUpgrade() {
