@@ -236,7 +236,7 @@
     <DevelopmentStatus>Beta</DevelopmentStatus>
     <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.0.3-setup.mpe1</OnlineLocation>
     <ReleaseDate>2010-11-06T15:55:15.9877614-05:00</ReleaseDate>
-    <Tags />
+    <Tags>music, radio</Tags>
     <Location>.\pandora-musicbox-mpp-[Version]-setup.mpe1</Location>
     <Params>
       <Items>
@@ -360,7 +360,7 @@
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
         <LocalFileName>..\Resources\Images\icon_normal.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{36064f7e-fb3b-42ca-b4e3-e2281964682b}-icon_normal.png</ZipFileName>
+        <ZipFileName>Installer{CopyFile}\{7aeff93c-d274-4eb0-8cec-92c4bd6d099f}-icon_normal.png</ZipFileName>
         <DestinationFilename />
       </FileItem>
     </Items>
