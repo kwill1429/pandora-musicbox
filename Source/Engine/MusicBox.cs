@@ -15,6 +15,8 @@ namespace PandoraMusicBox.Engine {
         protected DateTime timeLastSongGrabbed;
         protected TimeSpan? currentAdInterval = null;
 
+        private string[] specialStationTags = new string[] { "(Holiday)", "(Children's)" };
+
         /// <summary>
         /// The current user that is logged in.
         /// </summary>
@@ -71,6 +73,15 @@ namespace PandoraMusicBox.Engine {
             get;
             set;
         }
+
+        /// <summary>
+        /// If set to true, special station tags like "Holiday" and "Children's" will
+        /// be removed from the artist name in song meta data.
+        /// </summary>
+        public bool RemoveStationTags {
+            get { return _removeSpecialStationTag; }
+            set { _removeSpecialStationTag = value; }
+        } private bool _removeSpecialStationTag = true;
 
         /// <summary>
         /// Logs into Pandora with the given credentials.
@@ -207,7 +218,20 @@ namespace PandoraMusicBox.Engine {
             // add our new songs to the playlist
             foreach (PandoraSong currSong in newSongs) {
                 pandora.GetLargeArtworkURL(currSong);
+                CheckForStationTags(currSong);
                 playlist.Enqueue(currSong);
+            }
+        }
+
+        protected void CheckForStationTags(PandoraSong song) {
+            if (!RemoveStationTags)
+                return;
+
+            foreach (string currTag in specialStationTags) {
+                if (song.Artist.EndsWith(currTag)) {
+                    song.Artist = song.Artist.Remove(song.Artist.LastIndexOf(currTag)).Trim();
+                    return;
+                }
             }
         }
 
