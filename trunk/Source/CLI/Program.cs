@@ -61,10 +61,10 @@ namespace PandoraMusicBox.CLI {
 
         private bool Init() {
             Console.CursorVisible = false;
-            Console.BufferWidth = 80;
-            Console.BufferHeight = 25;
             Console.WindowWidth = 80;
             Console.WindowHeight = 25;
+            Console.BufferWidth = 80;
+            Console.BufferHeight = 25;
             Console.WindowLeft = 0;
             Console.WindowTop = 0;
             Console.BackgroundColor = ConsoleColor.Black;
