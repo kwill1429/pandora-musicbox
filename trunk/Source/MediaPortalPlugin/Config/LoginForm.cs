@@ -26,6 +26,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
 
         //private readonly string UPGRADE = "http://www.pandora.com/pandora_one";
         private readonly string LICENSE = "http://www.pandora.com/restricted";
+        private readonly string DOWNLOAD = "http://code.google.com/p/pandora-musicbox/downloads/list?q=Platform%3DMediaPortal+Type%3DInstaller";
         private string link;
 
         private MusicBoxCore Core {
@@ -129,8 +130,20 @@ namespace PandoraMusicBox.MediaPortalPlugin.Config {
                 statusLabel.ForeColor = Color.Red;
                 statusLabel.Text = "Invalid Region.";
 
+                moreInfoLinkLabel.Text = "More Info";
                 moreInfoLinkLabel.Visible = true;
                 link = LICENSE;
+                return;
+            }
+
+            if (ex.ErrorCode == ErrorCodeEnum.INCOMPATIBLE_VERSION) {
+                statusLabel.ForeColor = Color.Red;
+                statusLabel.Text = "Incompatible Version.";
+
+                moreInfoLinkLabel.Text = "Update";
+                moreInfoLinkLabel.Visible = true;
+                link = DOWNLOAD;
+
                 return;
             }
 
