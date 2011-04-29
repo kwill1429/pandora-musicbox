@@ -20,79 +20,79 @@
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\pandora.autofanart.xml</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{41e614b7-6bdd-4929-9aee-2ee0d0bb18a8}-pandora.autofanart.xml</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\pandora.autofanart.xml</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\pandora.autofanart.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{0de28dea-4bfe-4c12-a063-520e7867524a}-pandora.autofanart.xml</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\pandora.autofanart.xml</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\PandoraMusicBox.xml</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{0cb8a535-da1d-4442-b471-f423030c89b3}-PandoraMusicBox.xml</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\PandoraMusicBox.xml</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\PandoraMusicBox.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{56e099e6-5a40-49bf-a503-542d013d174a}-PandoraMusicBox.xml</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\PandoraMusicBox.xml</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandoraoverlay.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{d922a4e7-26e8-48f1-b5c4-3610cfe273f7}-pandoraoverlay.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandoraoverlay.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandoraoverlay.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{143291eb-df89-4650-8657-b5fdaf6ee9a7}-pandoraoverlay.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandoraoverlay.png</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_logo.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{b85b7397-524c-469c-94ab-c03c5acb3ed6}-pandora_logo.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_logo.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_logo.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c5e712ea-e9e9-43fa-8841-2e18313ca2e2}-pandora_logo.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_logo.png</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_progress.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{96b35a2c-fe8b-4fe9-9e56-41a18b9395a9}-pandora_progress.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_progress.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_progress.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{d01d8a04-96fa-4910-8107-08b3bf3a046b}-pandora_progress.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_progress.png</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_progress_tray.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{513c7e27-7d15-4469-b3f2-2fd272c53bd5}-pandora_progress_tray.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_progress_tray.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_progress_tray.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c0d1dc09-6854-432a-84fa-563bb15c7152}-pandora_progress_tray.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_progress_tray.png</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_rating_Hate.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{858f9ece-ec73-4004-9f7b-4f395ef10e9b}-pandora_rating_Hate.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_rating_Hate.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_Hate.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{6dff539b-2875-4841-9392-e4e4536c8755}-pandora_rating_Hate.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_Hate.png</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_rating_Love.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{e51019e5-5cc3-4b49-9b6f-4f41cda6f710}-pandora_rating_Love.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_rating_Love.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_Love.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{e9b70371-81ca-4ce2-8c4d-40cefd57b90f}-pandora_rating_Love.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_Love.png</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_rating_TemporarilyBanned.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{c3fa9dd3-6264-4d8a-acb5-237056538589}-pandora_rating_TemporarilyBanned.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_rating_TemporarilyBanned.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_TemporarilyBanned.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{5b32b128-bdca-4f0b-bccc-e89c3078d190}-pandora_rating_TemporarilyBanned.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_TemporarilyBanned.png</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_tile.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{9e3269aa-138e-41c7-a47b-ac742f6428f2}-pandora_tile.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_tile.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_tile.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{5a10c671-0244-4649-b561-5e4a0d61ea83}-pandora_tile.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_tile.png</DestinationFilename>
             </FileItem>
             <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
               <Param1 />
               <UpdateOption>OverwriteIfOlder</UpdateOption>
-              <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_tile_focus.png</LocalFileName>
-              <ZipFileName>Installer{CopyFile}\{9261deb5-6d69-4322-87f7-2cc7dbec4e21}-pandora_tile_focus.png</ZipFileName>
-              <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_tile_focus.png</DestinationFilename>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_tile_focus.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c6bc688e-b666-4c44-93e8-d4168d8325eb}-pandora_tile_focus.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_tile_focus.png</DestinationFilename>
             </FileItem>
           </Items>
         </Files>
@@ -227,14 +227,14 @@
     <UpdateUrl>http://pandora-musicbox.googlecode.com/svn/trunk/Source/MediaPortalPlugin/Setup/update.xml</UpdateUrl>
     <Version>
       <Major>1</Major>
-      <Minor>0</Minor>
-      <Build>6</Build>
-      <Revision>96</Revision>
+      <Minor>1</Minor>
+      <Build>0</Build>
+      <Revision>105</Revision>
     </Version>
     <ExtensionDescription>Pandora MusicBox is a plugin that will allow you to listen to Pandora Radio inside MediaPortal. While the plugin currently has a limited feature set you can currently manage and listen to existing stations on your account.</ExtensionDescription>
-    <VersionDescription>Updated to latest Pandora API version.</VersionDescription>
+    <VersionDescription>MediaPortal 1.2 Beta Compatible.</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
-    <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.0.6-setup.mpe1</OnlineLocation>
+    <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.1.0-setup.mpe1</OnlineLocation>
     <ReleaseDate>2011-04-27T15:55:15</ReleaseDate>
     <Tags>music, radio</Tags>
     <Location>.\pandora-musicbox-mpp-[Version]-setup.mpe1</Location>
@@ -282,79 +282,79 @@
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\pandora.autofanart.xml</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{41e614b7-6bdd-4929-9aee-2ee0d0bb18a8}-pandora.autofanart.xml</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\pandora.autofanart.xml</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\pandora.autofanart.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{0de28dea-4bfe-4c12-a063-520e7867524a}-pandora.autofanart.xml</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\pandora.autofanart.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\PandoraMusicBox.xml</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{0cb8a535-da1d-4442-b471-f423030c89b3}-PandoraMusicBox.xml</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\PandoraMusicBox.xml</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\PandoraMusicBox.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{56e099e6-5a40-49bf-a503-542d013d174a}-PandoraMusicBox.xml</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\PandoraMusicBox.xml</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandoraoverlay.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{d922a4e7-26e8-48f1-b5c4-3610cfe273f7}-pandoraoverlay.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandoraoverlay.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandoraoverlay.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{143291eb-df89-4650-8657-b5fdaf6ee9a7}-pandoraoverlay.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandoraoverlay.png</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_logo.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{b85b7397-524c-469c-94ab-c03c5acb3ed6}-pandora_logo.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_logo.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_logo.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c5e712ea-e9e9-43fa-8841-2e18313ca2e2}-pandora_logo.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_logo.png</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_progress.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{96b35a2c-fe8b-4fe9-9e56-41a18b9395a9}-pandora_progress.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_progress.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_progress.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{d01d8a04-96fa-4910-8107-08b3bf3a046b}-pandora_progress.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_progress.png</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_progress_tray.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{513c7e27-7d15-4469-b3f2-2fd272c53bd5}-pandora_progress_tray.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_progress_tray.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_progress_tray.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c0d1dc09-6854-432a-84fa-563bb15c7152}-pandora_progress_tray.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_progress_tray.png</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_rating_Hate.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{858f9ece-ec73-4004-9f7b-4f395ef10e9b}-pandora_rating_Hate.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_rating_Hate.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_Hate.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{6dff539b-2875-4841-9392-e4e4536c8755}-pandora_rating_Hate.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_Hate.png</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_rating_Love.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{e51019e5-5cc3-4b49-9b6f-4f41cda6f710}-pandora_rating_Love.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_rating_Love.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_Love.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{e9b70371-81ca-4ce2-8c4d-40cefd57b90f}-pandora_rating_Love.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_Love.png</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_rating_TemporarilyBanned.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{c3fa9dd3-6264-4d8a-acb5-237056538589}-pandora_rating_TemporarilyBanned.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_rating_TemporarilyBanned.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_TemporarilyBanned.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{5b32b128-bdca-4f0b-bccc-e89c3078d190}-pandora_rating_TemporarilyBanned.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_TemporarilyBanned.png</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_tile.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{9e3269aa-138e-41c7-a47b-ac742f6428f2}-pandora_tile.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_tile.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_tile.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{5a10c671-0244-4649-b561-5e4a0d61ea83}-pandora_tile.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_tile.png</DestinationFilename>
       </FileItem>
       <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
         <Param1 />
         <UpdateOption>OverwriteIfOlder</UpdateOption>
-        <LocalFileName>..\GUI\Skins\Blue3Wide\Media\pandora_tile_focus.png</LocalFileName>
-        <ZipFileName>Installer{CopyFile}\{9261deb5-6d69-4322-87f7-2cc7dbec4e21}-pandora_tile_focus.png</ZipFileName>
-        <DestinationFilename>%Skin%\Blue3Wide\Media\pandora_tile_focus.png</DestinationFilename>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_tile_focus.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c6bc688e-b666-4c44-93e8-d4168d8325eb}-pandora_tile_focus.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_tile_focus.png</DestinationFilename>
       </FileItem>
     </Items>
   </UniqueFileList>
