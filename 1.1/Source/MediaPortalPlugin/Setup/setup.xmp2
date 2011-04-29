@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Version>2.0</Version>
+  <Groups>
+    <Items>
+      <GroupItem Name="Default">
+        <ParentGroup />
+        <DisplayName>Default</DisplayName>
+        <DefaulChecked>true</DefaulChecked>
+        <Description>Default</Description>
+        <Files>
+          <Items>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\bin\Release\merged\PandoraMusicBox.MediaPortalPlugin.dll</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{7f7c0756-d93a-4070-9ed3-04e019e32ee1}-PandoraMusicBox.MediaPortalPlugin.dll</ZipFileName>
+              <DestinationFilename>%Plugins%\Windows\PandoraMusicBox.MediaPortalPlugin.dll</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\pandora.autofanart.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{0de28dea-4bfe-4c12-a063-520e7867524a}-pandora.autofanart.xml</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\pandora.autofanart.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\PandoraMusicBox.xml</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{56e099e6-5a40-49bf-a503-542d013d174a}-PandoraMusicBox.xml</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\PandoraMusicBox.xml</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandoraoverlay.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{143291eb-df89-4650-8657-b5fdaf6ee9a7}-pandoraoverlay.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandoraoverlay.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_logo.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c5e712ea-e9e9-43fa-8841-2e18313ca2e2}-pandora_logo.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_logo.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_progress.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{d01d8a04-96fa-4910-8107-08b3bf3a046b}-pandora_progress.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_progress.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_progress_tray.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c0d1dc09-6854-432a-84fa-563bb15c7152}-pandora_progress_tray.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_progress_tray.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_Hate.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{6dff539b-2875-4841-9392-e4e4536c8755}-pandora_rating_Hate.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_Hate.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_Love.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{e9b70371-81ca-4ce2-8c4d-40cefd57b90f}-pandora_rating_Love.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_Love.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_TemporarilyBanned.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{5b32b128-bdca-4f0b-bccc-e89c3078d190}-pandora_rating_TemporarilyBanned.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_TemporarilyBanned.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_tile.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{5a10c671-0244-4649-b561-5e4a0d61ea83}-pandora_tile.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_tile.png</DestinationFilename>
+            </FileItem>
+            <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+              <Param1 />
+              <UpdateOption>OverwriteIfOlder</UpdateOption>
+              <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_tile_focus.png</LocalFileName>
+              <ZipFileName>Installer{CopyFile}\{c6bc688e-b666-4c44-93e8-d4168d8325eb}-pandora_tile_focus.png</ZipFileName>
+              <DestinationFilename>%Skin%\DefaultWide\Media\pandora_tile_focus.png</DestinationFilename>
+            </FileItem>
+          </Items>
+        </Files>
+      </GroupItem>
+    </Items>
+  </Groups>
+  <Sections>
+    <Items>
+      <SectionItem Guid="fb9923aa-7a3d-48c2-b671-ea8a29833cbc" Name="Welcome Screen" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header text">
+              <Value>Welcome to the Extension Installer for [Name]</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Description">
+              <Value>This will install [Name] version [Version] on your computer. It is recommended that you close all other applications before continuing. Click Next to continue or Cancel to exit Setup.</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Left part image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items />
+        </Actions>
+        <IncludedGroups />
+        <PanelName>Welcome Screen</PanelName>
+        <WizardButtonsEnum>NextCancel</WizardButtonsEnum>
+      </SectionItem>
+      <SectionItem Guid="1eecea76-05f4-450a-baf1-a2176a0323c7" Name="Install Section" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header Title">
+              <Value />
+              <ValueType>String</ValueType>
+              <Description>Header title</Description>
+            </SectionParam>
+            <SectionParam Name="Header description">
+              <Value />
+              <ValueType>String</ValueType>
+              <Description>Description of section, shown in under section title</Description>
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items>
+            <ActionItem Name="InstallFiles" ActionType="InstallFiles" ConditionGroup="">
+              <Params>
+                <Items />
+              </Params>
+              <ExecuteLocation>AfterPanelShow</ExecuteLocation>
+            </ActionItem>
+          </Items>
+        </Actions>
+        <IncludedGroups />
+        <PanelName>Install Section</PanelName>
+        <WizardButtonsEnum>Next</WizardButtonsEnum>
+      </SectionItem>
+      <SectionItem Guid="b69afe64-bc40-4ea5-be6d-623e0c2b6795" Name="Setup Complete" ConditionGroup="">
+        <Params>
+          <Items>
+            <SectionParam Name="Header text">
+              <Value>The Extension Installer Wizard has successfully installed [Name].</Value>
+              <ValueType>String</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Left part image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description />
+            </SectionParam>
+            <SectionParam Name="Show radio buttons">
+              <Value />
+              <ValueType>Bool</ValueType>
+              <Description>Use radiobutton in place of combobox</Description>
+            </SectionParam>
+            <SectionParam Name="Header image">
+              <Value />
+              <ValueType>File</ValueType>
+              <Description>Image in upper right part</Description>
+            </SectionParam>
+          </Items>
+        </Params>
+        <Actions>
+          <Items>
+            <ActionItem Name="ConfigurePlugin" ActionType="ConfigurePlugin" ConditionGroup="">
+              <Params>
+                <Items>
+                  <SectionParam Name="Path to plugin">
+                    <Value>%Plugins%\Windows\PandoraMusicBox.MediaPortalPlugin.dll</Value>
+                    <ValueType>Template</ValueType>
+                    <Description>Path to the plugin like 
+ %Plugins%\Windows\plugin.dll</Description>
+                  </SectionParam>
+                </Items>
+              </Params>
+              <ExecuteLocation>AfterPanelHide</ExecuteLocation>
+            </ActionItem>
+          </Items>
+        </Actions>
+        <IncludedGroups />
+        <PanelName>Setup Complete</PanelName>
+        <WizardButtonsEnum>Finish</WizardButtonsEnum>
+      </SectionItem>
+    </Items>
+  </Sections>
+  <Dependencies>
+    <Items />
+  </Dependencies>
+  <GeneralInfo>
+    <Name>Pandora MusicBox</Name>
+    <Id>f5dc626a-f1f2-42ff-93a6-81652bbf17ae</Id>
+    <Author>John Conrad, Travis Collins</Author>
+    <HomePage>http://code.google.com/p/pandora-musicbox/</HomePage>
+    <ForumPage>http://forum.team-mediaportal.com/mediaportal-plugins-47/pandora-musicbox-1-0-3-beta-86778/</ForumPage>
+    <UpdateUrl>http://pandora-musicbox.googlecode.com/svn/trunk/Source/MediaPortalPlugin/Setup/update.xml</UpdateUrl>
+    <Version>
+      <Major>1</Major>
+      <Minor>1</Minor>
+      <Build>0</Build>
+      <Revision>106</Revision>
+    </Version>
+    <ExtensionDescription>Pandora MusicBox is a plugin that will allow you to listen to Pandora Radio inside MediaPortal. While the plugin currently has a limited feature set you can currently manage and listen to existing stations on your account.</ExtensionDescription>
+    <VersionDescription>MediaPortal 1.2 Beta Compatible.</VersionDescription>
+    <DevelopmentStatus>Stable</DevelopmentStatus>
+    <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.1.0-setup.mpe1</OnlineLocation>
+    <ReleaseDate>2011-04-27T15:55:15</ReleaseDate>
+    <Tags>music, radio</Tags>
+    <Location>.\pandora-musicbox-mpp-[Version]-setup.mpe1</Location>
+    <Params>
+      <Items>
+        <SectionParam Name="Icon">
+          <Value />
+          <ValueType>File</ValueType>
+          <Description>The icon file of the package (jpg,png,bmp)</Description>
+        </SectionParam>
+        <SectionParam Name="Online Icon">
+          <Value>http://pandora-musicbox.googlecode.com/svn/trunk/Source/MediaPortalPlugin/Resources/Images/icon_normal.png</Value>
+          <ValueType>String</ValueType>
+          <Description>The icon file of the package stored online (jpg,png,bmp)</Description>
+        </SectionParam>
+        <SectionParam Name="Configuration file">
+          <Value>%Plugins%\Windows\PandoraMusicBox.MediaPortalPlugin.dll</Value>
+          <ValueType>Template</ValueType>
+          <Description>The file used to configure the extension.
+ If have .exe extension the will be executed
+ If have .dll extension used like MP plugin configuration</Description>
+        </SectionParam>
+        <SectionParam Name="Online Screenshots">
+          <Value>http://pandora-musicbox.googlecode.com/svn/wiki/images/MP_Screenshot1.png;http://pandora-musicbox.googlecode.com/svn/wiki/images/MP_Screenshot2.png</Value>
+          <ValueType>String</ValueType>
+          <Description>Online stored screenshot urls separated by ; </Description>
+        </SectionParam>
+        <SectionParam Name="Force to uninstall on update">
+          <Value>YES</Value>
+          <ValueType>Bool</ValueType>
+          <Description>Show dialog and force to uninstall previous version when updating an extension. Should only be disabled if you are using an NSIS/MSI installer.</Description>
+        </SectionParam>
+      </Items>
+    </Params>
+  </GeneralInfo>
+  <UniqueFileList>
+    <Items>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="true">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\bin\Release\merged\PandoraMusicBox.MediaPortalPlugin.dll</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{7f7c0756-d93a-4070-9ed3-04e019e32ee1}-PandoraMusicBox.MediaPortalPlugin.dll</ZipFileName>
+        <DestinationFilename>%Plugins%\Windows\PandoraMusicBox.MediaPortalPlugin.dll</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\pandora.autofanart.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{0de28dea-4bfe-4c12-a063-520e7867524a}-pandora.autofanart.xml</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\pandora.autofanart.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\PandoraMusicBox.xml</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{56e099e6-5a40-49bf-a503-542d013d174a}-PandoraMusicBox.xml</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\PandoraMusicBox.xml</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandoraoverlay.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{143291eb-df89-4650-8657-b5fdaf6ee9a7}-pandoraoverlay.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandoraoverlay.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_logo.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c5e712ea-e9e9-43fa-8841-2e18313ca2e2}-pandora_logo.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_logo.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_progress.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{d01d8a04-96fa-4910-8107-08b3bf3a046b}-pandora_progress.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_progress.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_progress_tray.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c0d1dc09-6854-432a-84fa-563bb15c7152}-pandora_progress_tray.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_progress_tray.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_Hate.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{6dff539b-2875-4841-9392-e4e4536c8755}-pandora_rating_Hate.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_Hate.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_Love.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{e9b70371-81ca-4ce2-8c4d-40cefd57b90f}-pandora_rating_Love.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_Love.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_rating_TemporarilyBanned.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{5b32b128-bdca-4f0b-bccc-e89c3078d190}-pandora_rating_TemporarilyBanned.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_rating_TemporarilyBanned.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_tile.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{5a10c671-0244-4649-b561-5e4a0d61ea83}-pandora_tile.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_tile.png</DestinationFilename>
+      </FileItem>
+      <FileItem InstallType="CopyFile" SystemFile="false" Modified="false">
+        <Param1 />
+        <UpdateOption>OverwriteIfOlder</UpdateOption>
+        <LocalFileName>..\Resources\Skins\DefaultWide\Media\pandora_tile_focus.png</LocalFileName>
+        <ZipFileName>Installer{CopyFile}\{c6bc688e-b666-4c44-93e8-d4168d8325eb}-pandora_tile_focus.png</ZipFileName>
+        <DestinationFilename>%Skin%\DefaultWide\Media\pandora_tile_focus.png</DestinationFilename>
+      </FileItem>
+    </Items>
+  </UniqueFileList>
+  <ProjectSettings>
+    <FolderGroups />
+    <UpdatePath1>.\update.xml</UpdatePath1>
+    <UpdatePath2 />
+    <UpdatePath3 />
+  </ProjectSettings>
+</PackageClass>
