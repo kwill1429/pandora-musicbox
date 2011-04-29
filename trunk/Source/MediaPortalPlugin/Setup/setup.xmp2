@@ -229,7 +229,7 @@
       <Major>1</Major>
       <Minor>1</Minor>
       <Build>0</Build>
-      <Revision>105</Revision>
+      <Revision>106</Revision>
     </Version>
     <ExtensionDescription>Pandora MusicBox is a plugin that will allow you to listen to Pandora Radio inside MediaPortal. While the plugin currently has a limited feature set you can currently manage and listen to existing stations on your account.</ExtensionDescription>
     <VersionDescription>MediaPortal 1.2 Beta Compatible.</VersionDescription>
