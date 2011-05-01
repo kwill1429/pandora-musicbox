@@ -144,23 +144,31 @@ namespace PandoraMusicBox.Engine {
         }
 
         public PandoraSong GetAdvertisement(PandoraUser user, WebProxy proxy) {
-            string baseUrl = "http://ad.doubleclick.net/pfadx/pand.default/prod.tuner;fb=0;ag={0};gnd=1;zip={1};hours=0;comped=0;clean=0;playlist=pandora;genre=;segment=1;u=clean*0!playlist*pandora!segment*1!fb*0!ag*{2}!gnd*1!zip*{3}!hours*0!comped*0;sz=134x185;ord={4}";     
-            string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, GetTime() * 10000000);
-            Cookie cookie = getDoubleclickIdCookie(url, proxy);
+            try {
+                string baseUrl = "http://ad.doubleclick.net/pfadx/pand.default/prod.tuner;fb=0;ag={0};gnd=1;zip={1};hours=0;comped=0;clean=0;playlist=pandora;genre=;segment=1;u=clean*0!playlist*pandora!segment*1!fb*0!ag*{2}!gnd*1!zip*{3}!hours*0!comped*0;sz=134x185;ord={4}";
+                string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, GetTime() * 10000000);
+                Cookie cookie = getDoubleclickIdCookie(url, proxy);
 
-            // build request to ad server
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer.Add(cookie);
-            if (proxy != null) webRequest.Proxy = proxy;
-            
-            // grab response from server
-            using (WebResponse response = webRequest.GetResponse()) {
-                StreamReader sr = new StreamReader(response.GetResponseStream());
-                string reply = sr.ReadToEnd();
+                // build request to ad server
+                HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+                webRequest.CookieContainer = new CookieContainer();
+                webRequest.CookieContainer.Add(cookie);
+                if (proxy != null) webRequest.Proxy = proxy;
 
-                // parse results and return
-                return PandoraSong.ParseAdvertisement(reply);
+                // grab response from server
+                using (WebResponse response = webRequest.GetResponse()) {
+                    StreamReader sr = new StreamReader(response.GetResponseStream());
+                    string reply = sr.ReadToEnd();
+
+                    // parse results and return
+                    return PandoraSong.ParseAdvertisement(reply);
+                }
+            }
+            catch (WebException e) {
+                if (e.Message.Contains("403"))
+                    return null;
+
+                throw e;
             }
         }
 

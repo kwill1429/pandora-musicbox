@@ -167,8 +167,11 @@ namespace PandoraMusicBox.Engine {
                 currentAdInterval = new TimeSpan(0, User.AdInterval, 0);
                 timeSinceLastAd = new TimeSpan(0);
 
-                CurrentSong = pandora.GetAdvertisement(User, Proxy);
-                return CurrentSong;
+                PandoraSong ad = pandora.GetAdvertisement(User, Proxy);
+                if (ad != null) {
+                    CurrentSong = ad;
+                    return CurrentSong;
+                }
             }
             
 
