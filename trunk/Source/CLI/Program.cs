@@ -7,6 +7,7 @@ using PandoraMusicBox.Engine.Data;
 using PandoraMusicBox.Engine.Encryption;
 using DirectShowLib;
 using System.Threading;
+using System.Net;
 
 namespace PandoraMusicBox.CLI {
     class Program {
@@ -25,7 +26,7 @@ namespace PandoraMusicBox.CLI {
             Program p = new Program();
 
             try {
-                if (p.Init())
+                if (p.Init(args))
                     p.RunMainLoop();
             }
             catch (PandoraException pe) {
@@ -59,7 +60,7 @@ namespace PandoraMusicBox.CLI {
             Console.Write("Pandora MusicBox is shutting down...\n");
         }
 
-        private bool Init() {
+        private bool Init(String[] args) {
             Console.CursorVisible = false;
             Console.WindowWidth = 80;
             Console.WindowHeight = 25;
@@ -71,6 +72,9 @@ namespace PandoraMusicBox.CLI {
             Console.ForegroundColor = ConsoleColor.Gray;
 
             CheckForSettingsUpgrade();
+
+            // check command line parameters
+            ParseParams(args);
 
             // if we have no login credentials, prompt the user
             if (Settings.Default.Username == string.Empty) {
@@ -110,6 +114,40 @@ namespace PandoraMusicBox.CLI {
             PlayNext(false);
             ShowWaitIcon(false);
             return true;
+        }
+
+        private void ParseParams(String[] args) {
+            Uri uri = null;
+            string user = null;
+            string password = null;
+            string domain = null;
+
+
+            foreach (string arg in args) {
+                if (arg.Contains("/proxyuri")) {
+                    string proxyuri = arg.Substring(arg.IndexOf('=') + 1);
+                    uri = new Uri(proxyuri);
+                }
+                if (arg.Contains("/proxyuser")) {
+                    user = arg.Substring(arg.IndexOf('=') + 1);
+                }
+                if (arg.Contains("/proxypassword")) {
+                    password = arg.Substring(arg.IndexOf('=') + 1);
+                }
+                if (arg.Contains("/proxydomain")) {
+                    domain = arg.Substring(arg.IndexOf('=') + 1);
+                }
+            }
+
+            if (uri != null) {
+                musicBox.Proxy = new WebProxy(uri);
+                if (user != null && password != null && domain != null) {
+                    musicBox.Proxy.Credentials = new NetworkCredential(user, password, domain);
+                }
+                else if (user != null && password != null) {
+                    musicBox.Proxy.Credentials = new NetworkCredential(user, password);
+                }
+            }
         }
 
         void player_PlaybackEvent(EventCode eventCode) {
