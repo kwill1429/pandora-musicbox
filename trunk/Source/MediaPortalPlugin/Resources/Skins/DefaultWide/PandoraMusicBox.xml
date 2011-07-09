@@ -211,6 +211,7 @@
         <width>260</width>
         <height>7</height>
         <texture>pandora_progress_tray.png</texture>
+		<visible>Control.IsVisible(2)</visible>
       </control>
 
       <control>
@@ -226,7 +227,7 @@
         <lefttexture>-</lefttexture>
         <righttexture>-</righttexture>
         <midtexture>pandora_progress.png</midtexture>
-
+		<visible>Control.IsVisible(2)</visible>
       </control>
 
       <!-- Album Art -->
@@ -366,7 +367,7 @@
         <posY>425</posY>
         <width>260</width>
         <height>260</height>
-        <visible>!String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)</visible>
+        <visible>!String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)+Control.IsVisible(2)</visible>
       </control>
       <control>
         <description>Current Song Image Glass</description>
@@ -375,7 +376,7 @@
         <posY>425</posY>
         <width>260</width>
         <texture>glassoverlay2.png</texture>
-        <visible>!String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)</visible>
+        <visible>!String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)+Control.IsVisible(2)</visible>
       </control>
       <control>
         <description>Current Song Image - Advertisement</description>
@@ -387,7 +388,7 @@
         <height>260</height>
         <keepaspectratio>yes</keepaspectratio>
         <centered>yes</centered>
-        <visible>String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)</visible>
+        <visible>String.Equals(#PandoraMusicBox.Current.IsAdvertisement,True)+Control.IsVisible(2)</visible>
       </control>
 
       <!-- Song Labels -->
@@ -688,7 +689,7 @@
     <control>
       <description>Working Animation</description>
       <type>animation</type>
-      <posX>550</posX>
+      <posX>30</posX>
       <posY>80</posY>
       <width>96</width>
       <height>96</height>
