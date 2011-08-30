@@ -232,8 +232,8 @@
           <Build>6</Build>
           <Revision>27644</Revision>
         </MaxVersion>
-        <WarnOnly>false</WarnOnly>
-        <Message>requires MediaPortal version 0.0.0.0 to 0.0.0.0.</Message>
+        <WarnOnly>true</WarnOnly>
+        <Message>Requires Mediaportal 1.2 Beta or later.</Message>
         <Name>MediaPortal</Name>
       </DependencyItem>
     </Items>
