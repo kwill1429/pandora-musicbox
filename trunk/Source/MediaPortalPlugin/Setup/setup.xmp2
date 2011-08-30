@@ -216,8 +216,45 @@
     </Items>
   </Sections>
   <Dependencies>
-    <Items />
+    <Items>
+      <DependencyItem>
+        <Type>MediaPortal</Type>
+        <Id />
+        <MinVersion>
+          <Major>1</Major>
+          <Minor>1</Minor>
+          <Build>6</Build>
+          <Revision>27644</Revision>
+        </MinVersion>
+        <MaxVersion>
+          <Major>1</Major>
+          <Minor>1</Minor>
+          <Build>6</Build>
+          <Revision>27644</Revision>
+        </MaxVersion>
+        <WarnOnly>true</WarnOnly>
+        <Message>Requires Mediaportal 1.2 Beta or later.</Message>
+        <Name>MediaPortal</Name>
+      </DependencyItem>
+    </Items>
   </Dependencies>
+  <PluginDependencies>
+    <Items>
+      <PluginDependencyItem AssemblyName="PandoraMusicBox.MediaPortalPlugin.dll">
+        <CompatibleVersion>
+          <Items>
+            <CompatibleVersionItem>
+              <MinRequiredVersion>1.1.6.27644</MinRequiredVersion>
+              <DesignedForVersion>1.1.6.27644</DesignedForVersion>
+            </CompatibleVersionItem>
+          </Items>
+        </CompatibleVersion>
+        <SubSystemsUsed>
+          <Items />
+        </SubSystemsUsed>
+      </PluginDependencyItem>
+    </Items>
+  </PluginDependencies>
   <GeneralInfo>
     <Name>Pandora MusicBox</Name>
     <Id>f5dc626a-f1f2-42ff-93a6-81652bbf17ae</Id>
@@ -228,11 +265,11 @@
     <Version>
       <Major>1</Major>
       <Minor>1</Minor>
-      <Build>1</Build>
-      <Revision>117</Revision>
+      <Build>2</Build>
+      <Revision>120</Revision>
     </Version>
     <ExtensionDescription>Pandora MusicBox is a plugin that will allow you to listen to Pandora Radio inside MediaPortal. While the plugin currently has a limited feature set you can currently manage and listen to existing stations on your account.</ExtensionDescription>
-    <VersionDescription>MediaPortal 1.2 Beta Compatible.</VersionDescription>
+    <VersionDescription>MediaPortal 1.2 RC Compatible.</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.1.1-setup.mpe1</OnlineLocation>
     <ReleaseDate>2011-04-27T15:55:15</ReleaseDate>
@@ -360,8 +397,10 @@
   </UniqueFileList>
   <ProjectSettings>
     <FolderGroups />
+    <ProjectFilename>setup.xmp2</ProjectFilename>
     <UpdatePath1>.\update.xml</UpdatePath1>
     <UpdatePath2 />
     <UpdatePath3 />
   </ProjectSettings>
+  <IsSkin>false</IsSkin>
 </PackageClass>
