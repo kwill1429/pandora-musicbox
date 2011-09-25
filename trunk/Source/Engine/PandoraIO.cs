@@ -196,31 +196,6 @@ namespace PandoraMusicBox.Engine {
             return null;
         }
 
-        public void GetLargeArtworkURL(PandoraSong song) {
-            GetLargeArtworkURL(song, null);
-        }
-
-        public void GetLargeArtworkURL(PandoraSong song, WebProxy proxy) {
-            try {
-                // build request to the album info page and grab response from server
-                HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(song.AlbumDetailsURL);
-                if (proxy != null) webRequest.Proxy = proxy;
-
-                using (WebResponse response = webRequest.GetResponse()) {
-                    StreamReader sr = new StreamReader(response.GetResponseStream());
-                    string reply = sr.ReadToEnd();
-
-                    Regex parser = new Regex("<div id=\"album_art\">\\s+<img src=\"([^\"]+)\"");
-                    Match match = parser.Match(reply);
-                    if (match != null && match.Groups.Count >= 2)
-                    song.AlbumArtLargeURL = match.Groups[1].Value;
-                }
-            }
-            catch (Exception e) {
-                throw new PandoraException("Unexpected Error Grabbing Large Artwork URL.", e);
-            }
-        }
-
         public void GetSongLength(PandoraUser user, PandoraSong song) {
             GetSongLength(user, song, null);
         }
