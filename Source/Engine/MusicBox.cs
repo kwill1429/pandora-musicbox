@@ -229,7 +229,6 @@ namespace PandoraMusicBox.Engine {
 
             // add our new songs to the playlist
             foreach (PandoraSong currSong in newSongs) {
-                pandora.GetLargeArtworkURL(currSong, Proxy);
                 CheckForStationTags(currSong);
                 playlist.Enqueue(currSong);
             }

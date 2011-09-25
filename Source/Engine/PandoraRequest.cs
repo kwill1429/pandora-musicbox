@@ -27,6 +27,11 @@ namespace PandoraMusicBox.Engine {
             "<params><param><value><int>{0}</int></value></param>" +
             "<param><value><string>{1}</string></value></param>" +
             "<param><value><string>{2}</string></value></param>" +
+            "<param><value><string>html5tuner</string></value></param>" + 
+            "<param><value><string></string></value></param>" + 
+            "<param><value><string></string></value></param>" + 
+            "<param><value><string>HTML5</string></value></param>" +
+            "<param><value><boolean>1</boolean></value></param>" +
             "</params></methodCall>"
         );
 
