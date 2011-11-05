@@ -19,6 +19,12 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        public string TrackToken {
+            get;
+            internal set;
+        }
+
+
         public string Artist {
             get;
             internal set;
@@ -85,6 +91,7 @@ namespace PandoraMusicBox.Engine.Data {
                 PandoraSong song = new PandoraSong(variables);
 
                 song.MusicId = song["musicId"];
+                song.TrackToken = song["trackToken"];
                 song.Artist = song["artistSummary"];
                 song.Album = song["albumTitle"];
                 song.Title = song["songTitle"];

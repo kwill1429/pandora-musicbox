@@ -106,7 +106,7 @@ namespace PandoraMusicBox.Engine {
             string focusTraitId = "";
             int apiRating = (rating == PandoraRating.Love) ? 1 : 0;
 
-            string reply = ExecuteRequest(user, PandoraRequest.RateSong, proxy, station.Id, song.MusicId,  matchingSeed, userSeed, focusTraitId, apiRating);
+            string reply = ExecuteRequest(user, PandoraRequest.RateSong, proxy, station.Id, song.TrackToken, apiRating);
 
             song.Rating = rating;
         }

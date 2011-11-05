@@ -253,7 +253,7 @@ namespace PandoraMusicBox.Engine {
         protected void VerifyAndExecute(ExecuteDelegate logic) {
             try { logic(); }
             catch (PandoraException ex) {
-                // if there was an error and it wasnt an expired session, just toss it up to the client
+                // if there was an error and it was NOT an expired session, just toss it up to the client
                 if (ex.ErrorCode != ErrorCodeEnum.AUTH_INVALID_TOKEN) 
                     throw;
 
