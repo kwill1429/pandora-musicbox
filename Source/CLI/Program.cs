@@ -171,82 +171,88 @@ namespace PandoraMusicBox.CLI {
                     Thread.Sleep(100);
                 }
 
-                choice = Console.ReadKey(true);
-                switch (char.ToLower(choice.KeyChar)) {
-                    case 'x':
-                    case 'q':
-                        return;
-                    case ' ':
-                        if (player.IsPlaying()) player.Stop();
-                        else player.Play();
-                        break;
-                    case 'n':
-                        PlayNext(true);
-                        break;
-                    case 's':
-                        PandoraStation newStation = ShowStationChooser();
-                        if (newStation != null && newStation != musicBox.CurrentStation) {
-                            ShowWaitIcon(true);
-                            musicBox.CurrentStation = newStation;
-                            Settings.Default.LastStationId = musicBox.CurrentStation.Id;
+                try {
+                    choice = Console.ReadKey(true);
+                    switch (char.ToLower(choice.KeyChar)) {
+                        case 'x':
+                        case 'q':
+                            return;
+                        case ' ':
+                            if (player.IsPlaying()) player.Stop();
+                            else player.Play();
+                            break;
+                        case 'n':
+                            PlayNext(true);
+                            break;
+                        case 's':
+                            PandoraStation newStation = ShowStationChooser();
+                            if (newStation != null && newStation != musicBox.CurrentStation) {
+                                ShowWaitIcon(true);
+                                musicBox.CurrentStation = newStation;
+                                Settings.Default.LastStationId = musicBox.CurrentStation.Id;
+                                Settings.Default.Save();
+                                PlayNext(false);
+                                ShowWaitIcon(false);
+                            }
+                            break;
+                        case '?':
+                        case 'h':
+                            showHelp = !showHelp;
+                            modalWindowDisplayed = showHelp;
+                            needUIUpdate = true;
+                            break;
+                        case '+':
+                            musicBox.RateSong(musicBox.CurrentSong, PandoraRating.Love);
+                            needUIUpdate = true;
+                            break;
+                        case '-':
+                            musicBox.RateSong(musicBox.CurrentSong, PandoraRating.Hate);
+                            PlayNext(true);
+                            break;
+                        case 'b':
+                            musicBox.TemporarilyBanSong(musicBox.CurrentSong);
+                            PlayNext(true);
+                            break;
+                        case 'p':
+                            PrintText("                         ", 0, 7);
+                            Settings.Default.DisplayPosition = !Settings.Default.DisplayPosition;
                             Settings.Default.Save();
-                            PlayNext(false);
-                            ShowWaitIcon(false);
+                            break;
+                    }
+
+                    if (choice.Key == ConsoleKey.Escape) {
+                        if (showHelp) {
+                            showHelp = false;
+                            modalWindowDisplayed = false;
+                            needUIUpdate = true;
                         }
-                        break;
-                    case '?':
-                    case 'h':
-                        showHelp = !showHelp;
-                        modalWindowDisplayed = showHelp;
-                        needUIUpdate = true;
-                        break;
-                    case '+':
-                        musicBox.RateSong(musicBox.CurrentSong, PandoraRating.Love);
-                        needUIUpdate = true;
-                        break;
-                    case '-':
-                        musicBox.RateSong(musicBox.CurrentSong, PandoraRating.Hate);
-                        PlayNext(true);
-                        break;
-                    case 'b':
-                        musicBox.TemporarilyBanSong(musicBox.CurrentSong);
-                        PlayNext(true);
-                        break;
-                    case 'p':
-                        PrintText("                         ", 0, 7);
-                        Settings.Default.DisplayPosition = !Settings.Default.DisplayPosition;
+                        else {
+                            return;
+                        }
+                    }
+
+                    if (choice.Key == ConsoleKey.UpArrow) {
+                        player.Volume += 0.01;
+                        PrintVolume();
+                        Settings.Default.Volume = player.Volume;
                         Settings.Default.Save();
-                        break;
-                }
-
-                if (choice.Key == ConsoleKey.Escape) {
-                    if (showHelp) {
-                        showHelp = false;
-                        modalWindowDisplayed = false;
-                        needUIUpdate = true;
                     }
-                    else {
-                        return;
+
+                    if (choice.Key == ConsoleKey.DownArrow) {
+                        player.Volume -= 0.01;
+                        PrintVolume();
+                        Settings.Default.Volume = player.Volume;
+                        Settings.Default.Save();
+                    }
+
+                    if (choice.Key == ConsoleKey.RightArrow) {
+                        PlayNext(true);
                     }
                 }
-
-                if (choice.Key == ConsoleKey.UpArrow) {
-                    player.Volume += 0.01;
-                    PrintVolume();
-                    Settings.Default.Volume = player.Volume;
-                    Settings.Default.Save();
+                catch (PandoraException e) {
+                    PrintText(e.ErrorCode + ": " + e.Message, 0, Console.WindowHeight - 5, ConsoleColor.Red);
                 }
 
-                if (choice.Key == ConsoleKey.DownArrow) {
-                    player.Volume -= 0.01;
-                    PrintVolume();
-                    Settings.Default.Volume = player.Volume;
-                    Settings.Default.Save();
-                }
-
-                if (choice.Key == ConsoleKey.RightArrow) {
-                    PlayNext(true);
-                }
 
             } while (true);
         }

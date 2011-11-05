@@ -137,7 +137,7 @@ namespace PandoraMusicBox.MediaPortalPlugin {
         private void ExtractResources() {
             // define the location for and create the temp folder to contain our resources
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            string dirName = Path.Combine(Path.GetTempPath(), "PandorMusicBox");
+            string dirName = Path.Combine(Path.GetTempPath(), "PandoraMusicBox");
             if (!Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
 
             // define the full paths to our files

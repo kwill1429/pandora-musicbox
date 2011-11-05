@@ -12,7 +12,8 @@ namespace PandoraMusicBox.Engine {
         AUTH_INVALID_TOKEN,
         LICENSE_RESTRICTION,
         READONLY_MODE,
-        INCOMPATIBLE_VERSION 
+        INCOMPATIBLE_VERSION,
+        LISTENER_NOT_AUTHORIZED  // generally means a pandora one subscription expired
     }
 
     public class PandoraException: Exception {
