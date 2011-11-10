@@ -13,7 +13,7 @@ namespace PandoraMusicBox.CLI {
     class Program {
         MusicBox musicBox = new MusicBox();
         DirectShowPlayer player = new DirectShowPlayer();
-        BlowfishCipher crypter = new BlowfishCipher(PandoraCryptKeys.In);
+        BlowfishCipher crypter = new BlowfishCipher(PandoraCryptKeys.PW);
         const ConsoleColor DEFAULT_BACKGROUND_COLOR = ConsoleColor.Black;
 
         bool needUIUpdate = false;

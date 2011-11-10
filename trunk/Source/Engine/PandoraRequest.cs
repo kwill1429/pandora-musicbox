@@ -19,6 +19,14 @@ namespace PandoraMusicBox.Engine {
 
         #region Predefines Server Requests
 
+        public static readonly PandoraRequest Sync = new PandoraRequest(
+            "&method=sync",
+
+            "<?xml version=\"1.0\"?><methodCall>" +
+	        "<methodName>misc.sync</methodName>" +
+		    "<params></params></methodCall>"
+        );
+
         public static readonly PandoraRequest AuthenticateListener = new PandoraRequest(
             "&authenticateListener",
 
