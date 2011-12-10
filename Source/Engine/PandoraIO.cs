@@ -304,7 +304,7 @@ namespace PandoraMusicBox.Engine {
         }
 
         private long GetTime() {
-            return (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+            return (int)(DateTime.UtcNow - new DateTime(1970, 1, 1) + new TimeSpan(180, 0, 0, 0, 0)).TotalSeconds;
         }
 
     }
