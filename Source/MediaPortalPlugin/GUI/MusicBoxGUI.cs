@@ -97,6 +97,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             }));
 
             work.IsBackground = true;
+            work.SetApartmentState(ApartmentState.STA);
             work.Start();
         }
 
