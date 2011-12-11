@@ -14,6 +14,7 @@ using System.Threading;
 namespace PandoraMusicBox.MediaPortalPlugin.GUI {
     public class MusicBoxGUI: GUIWindow {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+        private delegate bool PlayStreamDelegate(string url);
 
         private MusicBoxCore Core {
             get { return MusicBoxCore.Instance; }
@@ -184,7 +185,9 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
                 // grab the next song and have MediaPortal start streaming it
                 PandoraSong song = Core.MusicBox.GetNextSong(isSkip);
-                g_Player.PlayAudioStream(song.AudioURL);
+
+                PlayStreamDelegate playStreamSafe = g_Player.PlayAudioStream;
+                GUIGraphicsContext.form.Invoke(playStreamSafe, new object[] { song.AudioURL });
 
                 logger.Info("Started: '" + song.Title + "' by " + song.Artist);
 
