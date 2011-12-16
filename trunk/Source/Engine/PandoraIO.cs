@@ -16,7 +16,10 @@ namespace PandoraMusicBox.Engine {
         private const string baseUrl = "https://www.pandora.com/radio/xmlrpc/v33?";
 
         BlowfishCipher encrypter = new BlowfishCipher(PandoraCryptKeys.Out);
+        BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
 
+        private int time = 0;
+        
         private string RouteId {
             get { 
                 if (_routeId == null)
@@ -41,7 +44,9 @@ namespace PandoraMusicBox.Engine {
         /// <returns>If login is successful, returns a PandoraUser object. If invalid username or password
         /// null is returned.</returns>
         public PandoraUser AuthenticateListener(string username, string password, WebProxy proxy) {
-            try {        
+            try {
+                SyncTime(proxy);
+
                 string reply = ExecuteRequest(null, PandoraRequest.AuthenticateListener, proxy, username, password);
                 PandoraUser user = PandoraUser.Parse(reply);
                 user.Password = password;
@@ -54,6 +59,16 @@ namespace PandoraMusicBox.Engine {
 
                 throw;
             }
+        }
+
+        private void SyncTime(WebProxy proxy) {
+            string reply = ExecuteRequest(null, PandoraRequest.Sync, proxy);
+            
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(reply);
+
+            // pull encrypted string from xml, decrypt, and trim garbage. yay obfustication!
+            time = int.Parse(decrypter.Decrypt(xml.SelectSingleNode("//value").InnerText).Substring(4,10));
         }
 
         /// <summary>
@@ -146,7 +161,7 @@ namespace PandoraMusicBox.Engine {
         public PandoraSong GetAdvertisement(PandoraUser user, WebProxy proxy) {
             try {
                 string baseUrl = "http://ad.doubleclick.net/pfadx/pand.default/prod.tuner;fb=0;ag={0};gnd=1;zip={1};hours=0;comped=0;clean=0;playlist=pandora;genre=;segment=1;u=clean*0!playlist*pandora!segment*1!fb*0!ag*{2}!gnd*1!zip*{3}!hours*0!comped*0;sz=134x185;ord={4}";
-                string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, GetTime() * 10000000);
+                string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, time * 10000000);
                 Cookie cookie = getDoubleclickIdCookie(url, proxy);
 
                 // build request to ad server
@@ -264,7 +279,7 @@ namespace PandoraMusicBox.Engine {
                 // build parameter list for the xml-rpc request
                 int index = 0;
                 object[] xmlParams = new object[paramList.Length + 2];
-                xmlParams[index++] = GetTime();
+                xmlParams[index++] = time;
                 if (user != null && useAuthToken) xmlParams[index++] = user.AuthorizationToken;
                 foreach(object currParam in paramList)
                     xmlParams[index++] = currParam;
@@ -302,11 +317,6 @@ namespace PandoraMusicBox.Engine {
 
             return reply;
         }
-
-        private long GetTime() {
-            return (int)(DateTime.UtcNow - new DateTime(1970, 1, 1) + new TimeSpan(180, 0, 0, 0, 0)).TotalSeconds;
-        }
-
     }
 
     public enum PandoraRating {
