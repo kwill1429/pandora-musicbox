@@ -160,43 +160,51 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
         private void PlayNextTrack(bool ignoreSkip) {
             if (!initialized) return;
 
-            try {
-                if (!IsStillListening())
-                    return;                
-                
-                setWorkingAnimationStatus(true);
+            Thread work = new Thread(new ThreadStart(delegate {
+                Thread.Sleep(50);
+                try {
+                    if (!IsStillListening())
+                        return;
 
-                // if this is a skip event, check if it is allowed and notify the user if it is not
-                bool isSkip = PlayingRadio && !ignoreSkip;
-                if (isSkip && !Core.MusicBox.CanSkip()) {
-                    logger.Info("User is not currently allowed to skip tracks.");
+                    setWorkingAnimationStatus(true);
 
-                    ShowMessage("Pandora",
-                        "Unfortunately our music licenses force",
-                        "us to limit the number of songs you may",
-                        "skip. If want to hear something else,",
-                        "try switching to another station.");
+                    // if this is a skip event, check if it is allowed and notify the user if it is not
+                    bool isSkip = PlayingRadio && !ignoreSkip;
+                    if (isSkip && !Core.MusicBox.CanSkip()) {
+                        logger.Info("User is not currently allowed to skip tracks.");
 
-                    return;
+                        ShowMessage("Pandora",
+                            "Unfortunately our music licenses force",
+                            "us to limit the number of songs you may",
+                            "skip. If want to hear something else,",
+                            "try switching to another station.");
+
+                        return;
+                    }
+
+                    if (isSkip) logger.Info("Skipping Current Track");
+                    logger.Debug("Attempting to Start Next Track");
+
+                    // grab the next song and have MediaPortal start streaming it
+                    PandoraSong song = Core.MusicBox.GetNextSong(isSkip);
+
+                    PlayStreamDelegate playStreamSafe = g_Player.PlayAudioStream;
+                    GUIGraphicsContext.form.Invoke(playStreamSafe, new object[] { song.AudioURL });
+
+                    logger.Info("Started: '" + song.Title + "' by " + song.Artist);
+
+                    UpdateGUI();
                 }
+                catch (Exception ex) { GracefullyFail(ex); }
+                finally {
+                    setWorkingAnimationStatus(false);
+                }
+            }));
 
-                if (isSkip) logger.Info("Skipping Current Track");
-                logger.Debug("Attempting to Start Next Track");
+            work.IsBackground = true;
+            work.SetApartmentState(ApartmentState.STA);
+            work.Start();
 
-                // grab the next song and have MediaPortal start streaming it
-                PandoraSong song = Core.MusicBox.GetNextSong(isSkip);
-
-                PlayStreamDelegate playStreamSafe = g_Player.PlayAudioStream;
-                GUIGraphicsContext.form.Invoke(playStreamSafe, new object[] { song.AudioURL });
-
-                logger.Info("Started: '" + song.Title + "' by " + song.Artist);
-
-                UpdateGUI();
-            }
-            catch (Exception ex) { GracefullyFail(ex); }
-            finally {
-                setWorkingAnimationStatus(false);
-            }
         }
 
         public void PromptAndChangeStation() {
