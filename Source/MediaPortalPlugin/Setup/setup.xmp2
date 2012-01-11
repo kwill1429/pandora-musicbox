@@ -265,16 +265,16 @@
     <Version>
       <Major>1</Major>
       <Minor>2</Minor>
-      <Build>5</Build>
+      <Build>6</Build>
       <Revision>0</Revision>
     </Version>
     <ExtensionDescription>Pandora MusicBox is a plugin that will allow you to listen to Pandora Radio inside MediaPortal. While the plugin currently has a limited feature set you can currently manage and listen to existing stations on your account.
 
 Currently Pandora is a service only offered in the United States.</ExtensionDescription>
-    <VersionDescription>* Hopefully fixes playback issues for select users.</VersionDescription>
+    <VersionDescription>* Correction for API change.</VersionDescription>
     <DevelopmentStatus>Stable</DevelopmentStatus>
-    <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.2.5-setup.mpe1</OnlineLocation>
-    <ReleaseDate>2012-01-03T15:55:15</ReleaseDate>
+    <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.2.6-setup.mpe1</OnlineLocation>
+    <ReleaseDate>2012-01-10T15:55:15</ReleaseDate>
     <Tags>music, radio</Tags>
     <Location>.\pandora-musicbox-mpp-[Version]-setup.mpe1</Location>
     <Params>

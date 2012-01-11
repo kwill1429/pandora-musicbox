@@ -13,7 +13,7 @@ namespace PandoraMusicBox.Engine {
     /// Low level class providing direct access to the Pandora API. 
     /// </summary>
     public class PandoraIO {
-        private const string baseUrl = "https://www.pandora.com/radio/xmlrpc/v33?";
+        private const string baseUrl = "www.pandora.com/radio/xmlrpc/v33?";
 
         BlowfishCipher encrypter = new BlowfishCipher(PandoraCryptKeys.Out);
         BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
@@ -47,7 +47,7 @@ namespace PandoraMusicBox.Engine {
             try {
                 SyncTime(proxy);
 
-                string reply = ExecuteRequest(null, PandoraRequest.AuthenticateListener, proxy, username, password);
+                string reply = ExecuteRequest(null, PandoraRequest.AuthenticateListener, true, true, proxy, username, password);
                 PandoraUser user = PandoraUser.Parse(reply);
                 user.Password = password;
 
@@ -63,12 +63,12 @@ namespace PandoraMusicBox.Engine {
 
         private void SyncTime(WebProxy proxy) {
             string reply = ExecuteRequest(null, PandoraRequest.Sync, proxy);
-            
+
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(reply);
 
             // pull encrypted string from xml, decrypt, and trim garbage. yay obfustication!
-            time = int.Parse(decrypter.Decrypt(xml.SelectSingleNode("//value").InnerText).Substring(4,10));
+            time = int.Parse(decrypter.Decrypt(xml.SelectSingleNode("//value").InnerText).Substring(4, 10));
         }
 
         /// <summary>
@@ -116,9 +116,6 @@ namespace PandoraMusicBox.Engine {
         public void RateSong(PandoraUser user, PandoraStation station, PandoraSong song, PandoraRating rating, WebProxy proxy) {
             if (user == null) throw new PandoraException("User must be logged in to make this request.");
 
-            string matchingSeed = "";
-            string userSeed = "";
-            string focusTraitId = "";
             int apiRating = (rating == PandoraRating.Love) ? 1 : 0;
 
             string reply = ExecuteRequest(user, PandoraRequest.RateSong, proxy, station.Id, song.TrackToken, apiRating);
@@ -144,7 +141,7 @@ namespace PandoraMusicBox.Engine {
         public bool CanListen(PandoraUser user, WebProxy proxy) {
             if (user == null) throw new PandoraException("User must be logged in to make this request.");
 
-            string reply = ExecuteRequest(user, PandoraRequest.CanListen, false, proxy, user.WebAuthorizationToken);
+            string reply = ExecuteRequest(user, PandoraRequest.CanListen, false, false, proxy, user.WebAuthorizationToken);
             try { 
                 Dictionary<string, string> vars = PandoraData.GetVariables(reply);
                 return vars["canListen"] == "1";
@@ -262,17 +259,18 @@ namespace PandoraMusicBox.Engine {
         }
 
         private string ExecuteRequest(PandoraUser user, PandoraRequest request, WebProxy proxy, params object[] paramList) {
-            return ExecuteRequest(user, request, true, proxy, paramList);
+            return ExecuteRequest(user, request, true, false, proxy, paramList);
         }
 
-        private string ExecuteRequest(PandoraUser user, PandoraRequest request, bool useAuthToken, WebProxy proxy, params object[] paramList) {
+        private string ExecuteRequest(PandoraUser user, PandoraRequest request, bool useAuthToken, bool secure, WebProxy proxy, params object[] paramList) {
             string reply;
 
             try {
                 ASCIIEncoding encoder = new ASCIIEncoding();
 
                 // build method specific info for request to pandora servers
-                string url = baseUrl + "rid=" + RouteId;
+                string prefix = secure ? "https://" : "http://";
+                string url = prefix + baseUrl + "rid=" + RouteId;
                 if (user != null) url += "&lid=" + user.ListenerId;
                 url += String.Format(request.URLSuffix, paramList);
 
