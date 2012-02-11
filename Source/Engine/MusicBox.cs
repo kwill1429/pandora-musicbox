@@ -254,7 +254,7 @@ namespace PandoraMusicBox.Engine {
             try { logic(); }
             catch (PandoraException ex) {
                 // if there was an error and it was NOT an expired session, just toss it up to the client
-                if (ex.ErrorCode != ErrorCodeEnum.AUTH_INVALID_TOKEN) 
+                if (ex.ErrorCode != ErrorCodeEnum.AUTH_INVALID_TOKEN && ex.ErrorCode != ErrorCodeEnum.OUT_OF_SYNC) 
                     throw;
 
                 // this is an AUTH_INVALID_TOKEN error meaning our login expired, try logging in again

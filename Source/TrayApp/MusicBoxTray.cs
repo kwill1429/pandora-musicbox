@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using TrayApp.Properties;
 
 namespace TrayApp {
     public class MusicBoxTray: Form {
@@ -22,6 +23,9 @@ namespace TrayApp {
             p.Controls.Add(l);
 
             trayMenu.Items.Add(new ToolStripControlHost(p));
+            trayMenu.Items.Add(new ToolStripSeparator());
+            trayMenu.Items.Add("Login", null, OnLogin);
+            trayMenu.Items.Add(new ToolStripSeparator());
             trayMenu.Items.Add("Exit", null, OnExit);
 
             // Create a tray icon. In this example we use a
@@ -29,18 +33,11 @@ namespace TrayApp {
             // can of course use your own custom icon too.
             trayIcon = new NotifyIcon();
             trayIcon.Text = "Pandora MusicBox";
-            trayIcon.Icon = new Icon(SystemIcons.Application, 40, 40);
+            trayIcon.Icon = Resources.PandoraLogo;
 
             // Add menu to tray icon and show it.
             trayIcon.ContextMenuStrip = trayMenu;
             trayIcon.Visible = true;
-
-            trayIcon.Click += new EventHandler(trayIcon_Click);
-
-        }
-
-        void trayIcon_Click(object sender, EventArgs e) {
-            //Visible = true;
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -55,6 +52,29 @@ namespace TrayApp {
         
         protected void OnLogin(object sender, EventArgs e) {
             MessageBox.Show("login");
+        }
+
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main() {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MusicBoxTray());
+        }
+
+        private void InitializeComponent() {
+            this.SuspendLayout();
+            // 
+            // MusicBoxTray
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Name = "MusicBoxTray";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.ResumeLayout(false);
+
         }
 
     }
