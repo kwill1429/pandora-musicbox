@@ -13,7 +13,7 @@ namespace PandoraMusicBox.Engine {
     /// Low level class providing direct access to the Pandora API. 
     /// </summary>
     public class PandoraIO {
-        private const string baseUrl = "www.pandora.com/radio/xmlrpc/v33?";
+        private const string baseUrl = "www.pandora.com/radio/xmlrpc/v34?";
 
         BlowfishCipher encrypter = new BlowfishCipher(PandoraCryptKeys.Out);
         BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
@@ -214,7 +214,7 @@ namespace PandoraMusicBox.Engine {
         
         // estimate the length of each song based on file size
         public void GetSongLength(PandoraUser user, PandoraSong song, WebProxy proxy) {
-            if (!IsValid(song)) {
+            if (!IsValid(song, proxy)) {
                 throw new PandoraException("Attempting to get song length for an expired song.");
             }
             

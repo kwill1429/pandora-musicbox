@@ -10,19 +10,33 @@ using PandoraMusicBox.Engine.Encryption;
 
 namespace PandoraHeaderDecoder {
     public partial class Form1 : Form {
-        BlowfishCipher cipher = new BlowfishCipher(PandoraCryptKeys.Out);
+        BlowfishCipher inCipher = new BlowfishCipher(PandoraCryptKeys.In);
+        BlowfishCipher outCipher = new BlowfishCipher(PandoraCryptKeys.Out);
 
         public Form1() {
             InitializeComponent();
         }
 
         private void inputTextBox_TextChanged(object sender, EventArgs e) {
+            eval();
+        }
+
+        public void eval() {
             try {
-                outputTextBox.Text = cipher.Decrypt(inputTextBox.Text);
+                outKeyTextBox.Text = outCipher.Decrypt(inputTextBox.Text);
+                inKeyTextBox.Text = inCipher.Decrypt(inputTextBox.Text);
             }
             catch (Exception) {
-                outputTextBox.Text = "???";
+                outKeyTextBox.Text = "";
+                inKeyTextBox.Text = "";
             }
         }
+
+        private void inputTextBox_KeyDown(object sender, KeyEventArgs e) {
+            if (e.Control && e.KeyCode == Keys.A)
+                inputTextBox.SelectAll();
+        }
+
+
     }
 }

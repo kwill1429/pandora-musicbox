@@ -24,7 +24,8 @@ namespace PandoraMusicBox.Engine {
 
             "<?xml version=\"1.0\"?><methodCall>" +
 	        "<methodName>misc.sync</methodName>" +
-		    "<params></params></methodCall>"
+            "<params><param><value><string>eb1ba959649711ab20c405dde29c5c58</string></value></param></params>" +
+            "</methodCall>"
         );
 
         public static readonly PandoraRequest AuthenticateListener = new PandoraRequest(
@@ -33,6 +34,7 @@ namespace PandoraMusicBox.Engine {
             "<?xml version=\"1.0\"?><methodCall>" +
             "<methodName>listener.authenticateListener</methodName>" +
             "<params><param><value><int>{0}</int></value></param>" +
+            "<param><value><string>00000000000000000000000000000000</string></value></param>" +
             "<param><value><string>{1}</string></value></param>" +
             "<param><value><string>{2}</string></value></param>" +
             "<param><value><string>html5tuner</string></value></param>" + 
