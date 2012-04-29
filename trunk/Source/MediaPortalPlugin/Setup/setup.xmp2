@@ -276,7 +276,7 @@ Currently Pandora is a service only offered in the United States.</ExtensionDesc
     <VersionDescription>* Switched to an alternate API. 
 * Currently can not get improved audio quality for Pandora One users. Sorry, will try to fix soon. 
 * Also ads are currently broken so everyone is ad free for now. Unfortunately will have to fix this soon to.</VersionDescription>
-    <DevelopmentStatus>Beta</DevelopmentStatus>
+    <DevelopmentStatus>Stable</DevelopmentStatus>
     <OnlineLocation>http://pandora-musicbox.googlecode.com/files/pandora-musicbox-mpp-1.3.1-setup.mpe1</OnlineLocation>
     <ReleaseDate>2012-04-29T15:55:15</ReleaseDate>
     <Tags>music, radio</Tags>
