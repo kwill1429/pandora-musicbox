@@ -5,37 +5,46 @@ using System.Net;
 using System.IO;
 using PandoraMusicBox.Engine.Encryption;
 using System.Xml;
-using PandoraMusicBox.Engine.Data;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using PandoraMusicBox.Engine.Data.Internal;
+using PandoraMusicBox.Engine.Data;
 
 namespace PandoraMusicBox.Engine {
     /// <summary>
     /// Low level class providing direct access to the Pandora API. 
     /// </summary>
     public class PandoraIO {
-        private const string baseUrl = "www.pandora.com/radio/xmlrpc/v34?";
+        private const string baseUrl = "tuner.pandora.com/services/json/?";
 
-        BlowfishCipher encrypter = new BlowfishCipher(PandoraCryptKeys.Out);
-        BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
-
-        private int time = 0;
+        internal static BlowfishCipher encrypter = new BlowfishCipher(PandoraCryptKeys.Out);
+        internal static BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
         
-        private string RouteId {
-            get { 
-                if (_routeId == null)
-                    _routeId = (DateTime.UtcNow.ToFileTime() % 10000000).ToString("0000000") + "P";
-                
-                return _routeId;
-            }
-        } private string _routeId = null;
+        /// <summary>
+        /// Initiates a Pandora session.
+        /// </summary>
+        /// <returns>A PandoraSession object that should be used with all other requests.</returns>
+        public PandoraSession PartnerLogin() {
+            return PartnerLogin(null);
+        }
+
+        /// <summary>
+        /// Initiates a Pandora session.
+        /// </summary>
+        /// <param name="proxy">If not null, this proxy will be used to connect to the Pandora servers.</param>
+        /// <returns>A PandoraSession object that should be used with all other requests.</returns>
+        public PandoraSession PartnerLogin(WebProxy proxy) {
+            return (PandoraSession) ExecuteRequest(new PartnerLoginRequest(), proxy);
+        }
+
 
         /// <summary>
         /// Given the username and password, attempts to log into the Pandora music service.
         /// </summary>
         /// <returns>If login is successful, returns a PandoraUser object. If invalid username or password
         /// null is returned.</returns>
-        public PandoraUser AuthenticateListener(string username, string password) {
-            return AuthenticateListener(username, password, null);
+        public PandoraUser UserLogin(PandoraSession session, string username, string password) {
+            return UserLogin(session, username, password, null);
         }
 
         /// <summary>
@@ -43,14 +52,10 @@ namespace PandoraMusicBox.Engine {
         /// </summary>
         /// <returns>If login is successful, returns a PandoraUser object. If invalid username or password
         /// null is returned.</returns>
-        public PandoraUser AuthenticateListener(string username, string password, WebProxy proxy) {
+        public PandoraUser UserLogin(PandoraSession session, string username, string password, WebProxy proxy) {
             try {
-                SyncTime(proxy);
-
-                string reply = ExecuteRequest(null, PandoraRequest.AuthenticateListener, true, true, proxy, username, password);
-                PandoraUser user = PandoraUser.Parse(reply);
-                user.Password = password;
-
+                PandoraUser user = (PandoraUser) ExecuteRequest(new UserLoginRequest(session, username, password), proxy);
+                session.User = user;
                 return user;
             }
             catch (PandoraException e) {
@@ -61,66 +66,53 @@ namespace PandoraMusicBox.Engine {
             }
         }
 
-        private void SyncTime(WebProxy proxy) {
-            string reply = ExecuteRequest(null, PandoraRequest.Sync, proxy);
-
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(reply);
-
-            // pull encrypted string from xml, decrypt, and trim garbage. yay obfustication!
-            time = int.Parse(decrypter.Decrypt(xml.SelectSingleNode("//value").InnerText).Substring(4, 10));
+        /// <summary>
+        /// Retrieves a list of stations for the given user.
+        /// </summary>
+        public List<PandoraStation> GetStationList(PandoraSession session) {
+            return GetStationList(session, null);
         }
 
         /// <summary>
         /// Retrieves a list of stations for the given user.
         /// </summary>
-        public List<PandoraStation> GetStations(PandoraUser user) {
-            return GetStations(user, null);
-        }
-
-        /// <summary>
-        /// Retrieves a list of stations for the given user.
-        /// </summary>
-        public List<PandoraStation> GetStations(PandoraUser user, WebProxy proxy) {
-            if (user == null)
+        public List<PandoraStation> GetStationList(PandoraSession session, WebProxy proxy) {
+            if (session == null || session.User == null)
                 throw new PandoraException("User must be logged in to make this request.");
 
-            string reply = ExecuteRequest(user, PandoraRequest.GetStations, proxy);
-            return PandoraStation.Parse(reply);
+            GetStationListResponse response = (GetStationListResponse)ExecuteRequest(new GetStationListRequest(session), proxy);
+            return response.Stations;
         }
 
         /// <summary>
         /// Retrieves a playlist for the given station.
         /// </summary>
-        public List<PandoraSong> GetSongs(PandoraUser user, PandoraStation station) {
-            return GetSongs(user, station, null);
+        public List<PandoraSong> GetSongs(PandoraSession session, PandoraStation station) {
+            return GetSongs(session, station, null);
         }
 
         /// <summary>
         /// Retrieves a playlist for the given station.
         /// </summary>
-        public List<PandoraSong> GetSongs(PandoraUser user, PandoraStation station, WebProxy proxy) {
-            if (user == null) throw new PandoraException("User must be logged in to make this request.");
+        public List<PandoraSong> GetSongs(PandoraSession session, PandoraStation station, WebProxy proxy) {
+            if (session == null || session.User == null) throw new PandoraException("User must be logged in to make this request.");
 
-            // grab song list from server
-            string reply = ExecuteRequest(user, PandoraRequest.GetFragment, proxy, station.Id, "mp3-hifi");
-            List<PandoraSong> songs = PandoraSong.Parse(reply);
+            GetPlaylistResponse response = (GetPlaylistResponse)ExecuteRequest(new GetPlaylistRequest(session, station.Token), proxy);
+            return response.Songs;
 
-            return songs;
         }
 
-        public void RateSong(PandoraUser user, PandoraStation station, PandoraSong song, PandoraRating rating) {
-            RateSong(user, station, song, rating, null);
+        public PandoraSongFeedback RateSong(PandoraSession session, PandoraStation station, PandoraSong song, PandoraRating rating) {
+            return RateSong(session, station, song, rating, null);
         }
 
-        public void RateSong(PandoraUser user, PandoraStation station, PandoraSong song, PandoraRating rating, WebProxy proxy) {
-            if (user == null) throw new PandoraException("User must be logged in to make this request.");
+        public PandoraSongFeedback RateSong(PandoraSession session, PandoraStation station, PandoraSong song, PandoraRating rating, WebProxy proxy) {
+            if (session == null || session.User == null) throw new PandoraException("User must be logged in to make this request.");
 
-            int apiRating = (rating == PandoraRating.Love) ? 1 : 0;
-
-            string reply = ExecuteRequest(user, PandoraRequest.RateSong, proxy, station.Id, song.TrackToken, apiRating);
-
+            PandoraSongFeedback feedbackObj = (PandoraSongFeedback)ExecuteRequest(new AddFeedbackRequest(session, station.Token, song.Token, rating == PandoraRating.Love), proxy);
             song.Rating = rating;
+
+            return feedbackObj;
         }
 
         public void AddTiredSong(PandoraUser user, PandoraSong song) {
@@ -130,27 +122,11 @@ namespace PandoraMusicBox.Engine {
         public void AddTiredSong(PandoraUser user, PandoraSong song, WebProxy proxy) {
             if (user == null) throw new PandoraException("User must be logged in to make this request.");
 
-            string reply = ExecuteRequest(user, PandoraRequest.AddTiredSong, proxy, song.MusicId);
+            //string reply = ExecuteRequest(user, PandoraRequest.AddTiredSong, proxy, song.MusicId);
             song.TemporarilyBanned = true;
         }
 
-        public bool CanListen(PandoraUser user) {
-            return CanListen(user, null);
-        }
-
-        public bool CanListen(PandoraUser user, WebProxy proxy) {
-            if (user == null) throw new PandoraException("User must be logged in to make this request.");
-
-            string reply = ExecuteRequest(user, PandoraRequest.CanListen, false, false, proxy, user.WebAuthorizationToken);
-            try { 
-                Dictionary<string, string> vars = PandoraData.GetVariables(reply);
-                return vars["canListen"] == "1";
-            }
-            catch {
-                throw new PandoraException("XML-RPC response missing expected value: 'canListen'");
-            }
-        }
-
+        /*
         public PandoraSong GetAdvertisement(PandoraUser user) {
             return GetAdvertisement(user, null);
         }
@@ -158,7 +134,7 @@ namespace PandoraMusicBox.Engine {
         public PandoraSong GetAdvertisement(PandoraUser user, WebProxy proxy) {
             try {
                 string baseUrl = "http://ad.doubleclick.net/pfadx/pand.default/prod.tuner;fb=0;ag={0};gnd=1;zip={1};hours=0;comped=0;clean=0;playlist=pandora;genre=;segment=1;u=clean*0!playlist*pandora!segment*1!fb*0!ag*{2}!gnd*1!zip*{3}!hours*0!comped*0;sz=134x185;ord={4}";
-                string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, time * 10000000);
+                string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, referenceTime * 10000000);
                 Cookie cookie = getDoubleclickIdCookie(url, proxy);
 
                 // build request to ad server
@@ -207,7 +183,8 @@ namespace PandoraMusicBox.Engine {
 
             return null;
         }
-
+        */
+          
         public void GetSongLength(PandoraUser user, PandoraSong song) {
             GetSongLength(user, song, null);
         }
@@ -258,41 +235,33 @@ namespace PandoraMusicBox.Engine {
             }
         }
 
-        private string ExecuteRequest(PandoraUser user, PandoraRequest request, WebProxy proxy, params object[] paramList) {
-            return ExecuteRequest(user, request, true, false, proxy, paramList);
-        }
-
-        private string ExecuteRequest(PandoraUser user, PandoraRequest request, bool useAuthToken, bool secure, WebProxy proxy, params object[] paramList) {
-            string reply;
-
+        private PandoraData ExecuteRequest(PandoraRequest request, WebProxy proxy, params object[] paramList) {
             try {
                 ASCIIEncoding encoder = new ASCIIEncoding();
 
-                // build method specific info for request to pandora servers
-                string prefix = secure ? "https://" : "http://";
-                string url = prefix + baseUrl + "rid=" + RouteId;
-                if (user != null) url += "&lid=" + user.ListenerId;
-                url += String.Format(request.URLSuffix, paramList);
+                // build url for request to pandora servers
+                string prefix = request.IsSecure ? "https://" : "http://";
+                string url = prefix + baseUrl; // +"rid=" + RouteId;
+                url += "method=" + String.Format(request.MethodName, paramList);
+                if (request.User != null) url += String.Format("&user_id={0}", request.User.Id);
+                if (request.Session != null) {
+                    url += String.Format("&auth_token={0}", request.UserAuthToken == null ? request.Session.PartnerAuthToken : request.UserAuthToken);
+                    url += String.Format("&partner_id={0}", request.Session.PartnerId);
+                }
 
-                // build parameter list for the xml-rpc request
-                int index = 0;
-                object[] xmlParams = new object[paramList.Length + 2];
-                xmlParams[index++] = time;
-                if (user != null && useAuthToken) xmlParams[index++] = user.AuthorizationToken;
-                foreach(object currParam in paramList)
-                    xmlParams[index++] = currParam;
+                // build the post data for our request
+                JsonSerializerSettings settings = new JsonSerializerSettings();
+                settings.NullValueHandling = NullValueHandling.Ignore;
+                string postStr = JsonConvert.SerializeObject(request, settings);
+                byte[] postData = encoder.GetBytes(request.IsEncrypted ? encrypter.Encrypt(postStr) : postStr);
 
-                string postStr = String.Format(request.XmlRpcRequest, xmlParams);
-                byte[] postData = encoder.GetBytes(encrypter.Encrypt(postStr));
-
-                // configure request object
+                // configure our connection
                 ServicePointManager.Expect100Continue = false;
                 WebRequest webRequest = WebRequest.Create(url);
                 webRequest.ContentType = "text/xml";
                 webRequest.ContentLength = postData.Length;
                 webRequest.Method = "POST";
                 if (proxy != null) webRequest.Proxy = proxy;
-                
 
                 // send request to remote servers
                 Stream os = webRequest.GetRequestStream();
@@ -302,18 +271,18 @@ namespace PandoraMusicBox.Engine {
                 // retrieve reply from servers
                 using (WebResponse response = webRequest.GetResponse()) {
                     StreamReader sr = new StreamReader(response.GetResponseStream());
-                    reply = sr.ReadToEnd();
+                    string replyStr = sr.ReadToEnd();
+                    PandoraResponse reply = JsonConvert.DeserializeObject<PandoraResponse>(replyStr);
+                    
+                    // parse and throw any errors or return our result
+                    if (!reply.Success) throw new PandoraException(String.Format("Received error code {0}: {1}", reply.ErrorCode, reply.ErrorMessage));
+                    return (PandoraData)JsonConvert.DeserializeObject(reply.Result.ToString(), request.ReturnType);
                 }
             }
             catch (Exception ex) {
+                if (ex is PandoraException) throw;
                 throw new PandoraException("Unexpected error communicating with server.", ex);
             }
-
-            // check for error response
-            PandoraException error = PandoraException.ParseError(reply);
-            if (error != null) throw error;
-
-            return reply;
         }
     }
 

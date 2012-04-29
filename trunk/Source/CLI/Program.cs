@@ -23,6 +23,17 @@ namespace PandoraMusicBox.CLI {
         object printTextLock = new object();
 
         static void Main(string[] args) {
+            /*
+            PandoraIO io = new PandoraIO();
+            PandoraSession session = io.PartnerLogin(null);
+            PandoraUser user = io.UserLogin(session, "contact@johnconrad.info", "left14jr");
+            List<PandoraStation> stations = io.GetStationList(session, user);
+            List<PandoraSong> songs = io.GetSongs(user, session, stations[1]);
+            Console.Write(songs[0].Artist);
+
+            return;
+            */
+
             Program p = new Program();
 
             try {

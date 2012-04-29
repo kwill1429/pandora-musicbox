@@ -6,11 +6,17 @@ using System.Xml;
 namespace PandoraMusicBox.Engine.Data {
     public class PandoraData {
 
+        public string Json {
+            get;
+            internal set;
+        }
+
         public Dictionary<string, string> Variables {
             get;
             protected set;
         }
         
+        // delete below
         public string this[string key] {
             get {
                 if (!Variables.ContainsKey(key)) 

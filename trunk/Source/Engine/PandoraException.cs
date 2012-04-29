@@ -101,7 +101,7 @@ namespace PandoraMusicBox.Engine {
         /// <param name="message"></param>
         /// <param name="innerException"></param>
         public PandoraException(Exception innerException) :
-            this("Unexpected library error. So Sorry!", innerException) {
+            this("Unexpected library error.", innerException) {
 
             _message = "Unexpected library error. So Sorry!";
         }

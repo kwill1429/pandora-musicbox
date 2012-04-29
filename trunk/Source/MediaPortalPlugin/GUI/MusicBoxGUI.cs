@@ -247,7 +247,7 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
             try {
                 logger.ErrorException("Unexpected error!", ex);
 
-                g_Player.Play(Core.Settings.SadTrombone);
+                //g_Player.Play(Core.Settings.SadTrombone);
                 GUIWindowManager.ShowPreviousWindow();
                 DeInit();
             } 
@@ -257,8 +257,8 @@ namespace PandoraMusicBox.MediaPortalPlugin.GUI {
 
             ShowMessage("Oops!",
                 "Pandora MusicBox has encountered an",
-                "unexpected error! Please pardon our",
-                "growing pains!",
+                "unexpected error! Sorry about that,",
+                "maybe retry or check for an update?",
                  ex == null ? null : ex.Message);
         }
 
