@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using PandoraMusicBox.Engine.Encryption;
+using Newtonsoft.Json;
 
 namespace PandoraMusicBox.Engine.Data {
     public enum AccountType { BASIC, TRIAL, PREMIUM, EXPIRED_SUBSCRIBER }
 
+    [JsonObject(MemberSerialization.OptIn)]
     public class PandoraUser: PandoraData {
-        BlowfishCipher cipher = new BlowfishCipher(PandoraCryptKeys.In);
-
-        internal PandoraUser(Dictionary<string, string> variables) {
-            this.Variables = variables;
-        }
-
+        BlowfishCipher cipher = new BlowfishCipher(PandoraCryptKeys.PW);
+        
+        [JsonProperty(PropertyName = "username")]
         public string Name {
             get;
             internal set;
@@ -35,17 +34,26 @@ namespace PandoraMusicBox.Engine.Data {
             }
         }
 
+        [JsonProperty(PropertyName = "canListen")]
+        public bool CanListen {
+            get;
+            internal set;
+        }
+
+        [JsonProperty(PropertyName = "userAuthToken")]
         public string AuthorizationToken {
             get;
             internal set;
         }
 
-        public string WebAuthorizationToken {
+        [JsonProperty(PropertyName = "userId")]
+        public string Id {
             get;
             internal set;
         }
 
-        public string ListenerId {
+        [JsonProperty(PropertyName = "hasAudioAds")]
+        public bool RequiresAds {
             get;
             internal set;
         }
@@ -83,6 +91,7 @@ namespace PandoraMusicBox.Engine.Data {
             }
         }
 
+        /*
         internal static PandoraUser Parse(string xmlStr) {
             int tmp;
 
@@ -119,6 +128,7 @@ namespace PandoraMusicBox.Engine.Data {
 
             return user;
         }
+         * */
 
     }
 }

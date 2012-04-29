@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\External\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -39,8 +42,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Internal\AddFeedbackRequest.cs" />
+    <Compile Include="Data\Internal\GetPlaylistRequest.cs" />
+    <Compile Include="Data\Internal\GetPlaylistResponse.cs" />
+    <Compile Include="Data\Internal\GetStationListRequest.cs" />
+    <Compile Include="Data\Internal\GetStationListResponse.cs" />
+    <Compile Include="Data\Internal\PandoraRequest.cs" />
+    <Compile Include="Data\Internal\PandoraResponse.cs" />
+    <Compile Include="Data\Internal\PartnerLoginRequest.cs" />
+    <Compile Include="Data\Internal\UserLoginRequest.cs" />
     <Compile Include="Data\PandoraData.cs" />
+    <Compile Include="Data\PandoraSession.cs" />
     <Compile Include="Data\PandoraSong.cs" />
+    <Compile Include="Data\PandoraSongFeedback.cs" />
     <Compile Include="Data\PandoraStation.cs" />
     <Compile Include="Data\PandoraUser.cs" />
     <Compile Include="Encryption\BlowfishCipher.cs" />
@@ -58,7 +72,7 @@
     <Compile Include="PandoraException.cs" />
     <Compile Include="PandoraIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PandoraRequest.cs" />
+    <Compile Include="OldPandoraRequest.cs" />
     <Compile Include="SkipHistory.cs" />
   </ItemGroup>
   <ItemGroup>

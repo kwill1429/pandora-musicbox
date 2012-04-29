@@ -4,9 +4,36 @@ using System.Text;
 using PandoraMusicBox.Engine.Encryption;
 using System.Xml;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace PandoraMusicBox.Engine.Data {
     public class PandoraSong: PandoraData {
+        public class AudioUrlInfo {
+            [JsonProperty(PropertyName = "bitrate")]
+            public string Bitrate {
+                get;
+                internal set;
+            }
+
+            [JsonProperty(PropertyName = "encoding")]
+            public string Encoding {
+                get;
+                internal set;
+            }
+
+            [JsonProperty(PropertyName = "audioUrl")]
+            public string Url {
+                get;
+                internal set;
+            }
+
+            [JsonProperty(PropertyName = "protocol")]
+            public string Protocol {
+                get;
+                set;
+            }
+        }
+
         private static BlowfishCipher decrypter = new BlowfishCipher(PandoraCryptKeys.In);
 
         public bool IsAdvertisement {
@@ -14,55 +41,102 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
-        public string MusicId {
+        [JsonProperty(PropertyName = "trackToken")]
+        public string Token {
             get;
             internal set;
         }
 
-        public string TrackToken {
-            get;
-            internal set;
-        }
 
-
+        [JsonProperty(PropertyName = "artistName")]
         public string Artist {
             get;
             internal set;
         }
 
+        [JsonProperty(PropertyName = "albumName")]
         public string Album {
             get;
             internal set;
         }
 
+        [JsonProperty(PropertyName = "songName")]
         public string Title {
             get;
             internal set;
         }
 
         public string AudioURL {
+            get {
+                if (AudioUrlMap == null || AudioUrlMap.Count == 0)
+                    return null;
+
+                if (AudioUrlMap.ContainsKey("highQuality"))
+                    return AudioUrlMap["highQuality"].Url.Trim();
+                if (AudioUrlMap.ContainsKey("mediumQuality"))
+                    return AudioUrlMap["mediumQuality"].Url.Trim();
+                if (AudioUrlMap.ContainsKey("lowQuality"))
+                    return AudioUrlMap["lowQuality"].Url.Trim();
+
+                return null;
+            }
+        }
+
+        [JsonProperty(PropertyName = "audioUrlMap")]
+        public Dictionary<string, AudioUrlInfo> AudioUrlMap {
             get;
             internal set;
         }
 
+        [JsonProperty(PropertyName = "albumArtUrl")]
         public string AlbumArtLargeURL {
             get;
             internal set;
         }
 
+        [JsonProperty(PropertyName = "albumDetailUrl")]
         public string AlbumDetailsURL {
             get;
             internal set;
         }
 
-        public string ArtistArtURL {
-            get;
-            internal set;
+        [JsonProperty(PropertyName = "songRating")]
+        private int NumericRating {
+            get {
+                switch (Rating) {
+                    case PandoraRating.Love:
+                        return 1;
+                    case PandoraRating.Unrated:
+                        return 0;
+                    case PandoraRating.Hate:
+                        return -1;
+                    default:
+                        return 0;
+                }
+            }
+            set {
+                if (value == 1) Rating = PandoraRating.Love;
+                else Rating = PandoraRating.Unrated;
+            }
         }
 
         public PandoraRating Rating {
             get;
             internal set;
+        }
+
+        [JsonProperty(PropertyName = "trackGain")]
+        private string TrackGainStr {
+            get;
+            set;
+        }
+
+        public float TrackGain {
+            get {
+                float rtn = 0;
+                float.TryParse(TrackGainStr, out rtn);
+                return rtn;
+            }
         }
 
         public bool TemporarilyBanned {
@@ -75,53 +149,18 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
-        internal PandoraSong(Dictionary<string, string> variables) {
-            this.Variables = variables;
-        }
-
-        internal static List<PandoraSong> Parse(string xmlStr) {
-            List<PandoraSong> songs = new List<PandoraSong>();
-
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(xmlStr);
-
-            // loop through each song in the XML document
-            foreach (XmlNode currSongNode in xml.SelectNodes("//methodResponse/params/param/value/array/data/value/struct")) {
-                Dictionary<string, string> variables = GetVariables(currSongNode);
-                PandoraSong song = new PandoraSong(variables);
-
-                song.MusicId = song["musicId"];
-                song.TrackToken = song["trackToken"];
-                song.Artist = song["artistSummary"];
-                song.Album = song["albumTitle"];
-                song.Title = song["songTitle"];
-                song.AudioURL = DecodeUrl(song["audioURL"]);
-                song.AlbumArtLargeURL = song["artRadio"];
-                song.AlbumDetailsURL = song["albumDetailURL"];
-                song.ArtistArtURL = song["artistArtUrl"];
-                if (song["rating"] == "1") song.Rating = PandoraRating.Love;
-                else song.Rating = PandoraRating.Unrated;
-
-                song.IsAdvertisement = false;
-
-                songs.Add(song);
-            }
-
-            return songs;
-        }
-
         internal static PandoraSong ParseAdvertisement(string xmlStr) {
             // fix broken ass xml response and parse out variables. thanks for the malformed xml doubleclick!
             Regex pattern = new Regex("<!--.*-->");
             string cleanReply = pattern.Replace(xmlStr, "").Replace("&", "&amp;").Trim();
             Dictionary<string, string> variables = GetVariables(cleanReply);
 
-            PandoraSong ad = new PandoraSong(variables);
+            PandoraSong ad = new PandoraSong();
             ad.Artist = "Advertisement";
             ad.Album = "Advertisement";
             ad.Title = "Advertisement";
 
-            ad.AudioURL = ad["audio"].Trim();
+            //ad.AudioURL = ad["audio"].Trim();
             ad.AlbumArtLargeURL = ad["image"];
             if (!ad.AlbumArtLargeURL.ToLower().StartsWith("http://"))
                 ad.AlbumArtLargeURL = "http://pandora.com" + ad.AlbumArtLargeURL;

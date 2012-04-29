@@ -27,6 +27,14 @@ namespace PandoraMusicBox.Engine {
         }
 
         /// <summary>
+        /// Information about the current Pandora session.
+        /// </summary>
+        public PandoraSession Session {
+            get;
+            protected set;
+        }
+
+        /// <summary>
         /// If set, this proxy object will be used for all web requests.
         /// </summary>
         public WebProxy Proxy {
@@ -99,11 +107,12 @@ namespace PandoraMusicBox.Engine {
         public bool Login(string username, string password) {
             Clear();
 
-            User = pandora.AuthenticateListener(username, password, Proxy);
-            if (User != null && pandora.CanListen(User, Proxy)) {
+            Session = pandora.PartnerLogin(Proxy);
+            User = pandora.UserLogin(Session, username, password, Proxy);
+            if (User != null && User.CanListen) {
                 SkipHistory = new SkipHistory(User);
 
-                AvailableStations = pandora.GetStations(User, Proxy);
+                AvailableStations = pandora.GetStationList(Session, Proxy);
 
                 // try to grab the first station in the list that is not the quickmix station
                 foreach (PandoraStation currStation in AvailableStations)
@@ -161,6 +170,7 @@ namespace PandoraMusicBox.Engine {
 
             timeLastSongGrabbed = DateTime.Now;
 
+            /*
             // if it is time for an ad reset the ad timer and return an ad instead of a song
             if (currentAdInterval == null) currentAdInterval = new TimeSpan(0, User.AdInterval / 2, 0);
             if (User.AccountType == AccountType.BASIC && timeSinceLastAd > currentAdInterval) {
@@ -173,7 +183,7 @@ namespace PandoraMusicBox.Engine {
                     return CurrentSong;
                 }
             }
-            
+            */
 
             // grab the next song in our queue. songs become invalid after an 
             // unspecified number of hours.
@@ -194,7 +204,7 @@ namespace PandoraMusicBox.Engine {
         /// <param name="song"></param>
         public void RateSong(PandoraSong song, PandoraRating rating) {
             VerifyAndExecute(delegate {
-                pandora.RateSong(User, CurrentStation, song, rating, Proxy);
+                pandora.RateSong(Session, CurrentStation, song, rating);
             });
         }
 
@@ -224,7 +234,7 @@ namespace PandoraMusicBox.Engine {
             List<PandoraSong> newSongs = new List<PandoraSong>();
 
             VerifyAndExecute(delegate {
-                newSongs = pandora.GetSongs(User, CurrentStation, Proxy);
+                newSongs = pandora.GetSongs(Session, CurrentStation, Proxy);
             });
 
             // add our new songs to the playlist
@@ -258,7 +268,7 @@ namespace PandoraMusicBox.Engine {
                     throw;
 
                 // this is an AUTH_INVALID_TOKEN error meaning our login expired, try logging in again
-                User = pandora.AuthenticateListener(User.Name, User.Password, Proxy);
+                User = pandora.UserLogin(null, User.Name, User.Password, Proxy);
                 playlist.Clear();
                 if (User == null) throw new PandoraException("Username and/or password are no longer valid!");
 
