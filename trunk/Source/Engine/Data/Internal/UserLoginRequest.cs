@@ -22,6 +22,11 @@ namespace PandoraMusicBox.Engine.Data.Internal {
             get { return true; }
         }
 
+        [JsonProperty(PropertyName = "includeDemographics")]
+        public bool IncludeDemographics {
+            get { return true; }
+        }
+
         [JsonProperty(PropertyName = "partnerAuthToken")]
         public string PartnerAuthToken {
             get {

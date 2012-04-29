@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using PandoraMusicBox.Engine.Data.Internal;
 using PandoraMusicBox.Engine.Data;
+using System.Web;
 
 namespace PandoraMusicBox.Engine {
     /// <summary>
@@ -115,14 +116,14 @@ namespace PandoraMusicBox.Engine {
             return feedbackObj;
         }
 
-        public void AddTiredSong(PandoraUser user, PandoraSong song) {
-            AddTiredSong(user, song, null);
+        public void AddTiredSong(PandoraSession session, PandoraSong song) {
+            AddTiredSong(session, song, null);
         }
 
-        public void AddTiredSong(PandoraUser user, PandoraSong song, WebProxy proxy) {
-            if (user == null) throw new PandoraException("User must be logged in to make this request.");
+        public void AddTiredSong(PandoraSession session, PandoraSong song, WebProxy proxy) {
+            if (session == null || session.User == null) throw new PandoraException("User must be logged in to make this request.");
 
-            //string reply = ExecuteRequest(user, PandoraRequest.AddTiredSong, proxy, song.MusicId);
+            ExecuteRequest(new SleepSongRequest(session, song.Token), proxy);
             song.TemporarilyBanned = true;
         }
 
@@ -235,17 +236,17 @@ namespace PandoraMusicBox.Engine {
             }
         }
 
-        private PandoraData ExecuteRequest(PandoraRequest request, WebProxy proxy, params object[] paramList) {
+        private PandoraData ExecuteRequest(PandoraRequest request, WebProxy proxy) {
             try {
                 ASCIIEncoding encoder = new ASCIIEncoding();
 
                 // build url for request to pandora servers
                 string prefix = request.IsSecure ? "https://" : "http://";
-                string url = prefix + baseUrl; // +"rid=" + RouteId;
-                url += "method=" + String.Format(request.MethodName, paramList);
-                if (request.User != null) url += String.Format("&user_id={0}", request.User.Id);
+                string url = prefix + baseUrl;
+                url += "method=" + request.MethodName;
+                if (request.User != null) url += String.Format("&user_id={0}", HttpUtility.UrlEncode(request.User.Id));
                 if (request.Session != null) {
-                    url += String.Format("&auth_token={0}", request.UserAuthToken == null ? request.Session.PartnerAuthToken : request.UserAuthToken);
+                    url += String.Format("&auth_token={0}", HttpUtility.UrlEncode(request.UserAuthToken == null ? request.Session.PartnerAuthToken : request.UserAuthToken));
                     url += String.Format("&partner_id={0}", request.Session.PartnerId);
                 }
 
@@ -275,7 +276,12 @@ namespace PandoraMusicBox.Engine {
                     PandoraResponse reply = JsonConvert.DeserializeObject<PandoraResponse>(replyStr);
                     
                     // parse and throw any errors or return our result
-                    if (!reply.Success) throw new PandoraException(String.Format("Received error code {0}: {1}", reply.ErrorCode, reply.ErrorMessage));
+                    if (!reply.Success) {
+                        Console.WriteLine(url);
+                        throw new PandoraException(String.Format("Received error code {0}: {1}", reply.ErrorCode, reply.ErrorMessage));
+                    }
+
+                    if (request.ReturnType == null) return null;
                     return (PandoraData)JsonConvert.DeserializeObject(reply.Result.ToString(), request.ReturnType);
                 }
             }

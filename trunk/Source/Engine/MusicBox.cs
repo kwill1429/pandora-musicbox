@@ -214,7 +214,7 @@ namespace PandoraMusicBox.Engine {
         /// <param name="song"></param>
         public void TemporarilyBanSong(PandoraSong song) {
             VerifyAndExecute(delegate {
-                pandora.AddTiredSong(User, song, Proxy);
+                pandora.AddTiredSong(Session, song, Proxy);
             });    
         }
 
