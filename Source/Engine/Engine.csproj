@@ -37,6 +37,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -50,6 +51,7 @@
     <Compile Include="Data\Internal\PandoraRequest.cs" />
     <Compile Include="Data\Internal\PandoraResponse.cs" />
     <Compile Include="Data\Internal\PartnerLoginRequest.cs" />
+    <Compile Include="Data\Internal\SleepSongRequest.cs" />
     <Compile Include="Data\Internal\UserLoginRequest.cs" />
     <Compile Include="Data\PandoraData.cs" />
     <Compile Include="Data\PandoraSession.cs" />
