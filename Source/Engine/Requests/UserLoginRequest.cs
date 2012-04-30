@@ -27,6 +27,41 @@ namespace PandoraMusicBox.Engine.Data.Internal {
             get { return true; }
         }
 
+        [JsonProperty(PropertyName = "includePandoraOneInfo")]
+        public bool IncludePandoraOneInfo {
+            get { return true; }
+        }
+
+        [JsonProperty(PropertyName = "includeAdAttributes")]
+        public bool IncludeAdAttributes {
+            get { return true; }
+        }
+
+        [JsonProperty(PropertyName = "returnStationList")]
+        public bool ReturnStationList {
+            get { return false; }
+        }
+
+        [JsonProperty(PropertyName = "returnGenreStations")]
+        public bool ReturnGenreStations {
+            get { return false; }
+        }
+
+        [JsonProperty(PropertyName = "includeStationArtUrl")]
+        public bool IncludeStationArtUrl {
+            get { return true; }
+        }
+
+        [JsonProperty(PropertyName = "complimentarySponsorSupported")]
+        public bool ComplimentarySponsorSupported {
+            get { return true; }
+        }
+
+        [JsonProperty(PropertyName = "includeSubscriptionExpiration")]
+        public bool IncludeSubscriptionExpiration {
+            get { return true; }
+        }
+
         [JsonProperty(PropertyName = "partnerAuthToken")]
         public string PartnerAuthToken {
             get {

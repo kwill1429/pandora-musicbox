@@ -148,32 +148,5 @@ namespace PandoraMusicBox.Engine.Data {
             get;
             internal set;
         }
-
-        internal static PandoraSong ParseAdvertisement(string xmlStr) {
-            // fix broken ass xml response and parse out variables. thanks for the malformed xml doubleclick!
-            Regex pattern = new Regex("<!--.*-->");
-            string cleanReply = pattern.Replace(xmlStr, "").Replace("&", "&amp;").Trim();
-            Dictionary<string, string> variables = GetVariables(cleanReply);
-
-            PandoraSong ad = new PandoraSong();
-            ad.Artist = "Advertisement";
-            ad.Album = "Advertisement";
-            ad.Title = "Advertisement";
-
-            //ad.AudioURL = ad["audio"].Trim();
-            ad.AlbumArtLargeURL = ad["image"];
-            if (!ad.AlbumArtLargeURL.ToLower().StartsWith("http://"))
-                ad.AlbumArtLargeURL = "http://pandora.com" + ad.AlbumArtLargeURL;
-
-            ad.IsAdvertisement = true;
-
-            return ad;
-        }
-
-        private static string DecodeUrl(string input) {
-            int encryptedLength = 48;
-            string encryptedStr = input.Substring(input.Length - encryptedLength);
-            return input.Substring(0, input.Length - encryptedLength) + decrypter.Decrypt(encryptedStr).Trim(new char[] {'\b'});
-        }
     }
 }

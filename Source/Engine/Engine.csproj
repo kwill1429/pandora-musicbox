@@ -43,16 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Internal\AddFeedbackRequest.cs" />
-    <Compile Include="Data\Internal\GetPlaylistRequest.cs" />
-    <Compile Include="Data\Internal\GetPlaylistResponse.cs" />
-    <Compile Include="Data\Internal\GetStationListRequest.cs" />
-    <Compile Include="Data\Internal\GetStationListResponse.cs" />
-    <Compile Include="Data\Internal\PandoraRequest.cs" />
-    <Compile Include="Data\Internal\PandoraResponse.cs" />
-    <Compile Include="Data\Internal\PartnerLoginRequest.cs" />
-    <Compile Include="Data\Internal\SleepSongRequest.cs" />
-    <Compile Include="Data\Internal\UserLoginRequest.cs" />
+    <Compile Include="Requests\AddFeedbackRequest.cs" />
+    <Compile Include="Requests\GetPlaylistRequest.cs" />
+    <Compile Include="Responses\GetPlaylistResponse.cs" />
+    <Compile Include="Requests\GetStationListRequest.cs" />
+    <Compile Include="Responses\GetStationListResponse.cs" />
+    <Compile Include="Requests\PandoraRequest.cs" />
+    <Compile Include="Responses\PandoraResponse.cs" />
+    <Compile Include="Requests\PartnerLoginRequest.cs" />
+    <Compile Include="Requests\SleepSongRequest.cs" />
+    <Compile Include="Requests\UserLoginRequest.cs" />
     <Compile Include="Data\PandoraData.cs" />
     <Compile Include="Data\PandoraSession.cs" />
     <Compile Include="Data\PandoraSong.cs" />
