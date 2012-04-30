@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PandoraMusicBox.Engine.Data;
 
-namespace PandoraMusicBox.Engine.Data.Internal {
+namespace PandoraMusicBox.Engine.Responses {
     [JsonObject(MemberSerialization.OptIn)]
     internal class PandoraResponse: PandoraData {
         public bool Success {

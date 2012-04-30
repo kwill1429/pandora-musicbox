@@ -7,9 +7,10 @@ using PandoraMusicBox.Engine.Encryption;
 using System.Xml;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
-using PandoraMusicBox.Engine.Data.Internal;
-using PandoraMusicBox.Engine.Data;
 using System.Web;
+using PandoraMusicBox.Engine.Responses;
+using PandoraMusicBox.Engine.Requests;
+using PandoraMusicBox.Engine.Data;
 
 namespace PandoraMusicBox.Engine {
     /// <summary>
@@ -68,21 +69,38 @@ namespace PandoraMusicBox.Engine {
         }
 
         /// <summary>
-        /// Retrieves a list of stations for the given user.
+        /// Retrieves a list of stations for the current user.
         /// </summary>
-        public List<PandoraStation> GetStationList(PandoraSession session) {
-            return GetStationList(session, null);
+        public List<PandoraStation> GetStations(PandoraSession session) {
+            return GetStations(session, null);
         }
 
         /// <summary>
-        /// Retrieves a list of stations for the given user.
+        /// Retrieves a list of stations for the current user.
         /// </summary>
-        public List<PandoraStation> GetStationList(PandoraSession session, WebProxy proxy) {
+        public List<PandoraStation> GetStations(PandoraSession session, WebProxy proxy) {
             if (session == null || session.User == null)
                 throw new PandoraException("User must be logged in to make this request.");
 
             GetStationListResponse response = (GetStationListResponse)ExecuteRequest(new GetStationListRequest(session), proxy);
             return response.Stations;
+        }
+
+        /// <summary>
+        /// Retrieves all available genre stations.
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public List<PandoraStationCategory> GetGenreStations(PandoraSession session) {
+            return GetGenreStations(session, null);
+        }
+
+        public List<PandoraStationCategory> GetGenreStations(PandoraSession session, WebProxy proxy) {
+            if (session == null || session.User == null)
+                throw new PandoraException("User must be logged in to make this request.");
+
+            GetGenreStationsResponse response = (GetGenreStationsResponse)ExecuteRequest(new GetGenreStationsRequest(session), proxy);
+            return response.Categories;
         }
 
         /// <summary>
@@ -126,65 +144,6 @@ namespace PandoraMusicBox.Engine {
             ExecuteRequest(new SleepSongRequest(session, song.Token), proxy);
             song.TemporarilyBanned = true;
         }
-
-        /*
-        public PandoraSong GetAdvertisement(PandoraUser user) {
-            return GetAdvertisement(user, null);
-        }
-
-        public PandoraSong GetAdvertisement(PandoraUser user, WebProxy proxy) {
-            try {
-                string baseUrl = "http://ad.doubleclick.net/pfadx/pand.default/prod.tuner;fb=0;ag={0};gnd=1;zip={1};hours=0;comped=0;clean=0;playlist=pandora;genre=;segment=1;u=clean*0!playlist*pandora!segment*1!fb*0!ag*{2}!gnd*1!zip*{3}!hours*0!comped*0;sz=134x185;ord={4}";
-                string url = string.Format(baseUrl, user.Age, user.ZipCode, user.Age, user.ZipCode, referenceTime * 10000000);
-                Cookie cookie = getDoubleclickIdCookie(url, proxy);
-
-                // build request to ad server
-                HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-                webRequest.CookieContainer = new CookieContainer();
-                webRequest.CookieContainer.Add(cookie);
-                if (proxy != null) webRequest.Proxy = proxy;
-
-                // grab response from server
-                using (WebResponse response = webRequest.GetResponse()) {
-                    StreamReader sr = new StreamReader(response.GetResponseStream());
-                    string reply = sr.ReadToEnd();
-
-                    // parse results and return
-                    return PandoraSong.ParseAdvertisement(reply);
-                }
-            }
-            catch (WebException e) {
-                if (e.Message.Contains("403"))
-                    return null;
-
-                throw e;
-            }
-        }
-
-        private Cookie getDoubleclickIdCookie(string url, WebProxy proxy) {
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
-            webRequest.CookieContainer = new CookieContainer();
-            if (proxy != null) webRequest.Proxy = proxy;
-             
-            for (int i = 0; i < 3; i++) {
-                using (WebResponse response = webRequest.GetResponse()) {
-                    System.Net.HttpWebResponse resp = ((System.Net.HttpWebResponse)response);
-                    webRequest.CookieContainer = new CookieContainer();
-                    foreach (Cookie c in resp.Cookies) {
-                        if (c.Name == "id")
-                            return c;
-
-                        webRequest = (HttpWebRequest)WebRequest.Create(url);
-                        if (proxy != null) webRequest.Proxy = proxy;
-                        webRequest.CookieContainer = new CookieContainer();
-                        webRequest.CookieContainer.Add(c);
-                    }
-                }
-            }
-
-            return null;
-        }
-        */
           
         public void GetSongLength(PandoraUser user, PandoraSong song) {
             GetSongLength(user, song, null);
