@@ -5,16 +5,14 @@ using Newtonsoft.Json;
 using PandoraMusicBox.Engine.Data;
 
 namespace PandoraMusicBox.Engine.Responses {
-    internal class GetStationListResponse: PandoraData {
-
-        [JsonProperty(PropertyName = "stations")]
-        public List<PandoraStation> Stations {
+    internal class GetGenreStationsResponse: PandoraData {
+        [JsonProperty(PropertyName = "categories")]
+        public List<PandoraStationCategory> Categories {
             get;
             set;
         }
 
-
-        [JsonProperty(PropertyName = "deviceModel")]
+        [JsonProperty(PropertyName = "checksum")]
         public string Checksum {
             get;
             set;

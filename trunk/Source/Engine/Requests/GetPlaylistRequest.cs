@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
+using PandoraMusicBox.Engine.Data;
+using PandoraMusicBox.Engine.Responses;
 
-namespace PandoraMusicBox.Engine.Data.Internal {
+namespace PandoraMusicBox.Engine.Requests {
     internal class GetPlaylistRequest: PandoraRequest {
         public override string MethodName {
             get { return "station.getPlaylist"; }

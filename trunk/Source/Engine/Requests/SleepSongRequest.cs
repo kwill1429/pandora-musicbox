@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
+using PandoraMusicBox.Engine.Data;
 
-namespace PandoraMusicBox.Engine.Data.Internal {
+namespace PandoraMusicBox.Engine.Requests {
     internal class SleepSongRequest: PandoraRequest {
         public override string MethodName {
             get { return "user.sleepSong"; }

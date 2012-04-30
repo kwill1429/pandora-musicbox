@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
+using PandoraMusicBox.Engine.Data;
 
-namespace PandoraMusicBox.Engine.Data.Internal {
+namespace PandoraMusicBox.Engine.Requests {
     [JsonObject(MemberSerialization.OptIn)]
     internal abstract class PandoraRequest {
         public abstract string MethodName {
