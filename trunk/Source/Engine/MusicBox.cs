@@ -146,7 +146,7 @@ namespace PandoraMusicBox.Engine {
 
         /// <summary>
         /// Returns the next song and updates the CurrentSong property. Will throw a PandoraException if
-        /// skipping and the user is nto allowed to skip at this point in time. Call CanSkip() first as needed.
+        /// skipping and the user is not allowed to skip at this point in time. Call CanSkip() first as needed.
         /// </summary>
         /// <returns></returns>
         public PandoraSong GetNextSong(bool isSkip) {            
@@ -225,6 +225,7 @@ namespace PandoraMusicBox.Engine {
 
             // add our new songs to the playlist
             foreach (PandoraSong currSong in newSongs) {
+                if (currSong.Token == null) continue;
                 CheckForStationTags(currSong);
                 playlist.Enqueue(currSong);
             }

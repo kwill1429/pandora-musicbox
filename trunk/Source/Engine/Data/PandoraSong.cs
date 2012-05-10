@@ -66,7 +66,13 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        [JsonProperty(PropertyName = "additionalAudioUrl")]
         public string AudioURL {
+            get;
+            internal set;
+        }
+        
+        public string AudioURL_official {
             get {
                 if (AudioUrlMap == null || AudioUrlMap.Count == 0)
                     return null;
