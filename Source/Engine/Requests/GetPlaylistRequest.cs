@@ -28,6 +28,12 @@ namespace PandoraMusicBox.Engine.Requests {
             get;
             set;
         }
+        [JsonProperty(PropertyName = "additionalAudioUrl")]
+        public string AdditionalAudioTypeRequests {
+            get {
+                return "HTTP_192_MP3";
+            }
+        }
 
         public GetPlaylistRequest(PandoraSession session, string stationToken) :
             base(session) {

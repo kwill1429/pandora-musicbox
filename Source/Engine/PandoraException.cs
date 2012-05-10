@@ -5,15 +5,15 @@ using System.Xml;
 
 namespace PandoraMusicBox.Engine {
     public enum ErrorCodeEnum {
-        UNKNOWN,
-        APPLICATION_ERROR,
+        UNKNOWN = -1,
+        APPLICATION_ERROR = -2,
 
-        AUTH_INVALID_USERNAME_PASSWORD,
-        AUTH_INVALID_TOKEN,
-        LICENSE_RESTRICTION,
-        READONLY_MODE,
-        INCOMPATIBLE_VERSION,
-        LISTENER_NOT_AUTHORIZED,  // generally means a pandora one subscription expired
+        AUTH_INVALID_USERNAME_PASSWORD = 1002,
+        AUTH_INVALID_TOKEN = 1001,
+        LICENSE_RESTRICTION = 12,
+        READONLY_MODE = 1000,
+        INCOMPATIBLE_VERSION = 11,
+        LISTENER_NOT_AUTHORIZED = 1003,  // generally means a pandora one subscription expired
         OUT_OF_SYNC
     }
 
