@@ -66,25 +66,26 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
-        [JsonProperty(PropertyName = "additionalAudioUrl")]
-        public string AudioURL {
-            get;
-            internal set;
-        }
-        
-        public string AudioURL_official {
+        public AudioUrlInfo AudioInfo {
             get {
                 if (AudioUrlMap == null || AudioUrlMap.Count == 0)
                     return null;
 
                 if (AudioUrlMap.ContainsKey("highQuality"))
-                    return AudioUrlMap["highQuality"].Url.Trim();
+                    return AudioUrlMap["highQuality"];
                 if (AudioUrlMap.ContainsKey("mediumQuality"))
-                    return AudioUrlMap["mediumQuality"].Url.Trim();
+                    return AudioUrlMap["mediumQuality"];
                 if (AudioUrlMap.ContainsKey("lowQuality"))
-                    return AudioUrlMap["lowQuality"].Url.Trim();
+                    return AudioUrlMap["lowQuality"];
 
-                return null;
+                return null;                
+            }
+        }
+
+        public string AudioURL {
+            get {
+                if (AudioInfo == null) return null;
+                return AudioInfo.Url.Trim();
             }
         }
 

@@ -2,19 +2,31 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using PandoraMusicBox.Engine.Responses;
 
 namespace PandoraMusicBox.Engine {
     public enum ErrorCodeEnum {
         UNKNOWN = -1,
         APPLICATION_ERROR = -2,
 
-        AUTH_INVALID_USERNAME_PASSWORD = 1002,
-        AUTH_INVALID_TOKEN = 1001,
-        LICENSE_RESTRICTION = 12,
-        READONLY_MODE = 1000,
+        INTERNAL = 0,
+        MAINTENANCE_MODE = 1,
+        URL_PARAM_MISSING_METHOD = 2,
+        URL_PARAM_MISSING_AUTH_TOKEN = 3,
+        URL_PARAM_MISSING_PARTNER_ID = 4,
+        URL_PARAM_MISSING_USER_ID = 5, 
+        SECURE_PROTOCOL_REQUIRED = 6,
+        CERTIFICATE_REQUIRED = 7,
+        PARAMETER_TYPE_MISMATCH = 8,
+        PARAMETER_MISSING = 9,
+        PARAMETER_VALUE_INVALID = 10,
         INCOMPATIBLE_VERSION = 11,
-        LISTENER_NOT_AUTHORIZED = 1003,  // generally means a pandora one subscription expired
-        OUT_OF_SYNC
+        LICENSE_RESTRICTION = 12,
+        INSUFFICIENT_CONNECTIVITY = 13,
+        READONLY_MODE = 1000,
+        AUTH_INVALID_TOKEN = 1001,
+        AUTH_INVALID_USERNAME_PASSWORD = 1002,
+        LISTENER_NOT_AUTHORIZED = 1003  // generally means a pandora one subscription expired
     }
 
     public class PandoraException: Exception {
@@ -40,18 +52,35 @@ namespace PandoraMusicBox.Engine {
         } protected string _xmlString = null;
 
         /// <summary>
+        /// Creates an exception from the given server response object.
+        /// </summary>
+        /// <param name="response"></param>
+        internal PandoraException(PandoraResponse response) {
+            try {
+                if (response == null) throw new PandoraException("Attempted to parse null response.");
+                if (response.Success) throw new PandoraException("Attempted to parse error from successful response.");                    
+
+                _message = response.ErrorMessage;
+                _errorCode = (ErrorCodeEnum)response.ErrorCode;
+            }
+            catch (Exception e) {
+                throw new PandoraException("Failed parsing error response.", e);
+            }            
+        }
+        
+        /// <summary>
         /// Create an exception from an error code and message provided by the Pandora servers.
         /// If the error code is recognized, the ErrorCode field will be populated.
         /// </summary>
         /// <param name="errorCodeStr"></param>
         /// <param name="message"></param>
-        public PandoraException(string errorCodeStr, string message) {
+        public PandoraException(int errorCode, string message) {
             try {
                 _message = message;
-                _errorCode = (ErrorCodeEnum) Enum.Parse(typeof(ErrorCodeEnum), errorCodeStr);
+                _errorCode = (ErrorCodeEnum)errorCode;
             } catch (Exception) {
                 _errorCode = ErrorCodeEnum.UNKNOWN;
-                _message = errorCodeStr + ": " + message;
+                _message = message;
             }
         }
 
@@ -106,42 +135,5 @@ namespace PandoraMusicBox.Engine {
             _message = "Unexpected library error. So Sorry!";
         }
 
-        /// <summary>
-        /// Based on the XML input assumed to be retrieved from the pandora.com XML-RPC interface,
-        /// this method will return a PandoraException object if an error occured, otherwise it will 
-        /// return null.
-        /// </summary>
-        /// <param name="xmInput"></param>
-        /// <returns></returns>
-        public static PandoraException ParseError(string xmInput) {
-            XmlDocument xml = new XmlDocument();
-
-            try {
-                xml.LoadXml(xmInput);
-                foreach (XmlNode currNode in xml.SelectNodes("/methodResponse/fault/value/struct/member")) {
-                    if (currNode["name"].InnerText == "faultString") {
-                        string errorCode = "";
-                        string errorMsg = "";
-
-                        if (currNode["value"].InnerText.Contains("|")) {
-                            errorCode = currNode["value"].InnerText.Split('|')[2];
-                            errorMsg = currNode["value"].InnerText.Split('|')[3];
-                        }
-                        else if (currNode["value"].InnerText.Contains(":")) {
-                            errorMsg = currNode["value"].InnerText.Split(':')[1].Trim();
-                            if (errorMsg.Contains("licensing restrictions"))
-                                errorCode = "LICENSE_RESTRICTION";
-                        }
-
-                        return new PandoraException(errorCode, errorMsg);
-                    }
-                }
-
-                return null;
-            }
-            catch (Exception e) {
-                return new PandoraException("Failed to parse response XML.", e, xmInput);
-            }
-        }
     }
 }
