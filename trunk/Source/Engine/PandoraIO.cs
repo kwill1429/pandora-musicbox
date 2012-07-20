@@ -58,6 +58,7 @@ namespace PandoraMusicBox.Engine {
             try {
                 PandoraUser user = (PandoraUser) ExecuteRequest(new UserLoginRequest(session, username, password), proxy);
                 session.User = user;
+                user.Password = password;
                 return user;
             }
             catch (PandoraException e) {
@@ -161,7 +162,7 @@ namespace PandoraMusicBox.Engine {
 
             using (WebResponse response = request.GetResponse()) {
                 long bytes = response.ContentLength;
-                int seconds = (int)((bytes * 8) / (user.AccountType == AccountType.PREMIUM ? 192000 : 128000));
+                int seconds = (int)((bytes * 8) / (int.Parse(song.AudioInfo.Bitrate) * 1000));
                 song.Length = new TimeSpan(0, 0, seconds);
             }
         }
@@ -236,8 +237,8 @@ namespace PandoraMusicBox.Engine {
                     
                     // parse and throw any errors or return our result
                     if (!reply.Success) {
-                        Console.WriteLine(url);
-                        throw new PandoraException(String.Format("Received error code {0}: {1}", reply.ErrorCode, reply.ErrorMessage));
+                        //Console.WriteLine(url);
+                        throw new PandoraException(reply);
                     }
 
                     if (request.ReturnType == null) return null;

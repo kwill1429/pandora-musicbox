@@ -80,12 +80,15 @@ namespace PandoraMusicBox.Engine.Data {
             internal set;
         }
 
+        [JsonProperty(PropertyName = "listeningTimeoutMinutes")]
+        public int TimeoutMinutes {
+            get;
+            internal set;
+        }
+
         public TimeSpan TimeoutInterval {
             get {
-                if (this.AccountType == AccountType.BASIC)
-                    return new TimeSpan(1, 0, 0);
-                else
-                    return new TimeSpan(5, 0, 0);
+                return new TimeSpan(0, TimeoutMinutes, 0);
             }
         }
     }

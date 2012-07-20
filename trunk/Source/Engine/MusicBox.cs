@@ -214,6 +214,7 @@ namespace PandoraMusicBox.Engine {
             AvailableStations.Clear();
             SkipHistory = null;
             User = null;
+            playlist.Clear();
         }
 
         protected void LoadMoreSongs() {
@@ -251,13 +252,15 @@ namespace PandoraMusicBox.Engine {
             try { logic(); }
             catch (PandoraException ex) {
                 // if there was an error and it was NOT an expired session, just toss it up to the client
-                if (ex.ErrorCode != ErrorCodeEnum.AUTH_INVALID_TOKEN && ex.ErrorCode != ErrorCodeEnum.OUT_OF_SYNC) 
+                if (ex.ErrorCode != ErrorCodeEnum.AUTH_INVALID_TOKEN && ex.ErrorCode != ErrorCodeEnum.INSUFFICIENT_CONNECTIVITY) 
                     throw;
 
                 // this is an AUTH_INVALID_TOKEN error meaning our login expired, try logging in again
-                User = pandora.UserLogin(null, User.Name, User.Password, Proxy);
+                Session = pandora.PartnerLogin(Proxy);
+                User = pandora.UserLogin(Session, User.Name, User.Password, Proxy);
+
                 playlist.Clear();
-                if (User == null) throw new PandoraException("Username and/or password are no longer valid!");
+                if (Session == null || User == null) throw new PandoraException("Username and/or password are no longer valid!");
 
                 // and again, try the desired action
                 logic();
